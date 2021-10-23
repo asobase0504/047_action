@@ -57,7 +57,7 @@ void InitBG(void)
 	for (nCntBG = 0; nCntBG < NUM_BG; nCntBG++)
 	{
 		pBG = &(g_aBG[nCntBG]);
-		pBG->pos = D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+		pBG->pos = D3DXVECTOR3(500.0f, 0.0f, 0.0f);
 		pBG->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		pBG->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		pBG->bUse = false;
@@ -81,7 +81,23 @@ void InitBG(void)
 	{
 		pBG = &(g_aBG[nCntBG]);
 
-		SetRectPos(pVtx, pBG->pos, SCREEN_HEIGHT, SCREEN_WIDTH);
+		pVtx[0].pos.x = pBG->pos.x;
+		pVtx[0].pos.y = pBG->pos.y;
+		pVtx[0].pos.z = pBG->pos.z;
+
+		pVtx[1].pos.x = pBG->pos.x + SCREEN_WIDTH;
+		pVtx[1].pos.y = pBG->pos.y;
+		pVtx[1].pos.z = pBG->pos.z;
+
+		pVtx[2].pos.x = pBG->pos.x;
+		pVtx[2].pos.y = pBG->pos.y + SCREEN_HEIGHT;
+		pVtx[2].pos.z = pBG->pos.z;
+
+		pVtx[3].pos.x = pBG->pos.x + SCREEN_WIDTH;
+		pVtx[3].pos.y = pBG->pos.y + SCREEN_HEIGHT;
+		pVtx[3].pos.z = pBG->pos.z;
+
+
 
 		switch (nCntBG)
 		{
