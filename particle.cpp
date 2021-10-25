@@ -213,9 +213,6 @@ void UpdateParticle(void)
 		case PARTICLE_PLAYER_DEATH:
 		{
 			Player *pPlayer = GetPlayer();
-			//移動量を更新(減衰)
-			pParticle->move.x += (0 - pParticle->move.x) * 0.015f;
-			pParticle->move.y += (0 - pParticle->move.y) * 0.015f;
 			
 			//復活時の処理
 			if (pPlayer->state == PLAYERSTATE_REVIVAL)
@@ -234,6 +231,12 @@ void UpdateParticle(void)
 					pPlayer->RevivalInterval--;
 					pParticle->bUse = false;
 				}
+			}
+			else
+			{
+				//移動量を更新(減衰)
+				pParticle->move.x += (0 - pParticle->move.x) * 0.015f;
+				pParticle->move.y += (0 - pParticle->move.y) * 0.015f;
 			}
 		}
 			break;
@@ -364,7 +367,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 5.0f);
 			pParticle->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			pParticle->fRaduus = 7.0f;
-			pParticle->nMaxLife = 50;
+			pParticle->nMaxLife = 75;
 			pParticle->nLife = pParticle->nMaxLife;
 			break;
 		default:

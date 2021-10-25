@@ -41,13 +41,10 @@ void InitPlayer(void)
 	pPlayer->pos = D3DXVECTOR3(600.0f, SCREEN_HEIGHT-50.0f, 0.0f);	//位置を初期化
 	pPlayer->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					//移動量を初期化
 	pPlayer->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					//向きを初期化
-	pPlayer->nLife = 3;												//体力の初期化
 	pPlayer->fMove = PLAYER_MOVE;									//移動速度
 	pPlayer->fWidth = PLAYER_WIDTH;									//プレイヤーの幅
 	pPlayer->fHeigth = PLAYER_HEIGTH;								//プレイヤーの高さ
 	pPlayer->bUse = true;											//プレイヤーの表示の有無
-	pPlayer->nCntAnim = 0;											//
-	pPlayer->nPatternAnim = 0;										//
 	pPlayer->state = PLAYERSTATE_APPEAR;							//プレイヤーのステータス
 	pPlayer->RevivalInterval = 0;									//復活のインターバル
 
@@ -64,29 +61,8 @@ void InitPlayer(void)
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	//中心座標から上の長さを算出する。
-	pPlayer->fLength = sqrtf(pPlayer->fWidth  * pPlayer->fWidth + pPlayer->fHeigth * pPlayer->fHeigth);
-
-	//中心座標から上の頂点の角度を算出する
-	pPlayer->fAngle = atan2f(pPlayer->fWidth, pPlayer->fHeigth);
-
-
 	//頂点座標の設定
-	pVtx[0].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (-D3DX_PI + pPlayer->fAngle)) * pPlayer->fLength;
-	pVtx[0].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (-D3DX_PI + pPlayer->fAngle)) * pPlayer->fLength;
-	pVtx[0].pos.z = 0.0f;
-
-	pVtx[1].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (D3DX_PI - pPlayer->fAngle)) * pPlayer->fLength;
-	pVtx[1].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (D3DX_PI - pPlayer->fAngle)) * pPlayer->fLength;
-	pVtx[1].pos.z = 0.0f;
-
-	pVtx[2].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z - (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
-	pVtx[2].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z - (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
-	pVtx[2].pos.z = 0.0f;
-
-	pVtx[3].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
-	pVtx[3].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
-	pVtx[3].pos.z = 0.0f;
+	RectPlayer(pVtx, pPlayer->Centerpos);
 
 	//rhwの設定
 	//頂点カラーの設定
@@ -360,7 +336,6 @@ void HitPlayer(int nDamege)
 			SetParticle(pPlayer->pos, PARTICLE_PLAYER_DEATH);
 		}
 		pPlayer->state = PLAYERSTATE_DEATH;
-		pPlayer->nLife--;
 	}
 }
 

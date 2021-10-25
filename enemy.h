@@ -70,6 +70,7 @@ void UpdateEnemy(void);							//XVˆ—
 void NeutralEnemy(Enemy *pEnemy);				//‘Ò‹@ˆ—
 void AttackEnemy(Enemy *pEnemy);				//UŒ‚ˆ—
 void DieEnemy(Enemy *pEnemy);					//€–Sˆ—
+void DeleteEnemy(void);
 void DrawEnemy(void);							//•`‰æˆ—
 void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type);	//İ’èˆ—
 void HitEnemy(int nCntEnemy, int nDamage);		//“–‚½‚è”»’èˆ—

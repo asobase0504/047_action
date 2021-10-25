@@ -462,9 +462,6 @@ void DrawFPS(void)
 	//文字列に代入
 	sprintf(&aStr[1][0], "rot: %f\n", pPlayer->rot.z);
 
-	//文字列に代入
-	sprintf(&aStr[2][0], "Life: %d\n", pPlayer->nLife);
-
 	//テキストの描画
 	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 	

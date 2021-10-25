@@ -59,7 +59,6 @@ typedef struct
 	D3DXVECTOR3 move;			//移動量
 	D3DXVECTOR3 rot;			//向き
 	D3DXVECTOR3 rotOld;			//位置
-	int nLife;					//体力
 	float fWidth;				//画像の幅
 	float fHeigth;				//画像の高さ
 	float fLength;				//対角線の長さ
@@ -68,8 +67,6 @@ typedef struct
 	int  nJumpCnt;				//跳躍回数
 	bool bUse;					//表示状態
 	JUMPSTATE jumpstate;		//跳躍の状態
-	int nCntAnim;				//アニメーションのカウンター
-	int nPatternAnim;			//アニメーションのパターン番号
 	int nDirectionMove;			//向き
 	PLAYRSTATE state;			//ステータス
 	PLAYER_CENTERPOS Centerpos;	//中心座標の位置の切り替え
