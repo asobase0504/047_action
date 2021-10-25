@@ -17,7 +17,7 @@
 //マクロ定義
 //-----------------------------------------
 #define MAX_PARTCLE	(1024)	//パーティクルの最大数
-#define MAX_TEX		(2)		//テクスチャの種類
+#define MAX_TEX		(MAX_PARTICLE)		//テクスチャの種類
 
 //-----------------------------------------
 //パーティクル構造体
@@ -83,8 +83,18 @@ void InitParticle(void)
 
 	//テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		SPLITBALL_TEX,
+		NULL,
 		&s_pTexture[1]);
+
+	//テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice,
+		NULL,
+		&s_pTexture[2]);
+
+	//テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice,
+		SPLITBALL_TEX,
+		&s_pTexture[PARTICLE_SPLITBALL_ATTACK]);
 
 	for (nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
 	{
@@ -154,7 +164,6 @@ void UninitParticle(void)
 	}
 
 }
-void SetupRectDefault(VERTEX_2D *vtx, D3DXCOLOR *inColor);
 
 //=========================================
 //パーティクルの更新処理
@@ -182,18 +191,51 @@ void UpdateParticle(void)
 		//位置の更新
 		pParticle->pos += pParticle->move;
 
-		//体力の更新
-		pParticle->nLife--;
-		if (pParticle->nLife <= 0)
-		{
-			pParticle->bUse = false;
-		}
+		////体力の更新
+		//pParticle->nLife--;
+		//if (pParticle->nLife <= 0)
+		//{
+		//	pParticle->bUse = false;
+		//}
 
 		switch (pParticle->type)
 		{
 		case PARTICLE_PLAYER_JUMP:	//プレイヤーのジャンプパーティクル	//列挙型に変更する。
+			//体力の更新
+			pParticle->nLife--;
+			if (pParticle->nLife <= 0)
+			{
+				pParticle->bUse = false;
+			}
 			//透明度の更新
 			pParticle->col.a -= (float)1 / pParticle->nMaxLife;
+			break;
+		case PARTICLE_PLAYER_DEATH:
+		{
+			Player *pPlayer = GetPlayer();
+			//移動量を更新(減衰)
+			pParticle->move.x += (0 - pParticle->move.x) * 0.015f;
+			pParticle->move.y += (0 - pParticle->move.y) * 0.015f;
+			
+			//復活時の処理
+			if (pPlayer->state == PLAYERSTATE_REVIVAL)
+			{
+				if(pParticle->nLife == pParticle->nMaxLife)
+				{	//復活時の最初にだけ通る処理
+					
+					//D3DXVECTOR3 v = pPlayer->pos - pParticle->pos;	//プレイヤーの死亡位置と、各破片の位置の差を求める
+					D3DXVECTOR3 v = D3DXVECTOR3(600.0f, SCREEN_HEIGHT - 50.0f, 0.0f) - pParticle->pos;	//プレイヤーの死亡位置と、各破片の位置の差を求める
+					pParticle->move.x = v.x / pParticle->nMaxLife;	//nLifeが尽きた時に中央に集めるようにする
+					pParticle->move.y = v.y / pParticle->nMaxLife;	//nLifeが尽きた時に中央に集めるようにする
+				}
+				pParticle->nLife--;
+				if (pParticle->nLife < 0)
+				{
+					pPlayer->RevivalInterval--;
+					pParticle->bUse = false;
+				}
+			}
+		}
 			break;
 		case PARTICLE_SPLITBALL_ATTACK:
 			pParticle->fRaduus--;
@@ -260,6 +302,9 @@ void DrawParticle(void)
 				//テクスチャを貼り付けて描画する
 				pDevice = SetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle);
 				break;
+			case PARTICLE_PLAYER_DEATH:
+				pDevice = SetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle);
+				break;
 			default:
 				assert(false);
 				break;
@@ -283,7 +328,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 	for (nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
 	{
 		pParticle = &(s_aParticle[nCntParticle]);
-		
+
 		if (pParticle->bUse)
 		{//パーティクルが使用されてる
 			pVtx += 4;
@@ -307,7 +352,18 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 		case PARTICLE_SPLITBALL_ATTACK:	//別れる球の攻撃パーティクル
 			pParticle->pos = pos;
 			pParticle->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+			pParticle->move.x = 0.0f;
+			pParticle->move.y = 0.0f;
 			pParticle->fRaduus = 40.0f;
+			pParticle->nMaxLife = 50;
+			pParticle->nLife = pParticle->nMaxLife;
+			break;
+		case PARTICLE_PLAYER_DEATH:
+			pParticle->pos = pos;
+			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 5.0f);
+			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 5.0f);
+			pParticle->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pParticle->fRaduus = 7.0f;
 			pParticle->nMaxLife = 50;
 			pParticle->nLife = pParticle->nMaxLife;
 			break;
@@ -318,21 +374,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 
 		pParticle->bUse = true;
 
-		pVtx[0].pos.x = pParticle->pos.x - pParticle->fRaduus;
-		pVtx[0].pos.y = pParticle->pos.y - pParticle->fRaduus;
-		pVtx[0].pos.z = pParticle->pos.z + 0.0f;
-
-		pVtx[1].pos.x = pParticle->pos.x + pParticle->fRaduus;
-		pVtx[1].pos.y = pParticle->pos.y - pParticle->fRaduus;
-		pVtx[1].pos.z = pParticle->pos.z + 0.0f;
-
-		pVtx[2].pos.x = pParticle->pos.x - pParticle->fRaduus;
-		pVtx[2].pos.y = pParticle->pos.y + pParticle->fRaduus;
-		pVtx[2].pos.z = pParticle->pos.z + 0.0f;
-
-		pVtx[3].pos.x = pParticle->pos.x + pParticle->fRaduus;
-		pVtx[3].pos.y = pParticle->pos.y + pParticle->fRaduus;
-		pVtx[3].pos.z = pParticle->pos.z + 0.0f;
+		SetRectPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
 
 		pVtx[0].col = pParticle->col;
 		pVtx[1].col = pParticle->col;

@@ -25,8 +25,8 @@ typedef enum
 {
 	PLAYERSTATE_APPEAR = 0,	//出現状態(点滅)
 	PLAYERSTATE_NORMAL,		//通常状態
-	PLAYERSTATE_DAMEGE,		//ダメージ状態
 	PLAYERSTATE_DEATH,		//死亡状態
+	PLAYERSTATE_REVIVAL,	//復活状態
 	PLAYERSTATE_MAX
 }PLAYRSTATE;
 
@@ -54,24 +54,26 @@ typedef enum
 //------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 pos;		//位置
-	D3DXVECTOR3 posOld;		//位置
-	D3DXVECTOR3 move;		//移動量
-	D3DXVECTOR3 rot;		//向き
-	D3DXVECTOR3 rotOld;		//位置
-	int nLife;				//体力
-	float fWidth;			//画像の幅
-	float fHeigth;			//画像の高さ
-	float fLength;			//対角線の長さ
-	float fAngle;			//対角線の角度
-	float fMove;			//移動量
-	int  nJumpCnt;			//跳躍回数
-	bool bUse;				//表示状態
-	JUMPSTATE jumpstate;	//跳躍の状態
-	int nCntAnim;			//アニメーションのカウンター
-	int nPatternAnim;		//アニメーションのパターン番号
-	int nDirectionMove;		//向き
-	PLAYER_CENTERPOS Centerpos;
+	D3DXVECTOR3 pos;			//位置
+	D3DXVECTOR3 posOld;			//位置
+	D3DXVECTOR3 move;			//移動量
+	D3DXVECTOR3 rot;			//向き
+	D3DXVECTOR3 rotOld;			//位置
+	int nLife;					//体力
+	float fWidth;				//画像の幅
+	float fHeigth;				//画像の高さ
+	float fLength;				//対角線の長さ
+	float fAngle;				//対角線の角度
+	float fMove;				//移動量
+	int  nJumpCnt;				//跳躍回数
+	bool bUse;					//表示状態
+	JUMPSTATE jumpstate;		//跳躍の状態
+	int nCntAnim;				//アニメーションのカウンター
+	int nPatternAnim;			//アニメーションのパターン番号
+	int nDirectionMove;			//向き
+	PLAYRSTATE state;			//ステータス
+	PLAYER_CENTERPOS Centerpos;	//中心座標の位置の切り替え
+	int RevivalInterval;		//復活タイミング
 }Player;
 
 //------------------------------------
