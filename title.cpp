@@ -104,7 +104,7 @@ void InitTitle(void)
 
 	//テクスチャの読込	   
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/bg010.jpg",
+		"data/TEXTURE/bg003.jpg",
 		&s_pTextureTitle[0]);
 
 	//テクスチャの読込	   

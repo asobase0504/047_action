@@ -31,7 +31,7 @@ typedef struct
 	int nMaxLife;		//最大寿命
 	int nLife;			//寿命
 	PARTICLE_TYPE type;	//パーティクルの種類
-	bool bUse;			//使用しているかどうか
+	bool bUse;			//使用しているかどうかe
 }Particle;
 
 //-----------------------------------------

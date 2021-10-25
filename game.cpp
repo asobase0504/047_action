@@ -14,9 +14,12 @@
 #include "bg.h"
 #include "map.h"
 #include "block.h"
+#include "ranking.h"
 
-//グローバル変数
-int g_nCntEnemy;
+//------------------------------------
+//スタティック変数
+//------------------------------------
+bool s_bRank;
 
 //====================================
 //初期化処理
@@ -40,6 +43,11 @@ void InitGame(void)
 
 	//ブロックの初期化処理
 	InitBlock();
+
+	//ランキングの初期化処理
+	InitRanking();
+
+	s_bRank = false;
 
 	SetBlock({ 500.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
 	SetBlock({ 1150.0f,25.0f,0.0f }, 25.0f, 650.0f, 0);
@@ -73,6 +81,9 @@ void UninitGame(void)
 
 	//ブロックの終了処理
 	UninitBlock();
+
+	//ランキングの終了処理
+	UninitRanking();
 }
 
 //====================================
@@ -97,6 +108,21 @@ void UpdateGame(void)
 
 	//ブロックの更新処理
 	UpdateBlock();
+
+	if (s_bRank)
+	{
+		UpdateRanking();
+	}
+	else
+	{
+		Player *player = GetPlayer();
+		if (player->state == PLAYERSTATE_DEATH)
+		{
+			//ランクの切り替え
+			RankSwitch();
+		}
+	}
+
 }
 
 //====================================
@@ -121,4 +147,17 @@ void DrawGame(void)
 
 	//ブロックの描画処理
 	DrawBlock();
+	
+	if (s_bRank)
+	{
+		DrawRanking();
+	}
+}
+
+//====================================
+//ランキングの切り替え
+//====================================
+void RankSwitch(void)
+{
+	s_bRank = !(s_bRank);
 }

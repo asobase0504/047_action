@@ -4,6 +4,8 @@
 //Author YudaKaito
 //
 //=========================================
+#ifndef _RANKING_H_
+#define _RANKING_H_
 //------------------------------------
 //É}ÉNÉçíËã`
 //------------------------------------
@@ -21,3 +23,5 @@ void DrawRanking(void);
 void ResetRanking(void);
 void SaveRanking(void);
 void SetRanking(int nScore);
+
+#endif // !_RANKING_H_

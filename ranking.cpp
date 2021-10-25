@@ -58,12 +58,12 @@ void InitRanking(void)
 
 	//テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/bg104.jpg",
+		NULL,
 		&s_pTextureRankbg);
 
 	//テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/rankins_rank1.png",
+		"data/TEXTURE/ranking_rank1.png",
 		&s_pTextureRank);
 
 	//テクスチャの読込
@@ -124,10 +124,10 @@ void InitRanking(void)
 	pVtx[3].rhw = 1.0f;
 
 	//頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[0].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.2f);
+	pVtx[1].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.2f);
+	pVtx[2].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.2f);
+	pVtx[3].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.2f);
 
 	//テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -313,7 +313,7 @@ void UpdateRanking(void)
 		//決定音の再生
 		PlaySound(SOUND_LABEL_SE_ENTER);
 
-		SetFade(MODE_TITLE);
+		SetFade(MODE_RESULT);
 	}
 
 	//頂点バッファをロックし、頂点情報へのポインタを取得

@@ -28,7 +28,7 @@ void InitResult(void)
 
 	//テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/bg015.jpg",
+		"data/TEXTURE/bg004.jpg",
 		&s_pTexture[0]);
 
 	//テクスチャの読込
@@ -128,7 +128,7 @@ void UpdateResult(void)
 		//決定音の再生
 		PlaySound(SOUND_LABEL_SE_ENTER);
 
-		SetFade(MODE_RANKING);
+		SetFade(MODE_TITLE);
 	}
 
 }
