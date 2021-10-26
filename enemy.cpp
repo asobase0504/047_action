@@ -5,6 +5,7 @@
 //
 //====================================
 #include "main.h"
+#include "setup.h"
 #include "enemy.h"
 #include "particle.h"
 #include "effect.h"

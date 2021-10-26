@@ -10,6 +10,7 @@
 #include "fade.h"
 #include "particle.h"
 #include "ranking.h"
+#include "setup.h"
 
 #include <assert.h>
 

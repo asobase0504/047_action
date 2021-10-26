@@ -9,9 +9,10 @@
 //include
 //-----------------------------------------
 #include "main.h"
+#include "input.h"
+#include "setup.h"
 #include <assert.h>
 #include "player.h"
-#include "input.h"
 #include "particle.h"
 #include "effect.h"
 #include "block.h"

@@ -7,13 +7,14 @@
 //------------------------------------
 //include
 //------------------------------------
+#include "main.h"
+#include "setup.h"
+#include "input.h"
+#include "sound.h"
 #include <stdio.h>
 #include "ranking.h"
 //#include "score.h"
-#include "main.h"
 #include "fade.h"
-#include "input.h"
-#include "sound.h"
 
 //------------------------------------
 //ランキングスコア構造体
@@ -116,24 +117,10 @@ void InitRanking(void)
 	pVtx[3].pos.y = SCREEN_HEIGHT;
 	pVtx[3].pos.z = 0.0f;
 
-
 	//rhwの設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
-
 	//頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.2f);
-	pVtx[1].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.2f);
-	pVtx[2].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.2f);
-	pVtx[3].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.2f);
-
 	//テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+	SetupRectDefault(pVtx, &(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.3f)));
 
 	//頂点バッファをアンロックする
 	s_pVtxBuffRankbg->Unlock();
@@ -141,7 +128,6 @@ void InitRanking(void)
 	//ランキングの情報の初期化
 	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 	{
-		s_aRankScore[nCntRank].pos = D3DXVECTOR3(450.0f, 100.0f, 0.0f);
 	}
 
 	//頂点バッファをロックし、頂点情報へのポインタを取得
@@ -149,36 +135,16 @@ void InitRanking(void)
 
 	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 	{
+		//順位の値の場所の初期化
+		s_aRankScore[nCntRank].pos = D3DXVECTOR3(450.0f, 100.0f + nCntRank * 100.0f, 0.0f);
+
 		//頂点座標の設定
-		pVtx[0].pos.x = s_aRankScore[nCntRank].pos.x - 50.0f;
-		pVtx[0].pos.y = s_aRankScore[nCntRank].pos.y - 50.0f + nCntRank * 100;
-		pVtx[0].pos.z = s_aRankScore[nCntRank].pos.z + 0.0f;
-
-		pVtx[1].pos.x = s_aRankScore[nCntRank].pos.x + 50.0f;
-		pVtx[1].pos.y = s_aRankScore[nCntRank].pos.y - 50.0f + nCntRank * 100;
-		pVtx[1].pos.z = s_aRankScore[nCntRank].pos.z + 0.0f;
-
-		pVtx[2].pos.x = s_aRankScore[nCntRank].pos.x - 50.0f;
-		pVtx[2].pos.y = s_aRankScore[nCntRank].pos.y + 50.0f + nCntRank * 100;
-		pVtx[2].pos.z = s_aRankScore[nCntRank].pos.z + 0.0f;
-
-		pVtx[3].pos.x = s_aRankScore[nCntRank].pos.x + 50.0f;
-		pVtx[3].pos.y = s_aRankScore[nCntRank].pos.y + 50.0f + nCntRank * 100;
-		pVtx[3].pos.z = s_aRankScore[nCntRank].pos.z + 0.0f;
-
-		//rhwの設定
-		pVtx[0].rhw = 1.0f;
-		pVtx[1].rhw = 1.0f;
-		pVtx[2].rhw = 1.0f;
-		pVtx[3].rhw = 1.0f;
-
+		SetRectPos(pVtx, s_aRankScore[nCntRank].pos, 50.0f, 50.0f);
+		
 		//頂点カラーの設定
-		pVtx[0].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[1].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[2].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[3].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-
 		//テクスチャ座標の設定
+		//rhwの設定
+		SetupRectDefault(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
 		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f + 0.2f * nCntRank);
 		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f + 0.2f * nCntRank);
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 0.2f + 0.2f * nCntRank);
@@ -217,16 +183,9 @@ void InitRanking(void)
 
 
 			//rhwの設定
-			pVtx[0].rhw = 1.0f;
-			pVtx[1].rhw = 1.0f;
-			pVtx[2].rhw = 1.0f;
-			pVtx[3].rhw = 1.0f;
+			SetupRectDefault(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
 
 			//頂点カラーの設定
-			pVtx[0].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[1].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[2].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-			pVtx[3].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
 
 			//テクスチャ座標の設定
 			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
@@ -290,14 +249,14 @@ void UpdateRanking(void)
 	s_nTimerRanking++;
 	s_nTimerBlink--;
 
-	if (s_nTimerBlink <= 0 && s_bBlink == false)
+	if (s_nTimerBlink <= 0 && !(s_bBlink))
 	{
 		s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 0.0f);
 		s_nTimerBlink = 40;
 		s_bBlink = true;
 
 	}
-	if (s_nTimerBlink <= 0 && s_bBlink == true)
+	if (s_nTimerBlink <= 0 && s_bBlink)
 	{
 		s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
 		s_nTimerBlink = 40;
@@ -326,10 +285,8 @@ void UpdateRanking(void)
 			for (nCntScore = 0; nCntScore < MAX_RANKSCORE; nCntScore++)
 			{
 				//頂点カラーの設定
-				pVtx[0].col = s_Timercol;
-				pVtx[1].col = s_Timercol;
-				pVtx[2].col = s_Timercol;
-				pVtx[3].col = s_Timercol;
+				SetRectColor(pVtx, &(s_Timercol));
+
 				pVtx += 4;
 			}
 		}
@@ -338,10 +295,7 @@ void UpdateRanking(void)
 			for (nCntScore = 0; nCntScore < MAX_RANKSCORE; nCntScore++)
 			{
 				//頂点カラーの設定
-				pVtx[0].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-				pVtx[1].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-				pVtx[2].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-				pVtx[3].col = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
+				SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
 				pVtx += 4;
 			}
 		}
@@ -349,10 +303,6 @@ void UpdateRanking(void)
 
 	//頂点バッファをアンロックする
 	s_pVtxBuffRankScore->Unlock();
-	//if (||)
-	//{
-	//	SetFade(MODE_TITLE)
-	//}
 }
 
 //=========================================
@@ -458,7 +408,6 @@ void SaveRanking(void)
 	FILE *pFile;	//ファイルポインタを宣言
 	int nCntRank;
 
-
 	//ファイルを開く
 	pFile = fopen(FILE_NAME, "w");
 
@@ -495,7 +444,7 @@ void SetRanking(int nScore)
 	int nCnt2Rnak;		//繰り返し２
 	int nCheckDataMin;	//比べて小さいほうの値を格納
 
-						//ランキングの最下位と今回のスコアを比べる
+	//ランキングの最下位と今回のスコアを比べる
 	if (nScore >= s_aRankScore[MAX_RANK - 1].nScore)
 	{
 		s_nRankUpdate = 5;
@@ -539,16 +488,6 @@ void SetRanking(int nScore)
 			nCnt++;
 		}
 
-		//一桁ずつにわける
-		aPosTexU[0] = s_aRankScore[nCntRank].nScore % 100000000 / 10000000;
-		aPosTexU[1] = s_aRankScore[nCntRank].nScore % 10000000 / 1000000;
-		aPosTexU[2] = s_aRankScore[nCntRank].nScore % 1000000 / 100000;
-		aPosTexU[3] = s_aRankScore[nCntRank].nScore % 100000 / 10000;
-		aPosTexU[4] = s_aRankScore[nCntRank].nScore % 10000 / 1000;
-		aPosTexU[5] = s_aRankScore[nCntRank].nScore % 1000 / 100;
-		aPosTexU[6] = s_aRankScore[nCntRank].nScore % 100 / 10;
-		aPosTexU[7] = s_aRankScore[nCntRank].nScore % 10 / 1;
-
 		for (nCnt2Rnak = 0; nCnt2Rnak < MAX_RANKSCORE; nCnt2Rnak++)
 		{
 			//テクスチャ座標の設定
@@ -563,6 +502,7 @@ void SetRanking(int nScore)
 	//頂点バッファをアンロックする
 	s_pVtxBuffRankScore->Unlock();
 
+	//今回更新したランクの取得
 	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 	{
 		if (s_aRankScore[nCntRank].nScore == nScore)

@@ -9,6 +9,7 @@
 //include
 //-----------------------------------------
 #include "main.h"
+#include "setup.h"
 #include "particle.h"
 #include <assert.h>
 #include "enemy.h"

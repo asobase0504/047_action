@@ -5,6 +5,7 @@
 //
 //=========================================
 #include "main.h"
+#include "setup.h"
 #include "block.h"
 #include "player.h"
 #include "enemy.h"
@@ -262,7 +263,6 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock]))
 			{
 				pPlayer->move.y = 0.0f;
-				pPlayer->move.y = 0.0f;
 				pPlayer->pos.y = pBlock->pos.y + pBlock->fHeight + pPlayer->fHeigth;
 				pBlock->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 			}
@@ -468,9 +468,7 @@ bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION positi
 	float hit1 = v_Tv / Bv_Tv;
 	float hit2 = v_Bv / Bv_Tv;
 
-	float eps = 0.000001f;	//“–‚½‚è”»’è‚ðŠÉ‚ß‚é
-
-	return !((hit1 + eps < 0.0f) || (hit1 - eps > 1.0f) || (hit2 + eps < 0.0f) || (hit2 - eps > 1.0f));
+	return !((hit1 < 0.0f) || (hit1 > 1.0f) || (hit2 < 0.0f) || (hit2 > 1.0f));
 }
 
 //====================================

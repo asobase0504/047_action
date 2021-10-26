@@ -9,6 +9,7 @@
 //include
 //------------------------------------
 #include "main.h"
+#include "setup.h"
 #include "effect.h"
 #include "player.h"
 
