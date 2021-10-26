@@ -1,15 +1,15 @@
 //=========================================
-//
-//ゲーム終了画面のヘッダーファイル
-//Author YudaKaito
-//
+// 
+// ゲーム終了画面のヘッダーファイル
+// Author YudaKaito
+// 
 //=========================================
-#ifndef _RESULT_H_			//このマクロ定義がされてなかったら
-#define _RESULT_H_			//2重インクルード防止のマクロ定義
+#ifndef _RESULT_H_			// このマクロ定義がされてなかったら
+#define _RESULT_H_			// 2重インクルード防止のマクロ定義
 
 
 //-----------------------------------------
-//ゲーム終了状態の列挙型
+// ゲーム終了状態の列挙型
 //-----------------------------------------
 typedef enum
 {
@@ -19,21 +19,21 @@ typedef enum
 }GAME_CASE;
 
 //-----------------------------------------
-//プレイヤー構造体の定義
+// プレイヤー構造体の定義
 //-----------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 pos;	//位置
-	D3DXVECTOR3 rot;	//向き
-	float fWidth;		//画像の幅
-	float fHeigth;		//画像の高さ
-	float fLength;		//対角線の長さ
-	float fAngle;		//対角線の角度
+	D3DXVECTOR3 pos;	// 位置
+	D3DXVECTOR3 rot;	// 向き
+	float fWidth;		// 画像の幅
+	float fHeigth;		// 画像の高さ
+	float fLength;		// 対角線の長さ
+	float fAngle;		// 対角線の角度
 
 }RESULT;
 
 //-----------------------------------------
-//プロトタイプ宣言
+// プロトタイプ宣言
 //-----------------------------------------
 void InitResult(void);
 void UninitResult(void);

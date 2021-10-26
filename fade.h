@@ -1,18 +1,18 @@
 //====================================
-//
-//画面遷移のヘッダーファイル
-//Author Yuda Kaito
-//
+// 
+// 画面遷移のヘッダーファイル
+// Author Yuda Kaito
+// 
 //====================================
 #ifndef _FADE_H_
 #define _FADE_H_
 
-//フェードの状態
+// フェードの状態
 typedef enum
 {
-	FADE_NONE = 0,	//何もしていない状態
-	FADE_IN,		//フェイドイン状態
-	FADE_OUT,		//フェードアウト状態
+	FADE_NONE = 0,	// 何もしていない状態
+	FADE_IN,		// フェイドイン状態
+	FADE_OUT,		// フェードアウト状態
 	FADE_MAX
 }FADE;
 

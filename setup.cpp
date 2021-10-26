@@ -1,12 +1,12 @@
 //=========================================
-//
-//プレイヤーの処理
-//Author YudaKaito
-//
+// 
+// 様々な初期化や設定処理をまとめる。
+// Author YudaKaito
+// 
 //=========================================
 
 //-----------------------------------------
-//include
+// include
 //-----------------------------------------
 #include "main.h"
 #include "setup.h"
@@ -144,7 +144,7 @@ LPDIRECT3DDEVICE9 SetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture,
 	pDevice->SetTexture(0, Texture);
 	
 	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * nCnt, 2);
+	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCnt, 2);
 
 	return pDevice;
 }

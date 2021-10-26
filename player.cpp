@@ -1,12 +1,12 @@
 //=========================================
-//
-//プレイヤーの処理
-//Author YudaKaito
-//
+// 
+// プレイヤーの処理
+// Author YudaKaito
+// 
 //=========================================
 
 //-----------------------------------------
-//include
+// include
 //-----------------------------------------
 #include "main.h"
 #include "input.h"
@@ -18,39 +18,39 @@
 #include "block.h"
 
 //-----------------------------------------
-//スタティック変数
+// スタティック変数
 //-----------------------------------------
-static LPDIRECT3DTEXTURE9 s_pTexture = NULL;			//テクスチャへのポインタ
-static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	//頂点バッファへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTexture = NULL;			// テクスチャへのポインタ
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	// 頂点バッファへのポインタ
 static Player s_player;
 static D3DXVECTOR3 OldPos[4];
 
 //=========================================
-//プレイヤーの初期化処理
+// プレイヤーの初期化処理
 //=========================================
 void InitPlayer(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスへのポイント
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
 	Player *pPlayer;
 
 	pPlayer = &(s_player);
-	//テクスチャの読込
+	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		PLAYER_TEX,
 		&s_pTexture);
 
-	pPlayer->pos = D3DXVECTOR3(600.0f, SCREEN_HEIGHT-50.0f, 0.0f);	//位置を初期化
-	pPlayer->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					//移動量を初期化
-	pPlayer->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					//向きを初期化
-	pPlayer->nLife = 3;												//体力の
-	pPlayer->fMove = PLAYER_MOVE;									//移動速度
-	pPlayer->fWidth = PLAYER_WIDTH;									//プレイヤーの幅
-	pPlayer->fHeigth = PLAYER_HEIGTH;								//プレイヤーの高さ
-	pPlayer->bUse = true;											//プレイヤーの表示の有無
-	pPlayer->state = PLAYERSTATE_APPEAR;							//プレイヤーのステータス
-	pPlayer->RevivalInterval = 0;									//復活のインターバル
+	pPlayer->pos = D3DXVECTOR3(600.0f, SCREEN_HEIGHT-50.0f, 0.0f);	// 位置を初期化
+	pPlayer->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 移動量を初期化
+	pPlayer->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 向きを初期化
+	pPlayer->nLife = 3;												// 体力の
+	pPlayer->fMove = PLAYER_MOVE;									// 移動速度
+	pPlayer->fWidth = PLAYER_WIDTH;									// プレイヤーの幅
+	pPlayer->fHeigth = PLAYER_HEIGTH;								// プレイヤーの高さ
+	pPlayer->bUse = true;											// プレイヤーの表示の有無
+	pPlayer->state = PLAYERSTATE_APPEAR;							// プレイヤーのステータス
+	pPlayer->RevivalInterval = 0;									// 復活のインターバル
 
-	//頂点バッファの生成
+	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
@@ -58,19 +58,19 @@ void InitPlayer(void)
 		&s_pVtxBuff,
 		NULL);
 
-	VERTEX_2D *pVtx;		//頂点情報へのポインタ
+	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	//中心座標から上の長さを算出する。
+	// 中心座標から上の長さを算出する。
 	pPlayer->fLength = sqrtf(pPlayer->fWidth  * pPlayer->fWidth + pPlayer->fHeigth * pPlayer->fHeigth);
 
-	//中心座標から上の頂点の角度を算出する
+	// 中心座標から上の頂点の角度を算出する
 	pPlayer->fAngle = atan2f(pPlayer->fWidth, pPlayer->fHeigth);
 
 
-	//頂点座標の設定
+	// 頂点座標の設定
 	pVtx[0].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (-D3DX_PI + pPlayer->fAngle)) * pPlayer->fLength;
 	pVtx[0].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (-D3DX_PI + pPlayer->fAngle)) * pPlayer->fLength;
 	pVtx[0].pos.z = 0.0f;
@@ -87,30 +87,30 @@ void InitPlayer(void)
 	pVtx[3].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
 	pVtx[3].pos.z = 0.0f;
 
-	//頂点カラーの設定
+	// 頂点カラーの設定
 	InitRectColor(pVtx);
-	//テクスチャ座標の設定
+	// テクスチャ座標の設定
 	InitRectTex(pVtx);
-	//rhwの設定
+	// rhwの設定
 	InitRectRhw(pVtx);
 
-	//頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
 }
 
 //=========================================
-//プレイヤーの終了処理
+// プレイヤーの終了処理
 //=========================================
 void UninitPlayer(void)
 {
-	//テクスチャの破棄
+	// テクスチャの破棄
 	if (s_pTexture != NULL)
 	{
 		s_pTexture->Release();
 		s_pTexture = NULL;
 	}
 
-	//頂点バッファの破棄
+	// 頂点バッファの破棄
 	if (s_pVtxBuff != NULL)
 	{
 		s_pVtxBuff->Release();
@@ -119,45 +119,45 @@ void UninitPlayer(void)
 }
 
 //=========================================
-//プレイヤーの更新処理
+// プレイヤーの更新処理
 //=========================================
 void UpdatePlayer(void)
 {
-	VERTEX_2D *pVtx;		//頂点情報へのポインタ
-	//int nAnimationTime;
+	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
+	// int nAnimationTime;
 	Player *pPlayer;
 	pPlayer = &(s_player);
 
 	switch (pPlayer->state)
 	{
-	case PLAYERSTATE_APPEAR:	//プレイヤーが出現中
+	case PLAYERSTATE_APPEAR:	// プレイヤーが出現中
 		pPlayer->state = PLAYERSTATE_NORMAL;
 		pPlayer->bUse = true;
 		pPlayer->move.y = 0.0f;
 		pPlayer->rot.z = 0.0f;
-		pPlayer->pos = D3DXVECTOR3(600.0f, SCREEN_HEIGHT - 50.0f, 0.0f);	//位置を初期化
+		pPlayer->pos = D3DXVECTOR3(600.0f, SCREEN_HEIGHT - 50.0f, 0.0f);	// 位置を初期化
 		break;
-	case PLAYERSTATE_NORMAL:	//プレイヤーが活動中
-		//重力の加算
+	case PLAYERSTATE_NORMAL:	// プレイヤーが活動中
+		// 重力の加算
 		pPlayer->move.y += WOARD_GRAVITY;
 
-		//前回の座標を更新
+		// 前回の座標を更新
 		pPlayer->posOld = pPlayer->pos;
 
-		//前回の回転を更新
+		// 前回の回転を更新
 		pPlayer->rotOld = pPlayer->rot;
 
-		//移動処理
+		// 移動処理
 		MovePlayer();
 
-		//ジャンプ処理
+		// ジャンプ処理
 		if (pPlayer->nJumpCnt < PLAYER_JUMPMAX)
-		{//ジャンプ回数
+		{// ジャンプ回数
 			if (GetKeyboardTrigger(DIK_SPACE))
 			{
 				pPlayer->jumpstate = JUMP_NOW;
 				pPlayer->nJumpCnt++;
-				//			pPlayer->pos.y -= 12.0f;
+				// 			pPlayer->pos.y -= 12.0f;
 				pPlayer->move.y = 0.0f;
 				pPlayer->move.y += -PLAYER_JUMPMOVE;
 
@@ -169,12 +169,12 @@ void UpdatePlayer(void)
 			}
 		}
 
-		//回転処理
+		// 回転処理
 		if (GetKeyboardPress(DIK_Q))
 		{
 			pPlayer->rot.z += 0.1f;
 
-			//中心座標の移行
+			// 中心座標の移行
 			if (pPlayer->rot.z >= 0.0f && pPlayer->Centerpos == PLAYER_POS_RIGHT)
 			{
 				pPlayer->pos.x = pPlayer->pos.x - sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
@@ -186,7 +186,7 @@ void UpdatePlayer(void)
 		{
 			pPlayer->rot.z -= 0.1f;
 
-			//中心座標の移行
+			// 中心座標の移行
 			if (pPlayer->rot.z <= 0.0f && pPlayer->Centerpos == PLAYER_POS_LEFT)
 			{
 				pPlayer->pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
@@ -195,14 +195,14 @@ void UpdatePlayer(void)
 			}
 		}
 
-		//位置を更新
+		// 位置を更新
 		pPlayer->pos.x += pPlayer->move.x;
 		pPlayer->pos.y += pPlayer->move.y;
 
-		//移動量を更新(減衰)
+		// 移動量を更新(減衰)
 		pPlayer->move.x += (0 - pPlayer->move.x) * 0.025f;
 
-		//回転して床に辺が面したとき
+		// 回転して床に辺が面したとき
 		if (-D3DX_PI / 2 >= pPlayer->rot.z)
 		{
 			pPlayer->rot.z = 0;
@@ -222,7 +222,7 @@ void UpdatePlayer(void)
 
 		}
 
-		//マップ端にいった場合反対のマップ端に出る
+		// マップ端にいった場合反対のマップ端に出る
 		if (pPlayer->pos.x - pPlayer->fWidth >= SCREEN_WIDTH)
 		{
 			pPlayer->pos.x = -pPlayer->fWidth;
@@ -232,7 +232,7 @@ void UpdatePlayer(void)
 			pPlayer->pos.x = SCREEN_WIDTH + pPlayer->fWidth;
 		}
 
-		//床に着いたらジャンプ制限のリセット
+		// 床に着いたらジャンプ制限のリセット
 		if (pPlayer->pos.y > SCREEN_HEIGHT)
 		{
 			pPlayer->nJumpCnt = 0;
@@ -241,7 +241,7 @@ void UpdatePlayer(void)
 			pPlayer->pos.y = SCREEN_HEIGHT;
 		}
 		break;
-	case PLAYERSTATE_DEATH:	//プレイヤーが死んだ場合
+	case PLAYERSTATE_DEATH:	// プレイヤーが死んだ場合
 		pPlayer->bUse = false;
 
 		if (GetKeyboardPress(DIK_R))
@@ -259,85 +259,85 @@ void UpdatePlayer(void)
 		break;
 	}
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	//頂点座標の設定
+	// 頂点座標の設定
 	RectPlayer(pVtx,pPlayer->Centerpos);
 
 	bool bisLanding;
 
-	//それぞれの頂点座標の当たり判定
+	// それぞれの頂点座標の当たり判定
 	bisLanding = CollisionBlock(pPlayer, pVtx[0].pos, pVtx[1].pos);
 	bisLanding = CollisionBlock(pPlayer, pVtx[1].pos, pVtx[2].pos);
 	bisLanding = CollisionBlock(pPlayer, pVtx[2].pos, pVtx[3].pos);
 	bisLanding = CollisionBlock(pPlayer, pVtx[3].pos, pVtx[0].pos);
 
-	//敵との当たり判定
+	// 敵との当たり判定
 	CollisionEnemy(pPlayer, pVtx[0].pos, pVtx[1].pos);
 	CollisionEnemy(pPlayer, pVtx[1].pos, pVtx[2].pos);
 	CollisionEnemy(pPlayer, pVtx[2].pos, pVtx[3].pos);
 	CollisionEnemy(pPlayer, pVtx[3].pos, pVtx[0].pos);
 
-	//頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
 }
 
 //=========================================
-//プレイヤーの描画処理
+// プレイヤーの描画処理
 //=========================================
 void DrawPlayer(void)
 {
-	LPDIRECT3DDEVICE9 pDevice;	//デバイスへのポイント
+	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポイント
 	Player *pPlayer = GetPlayer();
 
-	//デバイスの取得
+	// デバイスの取得
 	pDevice = GetDevice();
 
-	//頂点バッファをデータストリーム設定
+	// 頂点バッファをデータストリーム設定
 	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_2D));
 
-	//頂点フォーマットの設定
+	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
 	if (pPlayer->bUse == true)
 	{
-		//テクスチャの設定
+		// テクスチャの設定
 		pDevice->SetTexture(0, s_pTexture);
 
-		//ポリゴンの描画
+		// ポリゴンの描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	}
 }
 
 //=========================================
-//プレイヤーの移動処理
+// プレイヤーの移動処理
 //=========================================
 void MovePlayer(void)
 {
 	Player *pPlayer;
 	pPlayer = &(s_player);
 
-	//キーボードの移動処理
+	// キーボードの移動処理
 	switch (pPlayer->jumpstate)
 	{
 	case JUMP_NOW:
 		if (GetJoypadPress(JOYKEY_LEFT) || GetKeyboardPress(DIK_A))
-		{//Aキーが押された
+		{// Aキーが押された
 			pPlayer->move.x += sinf(D3DX_PI * -0.5f) * (pPlayer->fMove * 0.5f);
 		}
 		else if (GetJoypadPress(JOYKEY_RIGHT) || GetKeyboardPress(DIK_D))
-		{//Dキーが押された
+		{// Dキーが押された
 			pPlayer->move.x += sinf(D3DX_PI * 0.5f) * (pPlayer->fMove * 0.5f);
 		}
 		break;
 	case JUMP_NONE:
 		if (GetJoypadPress(JOYKEY_LEFT) || GetKeyboardPress(DIK_A))
-		{//Aキーが押された
+		{// Aキーが押された
 			pPlayer->move.x += sinf(D3DX_PI * -0.5f) * pPlayer->fMove;
 		}
 		else if (GetJoypadPress(JOYKEY_RIGHT) || GetKeyboardPress(DIK_D))
-		{//Dキーが押された
+		{// Dキーが押された
 			pPlayer->move.x += sinf(D3DX_PI * 0.5f) * pPlayer->fMove;
 		}
 		break;
@@ -348,7 +348,7 @@ void MovePlayer(void)
 }
 
 //=========================================
-//プレイヤーのダメージ処理
+// プレイヤーのダメージ処理
 //=========================================
 void HitPlayer(int nDamege)
 {
@@ -366,19 +366,19 @@ void HitPlayer(int nDamege)
 }
 
 //=========================================
-//プレイヤーの頂点座標の設定
+// プレイヤーの頂点座標の設定
 //=========================================
 void RectPlayer(VERTEX_2D *pVtx, PLAYER_CENTERPOS Centerpos)
 {
 	Player *pPlayer = &(s_player);
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	switch (Centerpos)
 	{
 	case PLAYER_POS_RIGHT:
-		//頂点座標の設定
+		// 頂点座標の設定
 		pVtx[0].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (-D3DX_PI + pPlayer->fAngle)) * pPlayer->fLength;
 		pVtx[0].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (-D3DX_PI + pPlayer->fAngle)) * pPlayer->fLength;
 		pVtx[0].pos.z = 0.0f;
@@ -397,7 +397,7 @@ void RectPlayer(VERTEX_2D *pVtx, PLAYER_CENTERPOS Centerpos)
 
 		break;
 	case PLAYER_POS_LEFT:
-		//頂点座標の設定
+		// 頂点座標の設定
 		pVtx[0].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (D3DX_PI)) * pPlayer->fHeigth;
 		pVtx[0].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (D3DX_PI)) * pPlayer->fHeigth;
 		pVtx[0].pos.z = 0.0f;
@@ -419,12 +419,12 @@ void RectPlayer(VERTEX_2D *pVtx, PLAYER_CENTERPOS Centerpos)
 		break;
 	}
 
-	//頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
 }
 
 //=========================================
-//プレイヤーの取得処理
+// プレイヤーの取得処理
 //=========================================
 Player* GetPlayer(void)
 {

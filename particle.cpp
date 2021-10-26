@@ -1,12 +1,12 @@
 //=========================================
-//
-//パーティクルの処理
-//Author YudaKaito
-//
+// 
+// パーティクルの処理
+// Author YudaKaito
+// 
 //=========================================
 
 //-----------------------------------------
-//include
+// include
 //-----------------------------------------
 #include "main.h"
 #include "setup.h"
@@ -15,36 +15,36 @@
 #include "enemy.h"
 
 //-----------------------------------------
-//マクロ定義
+// マクロ定義
 //-----------------------------------------
-#define MAX_PARTCLE	(1024)	//パーティクルの最大数
-#define MAX_TEX		(MAX_PARTICLE)		//テクスチャの種類
+#define MAX_PARTCLE	(1024)	// パーティクルの最大数
+#define MAX_TEX		(MAX_PARTICLE)		// テクスチャの種類
 
 //-----------------------------------------
-//パーティクル構造体
+// パーティクル構造体
 //-----------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 pos;	//位置
-	D3DXVECTOR3 move;	//移動量
-	D3DXCOLOR col;		//色
-	float fRaduus;		//半径
-	int nMaxLife;		//最大寿命
-	int nLife;			//寿命
-	PARTICLE_TYPE type;	//パーティクルの種類
-	bool bUse;			//使用しているかどうかe
+	D3DXVECTOR3 pos;	// 位置
+	D3DXVECTOR3 move;	// 移動量
+	D3DXCOLOR col;		// 色
+	float fRaduus;		// 半径
+	int nMaxLife;		// 最大寿命
+	int nLife;			// 寿命
+	PARTICLE_TYPE type;	// パーティクルの種類
+	bool bUse;			// 使用しているかどうかe
 }Particle;
 
 //-----------------------------------------
-//static変数
+// static変数
 //-----------------------------------------
-static LPDIRECT3DTEXTURE9 s_pTexture[MAX_TEX] = {};		//テクスチャへのポインタ
-static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	//頂点バッファへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTexture[MAX_TEX] = {};		// テクスチャへのポインタ
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	// 頂点バッファへのポインタ
 static Particle s_aParticle[MAX_PARTCLE];
 static float s_fAngle;
 
 //-----------------------------------------
-//プロトコール
+// プロトコール
 //-----------------------------------------
 #if 0
 float angle = rand() / (float)RAND_MAX * 2.0f * D3DX_PI;
@@ -65,7 +65,7 @@ pParticle->nLife = (rand() % 20) + 10;
 #endif
 
 //=========================================
-//パーティクルの初期化処理
+// パーティクルの初期化処理
 //=========================================
 void InitParticle(void)
 {
@@ -74,25 +74,25 @@ void InitParticle(void)
 	VERTEX_2D *pVtx;
 	Particle *pParticle;
 
-	//デバイスの取得
+	// デバイスの取得
 	pDevice = GetDevice();
 
-	//テクスチャの読込
+	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		NULL,
 		&s_pTexture[0]);
 
-	//テクスチャの読込
+	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		NULL,
 		&s_pTexture[1]);
 
-	//テクスチャの読込
+	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		NULL,
 		&s_pTexture[2]);
 
-	//テクスチャの読込
+	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		SPLITBALL_TEX,
 		&s_pTexture[PARTICLE_SPLITBALL_ATTACK]);
@@ -107,7 +107,7 @@ void InitParticle(void)
 		s_aParticle[nCntParticle].bUse = false;
 	}
 
-	//頂点バッファの生成
+	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * MAX_PARTCLE,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
@@ -115,7 +115,7 @@ void InitParticle(void)
 		&s_pVtxBuff,
 		NULL);
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	VERTEX_2D* vtxBase = pVtx;
@@ -126,32 +126,32 @@ void InitParticle(void)
 
 		pParticle = &(s_aParticle[nCntParticle]);
 
-		//頂点座標の設定
+		// 頂点座標の設定
 		SetRectCenterPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
 
-		//頂点カラーの設定
+		// 頂点カラーの設定
 		SetRectColor(pVtx, &(pParticle->col));
 
-		//テクスチャ座標の設定
+		// テクスチャ座標の設定
 		InitRectTex(pVtx);
 		
-		//rhwの設定
+		// rhwの設定
 		InitRectRhw(pVtx);
 
 		pVtx += 4;
 	}
-	//頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
 }
 
 //=========================================
-//パーティクルの終了処理
+// パーティクルの終了処理
 //=========================================
 void UninitParticle(void)
 {
 	for (int nCnt = 0; nCnt < MAX_TEX; nCnt++)
 	{
-		//テクスチャの破棄
+		// テクスチャの破棄
 		if (s_pTexture[nCnt] != NULL)
 		{
 			s_pTexture[nCnt]->Release();
@@ -159,7 +159,7 @@ void UninitParticle(void)
 		}
 	}
 
-	//頂点バッファの破棄
+	// 頂点バッファの破棄
 	if (s_pVtxBuff != NULL)
 	{
 		s_pVtxBuff->Release();
@@ -169,7 +169,7 @@ void UninitParticle(void)
 }
 
 //=========================================
-//パーティクルの更新処理
+// パーティクルの更新処理
 //=========================================
 void UpdateParticle(void)
 {
@@ -177,7 +177,7 @@ void UpdateParticle(void)
 	VERTEX_2D *pVtx;
 	Particle *pParticle;
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
@@ -185,48 +185,48 @@ void UpdateParticle(void)
 		pParticle = s_aParticle + nCntParticle;
 
 		if (!pParticle->bUse)
-		{	//パーティクルが使用されていない
+		{	// パーティクルが使用されていない
 			pVtx += 4;
 			continue;
 		}
 
-		//パーティクルが使用されている
-		//位置の更新
+		// パーティクルが使用されている
+		// 位置の更新
 		pParticle->pos += pParticle->move;
 
-		////体力の更新
-		//pParticle->nLife--;
-		//if (pParticle->nLife <= 0)
-		//{
-		//	pParticle->bUse = false;
-		//}
+		// // 体力の更新
+		// pParticle->nLife--;
+		// if (pParticle->nLife <= 0)
+		// {
+		// 	pParticle->bUse = false;
+		// }
 
 		switch (pParticle->type)
 		{
-		case PARTICLE_PLAYER_JUMP:	//プレイヤーのジャンプパーティクル	//列挙型に変更する。
-			//体力の更新
+		case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプパーティクル	// 列挙型に変更する。
+			// 体力の更新
 			pParticle->nLife--;
 			if (pParticle->nLife <= 0)
 			{
 				pParticle->bUse = false;
 			}
-			//透明度の更新
+			// 透明度の更新
 			pParticle->col.a -= (float)1 / pParticle->nMaxLife;
 			break;
 		case PARTICLE_PLAYER_DEATH:
 		{
 			Player *pPlayer = GetPlayer();
 			
-			//復活時の処理
+			// 復活時の処理
 			if (pPlayer->state == PLAYERSTATE_REVIVAL)
 			{
 				if(pParticle->nLife == pParticle->nMaxLife)
-				{	//復活時の最初にだけ通る処理
+				{	// 復活時の最初にだけ通る処理
 					
-					//D3DXVECTOR3 v = pPlayer->pos - pParticle->pos;	//プレイヤーの死亡位置と、各破片の位置の差を求める
-					D3DXVECTOR3 v = D3DXVECTOR3(600.0f, SCREEN_HEIGHT - 50.0f, 0.0f) - pParticle->pos;	//プレイヤーの死亡位置と、各破片の位置の差を求める
-					pParticle->move.x = v.x / pParticle->nMaxLife;	//nLifeが尽きた時に中央に集めるようにする
-					pParticle->move.y = v.y / pParticle->nMaxLife;	//nLifeが尽きた時に中央に集めるようにする
+					// D3DXVECTOR3 v = pPlayer->pos - pParticle->pos;	// プレイヤーの死亡位置と、各破片の位置の差を求める
+					D3DXVECTOR3 v = D3DXVECTOR3(600.0f, SCREEN_HEIGHT - 50.0f, 0.0f) - pParticle->pos;	// プレイヤーの死亡位置と、各破片の位置の差を求める
+					pParticle->move.x = v.x / pParticle->nMaxLife;	// nLifeが尽きた時に中央に集めるようにする
+					pParticle->move.y = v.y / pParticle->nMaxLife;	// nLifeが尽きた時に中央に集めるようにする
 				}
 				pParticle->nLife--;
 				if (pParticle->nLife < 0)
@@ -237,7 +237,7 @@ void UpdateParticle(void)
 			}
 			else
 			{
-				//移動量を更新(減衰)
+				// 移動量を更新(減衰)
 				pParticle->move.x += (0 - pParticle->move.x) * 0.015f;
 				pParticle->move.y += (0 - pParticle->move.y) * 0.015f;
 			}
@@ -277,19 +277,19 @@ void UpdateParticle(void)
 
 		pVtx += 4;
 	}
-	//頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
 }
 
 //=========================================
-//パーティクルの描画処理
+// パーティクルの描画処理
 //=========================================
 void DrawParticle(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = GetDevice();	//デバイスへのポイント
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
 	Particle *pParticle;
 
-	//描画のための設定
+	// 描画のための設定
 	pDevice = InitDraw(pDevice, s_pVtxBuff);
 
 	for (int nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
@@ -297,19 +297,17 @@ void DrawParticle(void)
 		pParticle = &(s_aParticle[nCntParticle]);
 
 		if (s_aParticle[nCntParticle].bUse == true)
-		{//パーティクルが使用されている
+		{// パーティクルが使用されている
 			switch (pParticle->type)
 			{
-			case PARTICLE_PLAYER_JUMP:	//プレイヤーのジャンプ時
-				//テクスチャを加算合成で貼り付けて描画する
-				pDevice = AddSetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle);
+			case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプ時
+				// テクスチャを加算合成で貼り付けて描画する
+				pDevice = AddSetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
-			case PARTICLE_SPLITBALL_ATTACK:	//別れる球の攻撃時
-				//テクスチャを貼り付けて描画する
-				pDevice = SetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle);
-				break;
-			case PARTICLE_PLAYER_DEATH:
-				pDevice = SetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle);
+			case PARTICLE_SPLITBALL_ATTACK:	// 別れる球の攻撃時
+			case PARTICLE_PLAYER_DEATH:		// プレイヤーの死亡時
+				// テクスチャを貼り付けて描画する
+				pDevice = SetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
 			default:
 				assert(false);
@@ -320,7 +318,7 @@ void DrawParticle(void)
 }
 
 //=========================================
-//パーティクルの設定処理
+// パーティクルの設定処理
 //=========================================
 void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 {
@@ -328,7 +326,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 	VERTEX_2D *pVtx;
 	int nCntParticle;
 
-	//頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
@@ -336,16 +334,16 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 		pParticle = &(s_aParticle[nCntParticle]);
 
 		if (pParticle->bUse)
-		{//パーティクルが使用されてる
+		{// パーティクルが使用されてる
 			pVtx += 4;
 			continue;
 		}
 
-		//パーティクルが使用されていない
+		// パーティクルが使用されていない
 		pParticle->	type = type;
 		switch (type)
 		{
-		case PARTICLE_PLAYER_JUMP:	//プレイヤーのジャンプパーティクル
+		case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプパーティクル
 			pParticle->pos = pos;
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.1f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.1f);
@@ -355,7 +353,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			pParticle->nMaxLife = 50;
 			pParticle->nLife = pParticle->nMaxLife;
 			break;
-		case PARTICLE_SPLITBALL_ATTACK:	//別れる球の攻撃パーティクル
+		case PARTICLE_SPLITBALL_ATTACK:	// 別れる球の攻撃パーティクル
 			pParticle->pos = pos;
 			pParticle->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 			pParticle->move.x = 0.0f;
@@ -390,6 +388,6 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 		pVtx += 4;
 		break;
 	}
-	//頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
 }
