@@ -127,14 +127,16 @@ void InitParticle(void)
 		pParticle = &(s_aParticle[nCntParticle]);
 
 		//頂点座標の設定
-		SetRectPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
+		SetRectCenterPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
 
-		//rhwの設定
-		//テクスチャ座標の設定
 		//頂点カラーの設定
-		SetupRectDefault(pVtx, &(pParticle->col));
+		SetRectColor(pVtx, &(pParticle->col));
 
-		SetupRectDefault(pVtx, &(s_aParticle[nCntParticle].col));
+		//テクスチャ座標の設定
+		InitRectTex(pVtx);
+		
+		//rhwの設定
+		InitRectRhw(pVtx);
 
 		pVtx += 4;
 	}
@@ -300,7 +302,7 @@ void DrawParticle(void)
 			{
 			case PARTICLE_PLAYER_JUMP:	//プレイヤーのジャンプ時
 				//テクスチャを加算合成で貼り付けて描画する
-				pDevice = AddSyntheticDraw(pDevice, s_pTexture[pParticle->type], nCntParticle);
+				pDevice = AddSetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle);
 				break;
 			case PARTICLE_SPLITBALL_ATTACK:	//別れる球の攻撃時
 				//テクスチャを貼り付けて描画する
@@ -378,7 +380,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 
 		pParticle->bUse = true;
 
-		SetRectPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
+		SetRectCenterPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
 
 		pVtx[0].col = pParticle->col;
 		pVtx[1].col = pParticle->col;

@@ -103,14 +103,21 @@ void InitBG(void)
 		switch (nCntBG)
 		{
 		case 0:	//グラデーション上
-			SetupRectDefault(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
+			//頂点カラーの設定
+			SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
 			break;
 		case 1:	//グラデーション下
-			SetupRectDefault(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
+			SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
 			break;
 		default:
 			break;
 		}
+
+		//テクスチャ座標の設定
+		InitRectTex(pVtx);
+		//rhwの設定
+		InitRectRhw(pVtx);
+
 		pVtx += 4;
 	}
 	//頂点バッファをアンロックする

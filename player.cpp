@@ -87,10 +87,12 @@ void InitPlayer(void)
 	pVtx[3].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
 	pVtx[3].pos.z = 0.0f;
 
-	//rhwの設定
 	//頂点カラーの設定
+	InitRectColor(pVtx);
 	//テクスチャ座標の設定
-	SetupRectDefault(pVtx, &(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)));
+	InitRectTex(pVtx);
+	//rhwの設定
+	InitRectRhw(pVtx);
 
 	//頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();

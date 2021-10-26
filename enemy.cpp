@@ -90,12 +90,14 @@ void InitEnemy(void)
 		pEnemy = &(s_aEnemy[nCntEnemy]);
 
 		//頂点座標の設定
-		SetRectPos(pVtx, pEnemy->pos, pEnemy->fHeight, pEnemy->fWidth);
+		SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fHeight, pEnemy->fWidth);
 
-		//rhwの設定
 		//頂点カラーの設定
+		SetRectColor(pVtx, &(pEnemy->col));
 		//テクスチャ座標の設定
-		SetupRectDefault(pVtx, &(pEnemy->col));
+		InitRectTex(pVtx);
+		//rhwの設定
+		InitRectRhw(pVtx);
 
 		pVtx += 4;
 	}
@@ -171,7 +173,7 @@ void UpdateEnemy(void)
 			bisLanding = CollisionBlockEnemy(pEnemy, pVtx[3].pos, pVtx[0].pos);
 
 			//頂点座標の設定
-			SetRectPos(pVtx, pEnemy->pos, pEnemy->fHeight, pEnemy->fWidth);
+			SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fHeight, pEnemy->fWidth);
 
 			//カラーの設定
 			SetRectColor(pVtx, &(pEnemy->col));
@@ -438,7 +440,7 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			}
 
 			//頂点座標の設定
-			SetRectPos(pVtx, pEnemy->pos, pEnemy->fHeight, pEnemy->fWidth);
+			SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fHeight, pEnemy->fWidth);
 			
 			//頂点カラーの設定
 			pEnemy->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);

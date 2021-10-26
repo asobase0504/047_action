@@ -28,18 +28,18 @@ typedef struct
 //------------------------------------
 //グローバル変数
 //------------------------------------
-LPDIRECT3DTEXTURE9 s_pTextureRank = NULL;					//テクスチャへのポインタ
-LPDIRECT3DTEXTURE9 s_pTextureRankScore = NULL;				//テクスチャへのポインタ
-LPDIRECT3DTEXTURE9 s_pTextureRankbg = NULL;					//テクスチャへのポインタ
-LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffRank = NULL;				//頂点バッファへのポインタ
-LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffRankScore = NULL;			//頂点バッファへのポインタ
-LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffRankbg = NULL;			//テクスチャへのポインタ
-RankScore s_aRankScore[MAX_RANK];							//ランキングスコア情報
-int s_nRankUpdate = -1;										//更新ランクNo.
-int s_nTimerRanking;										//ランキング画面表示タイマー
-bool s_bBlink;
-int s_nTimerBlink;
-D3DXCOLOR s_Timercol;
+static LPDIRECT3DTEXTURE9 s_pTextureRank = NULL;			//テクスチャへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTextureRankScore = NULL;		//テクスチャへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTextureRankbg = NULL;			//テクスチャへのポインタ
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffRank = NULL;		//頂点バッファへのポインタ
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffRankScore = NULL;	//頂点バッファへのポインタ
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffRankbg = NULL;		//テクスチャへのポインタ
+static RankScore s_aRankScore[MAX_RANK];					//ランキングスコア情報
+static int s_nRankUpdate = -1;								//更新ランクNo.
+static int s_nTimerRanking;									//ランキング画面表示タイマー
+static bool s_bBlink;
+static int s_nTimerBlink;
+static D3DXCOLOR s_Timercol;
 
 //=========================================
 //ランキングの初期化処理
@@ -100,6 +100,11 @@ void InitRanking(void)
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuffRankbg->Lock(0, 0, (void**)&pVtx, 0);
 
+	//長方形の初期化
+	//rhwの設定
+	//テクスチャ座標の設定
+	InitRect(pVtx);
+
 	//頂点座標の設定
 	pVtx[0].pos.x = 0.0f;
 	pVtx[0].pos.y = 0.0f;
@@ -117,84 +122,76 @@ void InitRanking(void)
 	pVtx[3].pos.y = SCREEN_HEIGHT;
 	pVtx[3].pos.z = 0.0f;
 
-	//rhwの設定
 	//頂点カラーの設定
-	//テクスチャ座標の設定
-	SetupRectDefault(pVtx, &(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.3f)));
+	SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.3f)));
 
 	//頂点バッファをアンロックする
 	s_pVtxBuffRankbg->Unlock();
 
-	//ランキングの情報の初期化
-	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
-	{
-	}
-
+	//
+	//順位の初期化
+	//
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuffRank->Lock(0, 0, (void**)&pVtx, 0);
-
 	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 	{
-		//順位の値の場所の初期化
+		//順位の場所初期化
 		s_aRankScore[nCntRank].pos = D3DXVECTOR3(450.0f, 100.0f + nCntRank * 100.0f, 0.0f);
 
 		//頂点座標の設定
-		SetRectPos(pVtx, s_aRankScore[nCntRank].pos, 50.0f, 50.0f);
+		SetRectCenterPos(pVtx, s_aRankScore[nCntRank].pos, 50.0f, 50.0f);
 		
 		//頂点カラーの設定
+		SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+
 		//テクスチャ座標の設定
+		SetRextTex(pVtx, 0.0f + 0.2f * nCntRank, 0.2f + 0.2f * nCntRank, 0.0f, 1.0f);
+
 		//rhwの設定
-		SetupRectDefault(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
-		pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f + 0.2f * nCntRank);
-		pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f + 0.2f * nCntRank);
-		pVtx[2].tex = D3DXVECTOR2(0.0f, 0.2f + 0.2f * nCntRank);
-		pVtx[3].tex = D3DXVECTOR2(1.0f, 0.2f + 0.2f * nCntRank);
+		InitRectRhw(pVtx);
 
 		pVtx += 4;
-
 	}
 	//頂点バッファをアンロックする
 	s_pVtxBuffRank->Unlock();
 
-
+	//
+	//スコアの初期化
+	//
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuffRankScore->Lock(0, 0, (void**)&pVtx, 0);
-
 	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 	{
 		s_aRankScore[nCntRank].pos.x += 100;	//スコア表示場所へ移動
 		for (nCntScore = 0; nCntScore < MAX_RANKSCORE; nCntScore++)
 		{
 			pVtx[0].pos.x = s_aRankScore[nCntRank].pos.x - 20.0f + nCntScore * 45;
-			pVtx[0].pos.y = s_aRankScore[nCntRank].pos.y - 20.0f + nCntRank * 100;
+			pVtx[0].pos.y = s_aRankScore[nCntRank].pos.y - 20.0f;
 			pVtx[0].pos.z = s_aRankScore[nCntRank].pos.z + 0.0f;
 
 			pVtx[1].pos.x = s_aRankScore[nCntRank].pos.x + 20.0f + nCntScore * 45;
-			pVtx[1].pos.y = s_aRankScore[nCntRank].pos.y - 20.0f + nCntRank * 100;
+			pVtx[1].pos.y = s_aRankScore[nCntRank].pos.y - 20.0f;
 			pVtx[1].pos.z = s_aRankScore[nCntRank].pos.z + 0.0f;
 
 			pVtx[2].pos.x = s_aRankScore[nCntRank].pos.x - 20.0f + nCntScore * 45;
-			pVtx[2].pos.y = s_aRankScore[nCntRank].pos.y + 20.0f + nCntRank * 100;
+			pVtx[2].pos.y = s_aRankScore[nCntRank].pos.y + 20.0f;
 			pVtx[2].pos.z = s_aRankScore[nCntRank].pos.z + 0.0f;
 
 			pVtx[3].pos.x = s_aRankScore[nCntRank].pos.x + 20.0f + nCntScore * 45;
-			pVtx[3].pos.y = s_aRankScore[nCntRank].pos.y + 20.0f + nCntRank * 100;
+			pVtx[3].pos.y = s_aRankScore[nCntRank].pos.y + 20.0f;
 			pVtx[3].pos.z = s_aRankScore[nCntRank].pos.z + 0.0f;
 
 
-			//rhwの設定
-			SetupRectDefault(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
-
 			//頂点カラーの設定
+			SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
 
 			//テクスチャ座標の設定
-			pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-			pVtx[1].tex = D3DXVECTOR2(0.1f, 0.0f);
-			pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-			pVtx[3].tex = D3DXVECTOR2(0.1f, 1.0f);
+			SetRextTex(pVtx, 0.0f, 1.0f, 0.0f, 0.1f);
+
+			//rhwの設定
+			InitRectRhw(pVtx);
 
 			pVtx += 4;
-
 		}
 	}
 	//頂点バッファをアンロックする
@@ -267,11 +264,13 @@ void UpdateRanking(void)
 	{
 
 	}
-	if (s_nTimerRanking >= 3000 || GetJoypadTrigger(JOYKEY_B) || GetKeyboardTrigger(DIK_RETURN) == true)
+	//時間制限もしくは、エンターキーでリザルト画面に移行
+	if (s_nTimerRanking >= 3000 || GetKeyboardTrigger(DIK_RETURN))
 	{
 		//決定音の再生
 		PlaySound(SOUND_LABEL_SE_ENTER);
 
+		//リザルト画面に移行
 		SetFade(MODE_RESULT);
 	}
 
@@ -300,7 +299,6 @@ void UpdateRanking(void)
 			}
 		}
 	}
-
 	//頂点バッファをアンロックする
 	s_pVtxBuffRankScore->Unlock();
 }
@@ -314,53 +312,30 @@ void DrawRanking(void)
 	int nCntRank;
 	int nCntScore;
 
-	//デバイスの取得
+	// デバイスの取得
 	pDevice = GetDevice();
 
-	//頂点バッファをデータストリーム設定
-	pDevice->SetStreamSource(0, s_pVtxBuffRankbg, 0, sizeof(VERTEX_2D));
+	// Drawの初期化
+	InitDraw(pDevice, s_pVtxBuffRankbg);
+	// 描画処理
+	SetDraw(pDevice, s_pTextureRankbg, 0);
 
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-	//テクスチャの設定
-	pDevice->SetTexture(0, s_pTextureRankbg);
-
-	//ポリゴン描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-
-	//頂点バッファをデータストリーム設定
-	pDevice->SetStreamSource(0, s_pVtxBuffRank, 0, sizeof(VERTEX_2D));
-
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-
+	// Drawの初期化
+	InitDraw(pDevice, s_pVtxBuffRank);
 	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 	{
-		//テクスチャの設定
-		pDevice->SetTexture(0, s_pTextureRank);
-
-		//ポリゴン描画
-		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntRank * 4, 2);
+		// 描画処理
+		SetDraw(pDevice, s_pTextureRank, nCntRank * 4);
 	}
 
-	//頂点バッファをデータストリーム設定
-	pDevice->SetStreamSource(0, s_pVtxBuffRankScore, 0, sizeof(VERTEX_2D));
-
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-
+	// Drawの初期化
+	InitDraw(pDevice, s_pVtxBuffRankScore);
 	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 	{//順位
 		for (nCntScore = 0; nCntScore < MAX_RANKSCORE; nCntScore++)
 		{//スコア
-		 //テクスチャの設定
-			pDevice->SetTexture(0, s_pTextureRankScore);
-
-			//ポリゴン描画
-			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, (nCntRank * 4 * MAX_RANKSCORE) + (nCntScore * 4), 2);
+			// 描画処理
+			SetDraw(pDevice, s_pTextureRankScore, (nCntRank * 4 * MAX_RANKSCORE) + (nCntScore * 4));
 		}
 	}
 }

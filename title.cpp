@@ -301,6 +301,12 @@ void InitTitle(void)
 	//頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuffTitlePress->Lock(0, 0, (void**)&pVtx, 0);
 
+	//長方形の初期化
+	//rhwの設定
+	//頂点カラーの設定
+	//テクスチャ座標の設定
+	InitRect(pVtx);
+
 	//頂点座標の設定
 	pVtx[0].pos.x = press.pos.x;
 	pVtx[0].pos.y = press.pos.y;
@@ -318,10 +324,6 @@ void InitTitle(void)
 	pVtx[3].pos.y = press.pos.y + TITLEPRESS_HEIGHT;
 	pVtx[3].pos.z = 0.0f;
 
-	//rhwの設定
-	//頂点カラーの設定
-	//テクスチャ座標の設定
-	SetupRectDefault(pVtx, &(press.col));
 
 	//頂点バッファをアンロックする
 	s_pVtxBuffTitlePress->Unlock();
