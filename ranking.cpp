@@ -24,6 +24,16 @@
 #define MENU_MAX_HEIGTH	(500.0f)
 
 //------------------------------------
+// ランキングのステータス列挙型
+//------------------------------------
+typedef enum
+{
+	RANKSTATE_NONE = 0,
+	RANKSTATE_NORMAL,
+	RANKSTATE_END,
+}RANKSTATE;
+
+//------------------------------------
 // ランキングスコア構造体
 //------------------------------------
 typedef struct
@@ -35,6 +45,7 @@ typedef struct
 //------------------------------------
 // グローバル変数
 //------------------------------------
+static RANKSTATE s_RankState;	//ランキング処理の状態
 static LPDIRECT3DTEXTURE9		s_pTextureRank = NULL;	// テクスチャへのポインタ	(背景)
 static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffRank = NULL;	// 頂点バッファへのポインタ	(背景)
 static LPDIRECT3DTEXTURE9		s_pTextureScore = NULL;	// テクスチャへのポインタ	(スコア)
@@ -51,9 +62,8 @@ static D3DXCOLOR	s_Timercol;				// 明滅時のカラーの設定
 static bool			s_bBlink;				// スコアの明滅の切り替え
 static int			s_nTimerBlink;			// スコアの明滅の間隔
 
-static D3DXVECTOR3	s_MenuPos;		// メニュー画面の位置
-static float		fWidthMenu;		// メニュー画面の幅
-static float		fHeigthMenu;	// メニュー画面の高さ
+static float		s_fWidthMenu;		// メニュー画面の幅
+static float		s_fHeigthMenu;	// メニュー画面の高さ
 static int			s_MenuCnt;	// メニュー画面のカウント
 
 
@@ -70,6 +80,10 @@ void InitRanking(void)
 	s_MenuCnt = 33;
 	s_bBlink = true;
 	s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
+	s_RankState  = RANKSTATE_NORMAL;
+
+	s_fWidthMenu = 0;
+	s_fHeigthMenu = 0;
 
 	// テクスチャの読込 (背景)
 	D3DXCreateTextureFromFile(pDevice,
@@ -135,21 +149,7 @@ void InitRanking(void)
 		InitRect(pVtx);
 
 		// 頂点座標の設定
-		pVtx[0].pos.x = 0.0f;
-		pVtx[0].pos.y = 0.0f;
-		pVtx[0].pos.z = 0.0f;
-
-		pVtx[1].pos.x = SCREEN_WIDTH;
-		pVtx[1].pos.y = 0.0f;
-		pVtx[1].pos.z = 0.0f;
-
-		pVtx[2].pos.x = 0.0f;
-		pVtx[2].pos.y = SCREEN_HEIGHT;
-		pVtx[2].pos.z = 0.0f;
-
-		pVtx[3].pos.x = SCREEN_WIDTH;
-		pVtx[3].pos.y = SCREEN_HEIGHT;
-		pVtx[3].pos.z = 0.0f;
+		SetRectUpLeftPos(pVtx, D3DXVECTOR3(0.0f, 0.0f, 0.0f), SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.3f)));
@@ -162,7 +162,7 @@ void InitRanking(void)
 	s_pVtxBuffMenu->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	{
 		// 頂点座標の設定
-		SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), fWidthMenu, fHeigthMenu);
+		SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), s_fWidthMenu, s_fHeigthMenu);
 
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(D3DXCOLOR(0.2f, 0.2f, 0.2f, 0.9f)));
@@ -317,78 +317,93 @@ void UpdateRanking(void)
 {
 	VERTEX_2D *pVtx;
 	
-	s_nTimerRanking++;
-	s_nTimerBlink--;
-
-	// 点滅の切り替え処理
-	if (s_nTimerBlink <= 0 && !(s_bBlink))
+	switch (s_RankState)
 	{
-		s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 0.0f);
-		s_nTimerBlink = 40;
-		s_bBlink = true;
+	case RANKSTATE_NONE:
+		break;
+	case RANKSTATE_NORMAL:
+		s_nTimerRanking++;
+		s_nTimerBlink--;
 
-	}
-	if (s_nTimerBlink <= 0 && s_bBlink)
-	{
-		s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
-		s_nTimerBlink = 40;
-		s_bBlink = false;
-	}
-
-
-	// メニュー画面の更新処理
-	UpdateMenu();
-
-	if (s_MenuCnt <= -10.0f)
-	{
-		s_pVtxBuffRank->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
-		for (int i = 0; i < MAX_RANK; i++)
+		// 点滅の切り替え処理
+		if (s_nTimerBlink <= 0 && !(s_bBlink))
 		{
-			// 頂点カラーの設定
-			SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+			s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 0.0f);
+			s_nTimerBlink = 40;
+			s_bBlink = true;
 
-			pVtx += 4;
 		}
-		s_pVtxBuffRank->Unlock();	// 頂点バッファをアンロックする
-
-		s_pVtxBuffScore->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
-		for (int nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
+		if (s_nTimerBlink <= 0 && s_bBlink)
 		{
-			if (nCntRank == s_nRankUpdate)
-			{	// 今回のスコアの点滅
-				for (int nCntScore = 0; nCntScore < MAX_RANKSCORE; nCntScore++)
-				{
-					// 頂点カラーの設定
-					SetRectColor(pVtx, &(s_Timercol));
+			s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
+			s_nTimerBlink = 40;
+			s_bBlink = false;
+		}
 
-					pVtx += 4;
+
+		// メニュー画面の更新処理
+		UpdateMenu();
+
+		if (s_MenuCnt <= -10.0f)
+		{
+			s_pVtxBuffRank->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
+			for (int i = 0; i < MAX_RANK; i++)
+			{
+				// 頂点カラーの設定
+				SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+
+				pVtx += 4;
+			}
+			s_pVtxBuffRank->Unlock();	// 頂点バッファをアンロックする
+
+			s_pVtxBuffScore->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
+			for (int nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
+			{
+				if (nCntRank == s_nRankUpdate)
+				{	// 今回のスコアの点滅
+					for (int nCntScore = 0; nCntScore < MAX_RANKSCORE; nCntScore++)
+					{
+						// 頂点カラーの設定
+						SetRectColor(pVtx, &(s_Timercol));
+
+						pVtx += 4;
+					}
+				}
+				else
+				{	// 通常状態の色
+					for (int nCntScore = 0; nCntScore < MAX_RANKSCORE; nCntScore++)
+					{
+						// 頂点カラーの設定
+						SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+						pVtx += 4;
+					}
 				}
 			}
-			else
-			{	// 通常状態の色
-				for (int nCntScore = 0; nCntScore < MAX_RANKSCORE; nCntScore++)
-				{
-					// 頂点カラーの設定
-					SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
-					pVtx += 4;
-				}
-			}
+			s_pVtxBuffScore->Unlock();	// 頂点バッファをアンロックする
 		}
-		s_pVtxBuffScore->Unlock();	// 頂点バッファをアンロックする
+
+		// 時間制限もしくは、エンターキーでリザルト画面に移行
+		if (s_nTimerRanking >= 3000 || GetKeyboardTrigger(DIK_RETURN))
+		{
+			//初期化
+			s_RankState = RANKSTATE_END;
+			s_MenuCnt = 33;
+			s_fHeigthMenu = 0.0f;
+			s_fWidthMenu = 0.0f;
+
+			// 決定音の再生
+			PlaySound(SOUND_LABEL_SE_ENTER);
+
+			// リザルト画面に移行
+			SetFade(MODE_RESULT);
+		}
+		break;
+	case RANKSTATE_END:
+		break;
+	default:
+		assert(false);
+		break;
 	}
-
-	// 時間制限もしくは、エンターキーでリザルト画面に移行
-	if (s_nTimerRanking >= 3000 || GetKeyboardTrigger(DIK_RETURN))
-	{
-		s_MenuCnt = 33;
-		fHeigthMenu = 0.0f;
-		// 決定音の再生
-		PlaySound(SOUND_LABEL_SE_ENTER);
-
-		// リザルト画面に移行
-		SetFade(MODE_RESULT);
-	}
-
 }
 
 //=========================================
@@ -406,12 +421,12 @@ void UpdateMenu(void)
 	{
 		s_MenuCnt -= 1.0f;
 
-		fWidthMenu += s_MenuCnt;
-		fHeigthMenu += s_MenuCnt;
+		s_fWidthMenu += s_MenuCnt;
+		s_fHeigthMenu += s_MenuCnt;
 	}
 
 	// 頂点座標の設定
-	SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), fWidthMenu, fHeigthMenu);
+	SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), s_fWidthMenu, s_fHeigthMenu);
 
 	s_pVtxBuffMenu->Unlock();	// 頂点バッファをアンロックする
 }
