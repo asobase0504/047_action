@@ -43,7 +43,7 @@ void InitRectPos(VERTEX_2D * vtx)
 //=========================================
 // 頂点バッファのPOSを設定(中心座標)
 //=========================================
-void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fHeigth, float fWidth)
+void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
 {
 	vtx[0].pos.x = pos.x - fWidth;
 	vtx[0].pos.y = pos.y - fHeigth;

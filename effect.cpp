@@ -72,7 +72,7 @@ void InitEffect(void)
 		pEffeck = &(s_aEffect[nCntEffect]);
 
 		// 頂点座標の設定
-		SetRectCenterPos(pVtx, pEffeck->pos, pEffeck->fHeigth, pEffeck->fWidth);
+		SetRectCenterPos(pVtx, pEffeck->pos, pEffeck->fWidth, pEffeck->fHeigth);
 
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(pEffeck->col));
@@ -129,7 +129,7 @@ void UpdateEffect(void)
 			pEffeck = &(s_aEffect[nCntEffect]);
 
 			// 頂点座標の設定
-			SetRectCenterPos(pVtx, pEffeck->pos, pEffeck->fHeigth, pEffeck->fWidth);
+			SetRectCenterPos(pVtx, pEffeck->pos, pEffeck->fWidth, pEffeck->fHeigth);
 
 			// 頂点カラーの設定
 			SetRectColor(pVtx, &(pEffeck->col));

@@ -63,7 +63,7 @@ void InitBlock(void)
 		pBlock = &(s_aBlock[nCntBlock]);
 
 		// 頂点座標の設定
-		SetRectCenterPos(pVtx, pBlock->pos, pBlock->fHeight, pBlock->fWidth);
+		SetRectCenterPos(pVtx, pBlock->pos, pBlock->fWidth, pBlock->fHeight);
 
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(pBlock->col));
@@ -123,7 +123,7 @@ void UpdateBlock(void)
 		{// ブロックが使用されている
 
 			 // 頂点座標の設定
-			SetRectCenterPos(pVtx, pBlock->pos, pBlock->fHeight, pBlock->fWidth);
+			SetRectCenterPos(pVtx, pBlock->pos, pBlock->fWidth, pBlock->fHeight);
 
 			SetRectColor(pVtx, &(pBlock->col));
 
@@ -215,7 +215,7 @@ void SetBlock(D3DXVECTOR3 pos,float fHeight, float fWidth, int type)
 			pBlock->fWidth = fWidth;
 
 			// 頂点座標の設定
-			SetRectCenterPos(pVtx, pBlock->pos, pBlock->fHeight, pBlock->fWidth);
+			SetRectCenterPos(pVtx, pBlock->pos, pBlock->fWidth, pBlock->fHeight);
 
 			pBlock->bUse = true;	// 使用している状態にする
 			break;

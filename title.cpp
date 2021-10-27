@@ -64,17 +64,6 @@ static bool s_bPreassUse;
 static int s_nFadeCnt;	// フェード処理に行くまでの間隔
 static int s_nTimeTitle;
 
-typedef enum {
-	LIST_0,
-	LIST_1,
-	LIST_2,
-	LIST_3,
-	NUM_LIST
-} LIST;
-static const int INT_LIST[NUM_LIST] = {
-	1,2,3,4
-};
-
 //=========================================
 // 初期化処理
 //=========================================
@@ -155,25 +144,11 @@ void InitTitle(void)
 		{
 		case OBJ_BG:
 			// 頂点座標の設定
-			pVtx[0].pos.x = 0.0f;
-			pVtx[0].pos.y = 0.0f;
-			pVtx[0].pos.z = 0.0f;
-
-			pVtx[1].pos.x = SCREEN_WIDTH;
-			pVtx[1].pos.y = 0.0f;
-			pVtx[1].pos.z = 0.0f;
-
-			pVtx[2].pos.x = 0.0f;
-			pVtx[2].pos.y = SCREEN_HEIGHT;
-			pVtx[2].pos.z = 0.0f;
-
-			pVtx[3].pos.x = SCREEN_WIDTH;
-			pVtx[3].pos.y = SCREEN_HEIGHT;
-			pVtx[3].pos.z = 0.0f;
-
-			s_Tex[i].bUse = true;
+			SetRectUpLeftPos(pVtx, D3DXVECTOR3(0.0f, 0.0f, 0.0f), SCREEN_WIDTH, SCREEN_HEIGHT);
+	
 			// 頂点カラーの設定
 			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.9f, 0.8f, 1.0f)));
+			s_Tex[i].bUse = true;
 			break;
 		case OBJ_SELECTBG:
 			// 頂点座標の設定

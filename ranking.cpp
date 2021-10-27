@@ -162,7 +162,7 @@ void InitRanking(void)
 	s_pVtxBuffMenu->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	{
 		// 頂点座標の設定
-		SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), fHeigthMenu, fWidthMenu);
+		SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), fWidthMenu, fHeigthMenu);
 
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(D3DXCOLOR(0.2f, 0.2f, 0.2f, 0.9f)));
@@ -411,7 +411,7 @@ void UpdateMenu(void)
 	}
 
 	// 頂点座標の設定
-	SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), fHeigthMenu, fWidthMenu);
+	SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), fWidthMenu, fHeigthMenu);
 
 	s_pVtxBuffMenu->Unlock();	// 頂点バッファをアンロックする
 }

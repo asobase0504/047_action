@@ -15,17 +15,32 @@
 #include "map.h"
 #include "block.h"
 #include "ranking.h"
+#include <assert.h>
+
+//------------------------------------
+//ゲームステータスの列挙型
+//------------------------------------
+typedef enum
+{
+	GAMESTATE_NONE = 0,	//何もしてないとき
+	GAMESTATE_NORMAL,	//ゲームプレイ時
+	GAMESTATE_END,		//ゲーム終了時
+	GAMESTATE_RANKING,	//ランキング表示時
+}GAMESTATE;
 
 //------------------------------------
 // スタティック変数
 //------------------------------------
-bool s_bRank;
+static int s_nRankInterval;
+static GAMESTATE s_GameState;
 
 //====================================
 // 初期化処理
 //====================================
 void InitGame(void)
 {
+	s_GameState = GAMESTATE_NORMAL;
+
 	// 背景の初期化処理
 	InitBG();
 
@@ -47,8 +62,6 @@ void InitGame(void)
 	// ランキングの初期化処理
 	InitRanking();
 
-	s_bRank = false;
-
 	SetBlock({ 500.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
 	SetBlock({ 1150.0f,25.0f,0.0f }, 25.0f, 650.0f, 0);
 	SetBlock({ 1800.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
@@ -56,6 +69,8 @@ void InitGame(void)
 
 	SetEnemy({ 1100.0f,550.0f,0.0f }, ENEMYTYPE_SPLITBALL_FIRST);
 	SetEnemy({ 1100.0f,70.0f,0.0f }, ENEMYTYPE_EXTENDBALL_UP);
+
+	s_nRankInterval = 0;
 }
 
 //====================================
@@ -63,7 +78,6 @@ void InitGame(void)
 //====================================
 void UninitGame(void)
 {
-
 	// 背景の終了処理
 	UninitBG();
 
@@ -91,6 +105,35 @@ void UninitGame(void)
 //====================================
 void UpdateGame(void)
 {
+	switch (s_GameState)
+	{
+	case GAMESTATE_NONE:
+		break;
+	case GAMESTATE_NORMAL:
+	{
+		//プレイヤーが死んだか判定する
+		Player *player = GetPlayer();
+		if (player->state == PLAYERSTATE_DEATH)
+		{
+			s_GameState = GAMESTATE_END;	//ゲーム終了時に移行
+		}
+	}
+		break;
+	case GAMESTATE_END:
+		//ランキング表示までの余韻
+		s_nRankInterval++;
+		if (s_nRankInterval >= 100)
+		{
+			s_GameState = GAMESTATE_RANKING;	//ランキング表示時に移行
+		}
+		break;
+	case GAMESTATE_RANKING:
+		UpdateRanking();
+		break;
+	default:
+		assert(false);
+		break;
+	}
 	// 背景の更新処理
 	UpdateBG();
 
@@ -108,21 +151,6 @@ void UpdateGame(void)
 
 	// ブロックの更新処理
 	UpdateBlock();
-
-	if (s_bRank)
-	{
-		UpdateRanking();
-	}
-	else
-	{
-		Player *player = GetPlayer();
-		if (player->state == PLAYERSTATE_DEATH)
-		{
-			// ランクの切り替え
-			RankSwitch();
-		}
-	}
-
 }
 
 //====================================
@@ -148,16 +176,8 @@ void DrawGame(void)
 	// ブロックの描画処理
 	DrawBlock();
 	
-	if (s_bRank)
+	if (s_GameState == GAMESTATE_RANKING)
 	{
 		DrawRanking();
 	}
-}
-
-//====================================
-// ランキングの切り替え
-//====================================
-void RankSwitch(void)
-{
-	s_bRank = !(s_bRank);
 }
