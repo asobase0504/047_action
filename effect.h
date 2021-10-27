@@ -13,6 +13,7 @@
 typedef enum
 {
 	EFFECT_SPLITBALL_MOVE = 0,
+	EFFECT_MAX,
 }EFFCT_TYPE;
 
 //------------------------------------
@@ -26,6 +27,7 @@ typedef struct
 	float fWidth;		// 幅
 	int nLife;			// 寿命(表示時間)
 	bool bUse;			// 使用しているかどうか
+	EFFCT_TYPE type;		//エフェクトタイプ
 }Effect;
 
 //-----------------------------------------
