@@ -62,6 +62,25 @@ void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fHeigth, float fWid
 	vtx[3].pos.z = pos.z + 0.0f;
 }
 
+void SetRectUpLeftPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
+{
+	vtx[0].pos.x = pos.x;
+	vtx[0].pos.y = pos.y;
+	vtx[0].pos.z = pos.z;
+
+	vtx[1].pos.x = pos.x + fWidth;
+	vtx[1].pos.y = pos.y;
+	vtx[1].pos.z = pos.z + 0.0f;
+
+	vtx[2].pos.x = pos.x;
+	vtx[2].pos.y = pos.y + fHeigth;
+	vtx[2].pos.z = pos.z + 0.0f;
+
+	vtx[3].pos.x = pos.x + fWidth;
+	vtx[3].pos.y = pos.y + fHeigth;
+	vtx[3].pos.z = pos.z + 0.0f;
+}
+
 //=========================================
 // 頂点バッファのカラーを初期化
 //=========================================

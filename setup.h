@@ -17,7 +17,7 @@
 void InitRect(VERTEX_2D *vtx);								// 	--------------------	// 長方形の初期化
 void InitRectPos(VERTEX_2D *vtx);							// 	--------------------	// 頂点座標初期化
 void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fHeigth, float fWidth);	// 中心座標が中心にあった場合の頂点バッファの座標設定
-void SetRectUpLeftPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fHeigth, float fWidth);	// 中心座標が左上にあった場合の頂点バッファの座標設定
+void SetRectUpLeftPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth);	// 中心座標が左上にあった場合の頂点バッファの座標設定
 void InitRectColor(VERTEX_2D *vtx);							// 	--------------------	// 頂点バッファの色の初期化
 void SetRectColor(VERTEX_2D *vtx, D3DXCOLOR *inColor);		// 	--------------------	// 頂点バッファの色設定
 void InitRectTex(VERTEX_2D *vtx);							// 	--------------------	// 頂点バッファのテクスチャ座標の初期化
