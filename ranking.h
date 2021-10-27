@@ -19,6 +19,7 @@
 void InitRanking(void);
 void UninitRanking(void);
 void UpdateRanking(void);
+void UpdateMenu(void);
 void DrawRanking(void);
 void ResetRanking(void);
 void SaveRanking(void);

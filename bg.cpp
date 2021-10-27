@@ -58,7 +58,7 @@ void InitBG(void)
 	for (nCntBG = 0; nCntBG < NUM_BG; nCntBG++)
 	{
 		pBG = &(g_aBG[nCntBG]);
-		pBG->pos = D3DXVECTOR3(500.0f, 0.0f, 0.0f);
+		pBG->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		pBG->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		pBG->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		pBG->bUse = false;
@@ -104,10 +104,10 @@ void InitBG(void)
 		{
 		case 0:	// グラデーション上
 			// 頂点カラーの設定
-			SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
+			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.8f, 0.8f, 1.0f)));
 			break;
 		case 1:	// グラデーション下
-			SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
+			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.9f, 0.8f, 1.0f)));
 			break;
 		default:
 			break;

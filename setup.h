@@ -25,10 +25,16 @@ void SetRextTex(VERTEX_2D *vtx,float top,float bottom,float left,float right);		
 void InitRectRhw(VERTEX_2D *vtx);
 
 // 				// 
+// èIóπèàóù		// 
+// 				// 
+void UnInitTexture(LPDIRECT3DTEXTURE9 tex);
+void UnInitBuffer(LPDIRECT3DVERTEXBUFFER9 buff);
+
+// 				// 
 // ï`é èàóù		// 
 // 				// 
-LPDIRECT3DDEVICE9 InitDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 VtxBuff);					// ï`é ëOÇÃèàóù
-LPDIRECT3DDEVICE9 SetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);				// í èÌÇÃï`é 
+LPDIRECT3DDEVICE9 InitDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 VtxBuff);			// ï`é ëOÇÃèàóù
+LPDIRECT3DDEVICE9 SetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);		// í èÌÇÃï`é 
 LPDIRECT3DDEVICE9 AddSetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// â¡éZèàóùÇÃï`é 
 
 // 				// 
