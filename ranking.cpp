@@ -165,7 +165,7 @@ void InitRanking(void)
 		SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), s_fWidthMenu, s_fHeigthMenu);
 
 		// 頂点カラーの設定
-		SetRectColor(pVtx, &(D3DXCOLOR(0.2f, 0.2f, 0.2f, 0.9f)));
+		SetRectColor(pVtx, &(D3DXCOLOR(0.8f, 0.8f, 0.8f, 0.9f)));
 
 		// テクスチャ座標の設定
 		InitRectTex(pVtx);
@@ -417,9 +417,9 @@ void UpdateMenu(void)
 	s_pVtxBuffMenu->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
 
 	//ある程度縮小したら拡大・縮小を停止
-	if (!(s_MenuCnt <= -10.0f))
+	if (!(s_MenuCnt <= -10))
 	{
-		s_MenuCnt -= 1.0f;
+		s_MenuCnt -= 1;
 
 		s_fWidthMenu += s_MenuCnt;
 		s_fHeigthMenu += s_MenuCnt;

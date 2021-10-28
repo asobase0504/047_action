@@ -93,13 +93,13 @@ void InitEffect(void)
 //====================================
 void UnInitEffect(void)
 {
-	for (int i; i < EFFECT_MAX; i++)
+	for (int i = 0; i < EFFECT_MAX; i++)
 	{
 		// テクスチャの破棄
-		if (s_pTexture != NULL)
+		if (s_pTexture[i] != NULL)
 		{
-			s_pTexture[EFFECT_SPLITBALL_MOVE]->Release();
-			s_pTexture[EFFECT_SPLITBALL_MOVE] = NULL;
+			s_pTexture[i]->Release();
+			s_pTexture[i] = NULL;
 		}
 	}
 

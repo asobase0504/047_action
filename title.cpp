@@ -12,6 +12,8 @@
 #include "ranking.h"
 #include "setup.h"
 
+#include "time.h"
+
 #include <assert.h>
 
 // マクロ定義
@@ -199,6 +201,8 @@ void InitTitle(void)
 	}
 	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
+
+	InitTime();
 }
 
 //=========================================
@@ -227,6 +231,7 @@ void UninitTitle(void)
 		s_pVtxBuff->Release();
 		s_pVtxBuff = NULL;
 	}
+
 }
 
 //=========================================
@@ -334,6 +339,7 @@ void UpdateTitle(void)
 	//{
 	//	SetFade(MODE_RANKING);
 	//}
+
 }
 
 //=========================================
@@ -349,15 +355,16 @@ void DrawTitle(void)
 
 	// 背景の描写
 	// 頂点バッファをデータストリーム設定
-	pDevice = InitDraw(pDevice, s_pVtxBuff);
+	InitDraw(pDevice, s_pVtxBuff);
 
 	for (nTexCnt = 0; nTexCnt < OBJ_MAX; nTexCnt++)
 	{
 		if (s_Tex[nTexCnt].bUse == true)
-		{// 弾が使用されている
+		{
 			// ポリゴン描画
 			// テクスチャの設定
 			SetDraw(pDevice, s_pTexture[nTexCnt], nTexCnt * 4);
 		}
 	}
+
 }

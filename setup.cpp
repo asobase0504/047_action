@@ -41,7 +41,7 @@ void InitRectPos(VERTEX_2D * vtx)
 }
 
 //=========================================
-// 頂点バッファのPOSを設定(中心座標)
+// 頂点座標のPOSを設定(中心から)
 //=========================================
 void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
 {
@@ -62,6 +62,9 @@ void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeig
 	vtx[3].pos.z = pos.z + 0.0f;
 }
 
+//=========================================
+// 頂点座標を設定(左上から)
+//=========================================
 void SetRectUpLeftPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
 {
 	vtx[0].pos.x = pos.x;
@@ -79,6 +82,28 @@ void SetRectUpLeftPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHei
 	vtx[3].pos.x = pos.x + fWidth;
 	vtx[3].pos.y = pos.y + fHeigth;
 	vtx[3].pos.z = pos.z + 0.0f;
+}
+
+//=========================================
+// 頂点座標を設定(右上から)
+//=========================================
+void SetRectUpRightPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
+{
+	vtx[0].pos.x = pos.x - fWidth;
+	vtx[0].pos.y = pos.y;
+	vtx[0].pos.z = pos.z;
+
+	vtx[1].pos.x = pos.x;
+	vtx[1].pos.y = pos.y;
+	vtx[1].pos.z = pos.z;
+
+	vtx[2].pos.x = pos.x - fWidth;
+	vtx[2].pos.y = pos.y + fHeigth;
+	vtx[2].pos.z = pos.z;
+
+	vtx[3].pos.x = pos.x;
+	vtx[3].pos.y = pos.y + fHeigth;
+	vtx[3].pos.z = pos.z;
 }
 
 //=========================================
@@ -143,7 +168,7 @@ void InitRectRhw(VERTEX_2D * vtx)
 //=========================================
 // 描写処理に前提として必要な部分
 //=========================================
-LPDIRECT3DDEVICE9 InitDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 VtxBuff)
+void InitDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 VtxBuff)
 {
 	// 頂点バッファをデータストリーム設定
 	pDevice->SetStreamSource(0, VtxBuff, 0, sizeof(VERTEX_2D));
@@ -151,7 +176,6 @@ LPDIRECT3DDEVICE9 InitDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 Vt
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
-	return pDevice;
 }
 
 //=========================================
@@ -171,21 +195,20 @@ LPDIRECT3DDEVICE9 SetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture,
 //=========================================
 // 加算合成有りの描写
 //=========================================
-LPDIRECT3DDEVICE9 AddSetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt)
+void AddSetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt)
 {
 	// aブレンディングを加算合成に設定
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
-	pDevice = SetDraw(pDevice, Texture, nCnt);
+	SetDraw(pDevice, Texture, nCnt);
 
 	// aブレンディングを元に戻す
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-	return pDevice;
 }
 
 //====================================

@@ -290,7 +290,7 @@ void DrawParticle(void)
 	Particle *pParticle;
 
 	// 描画のための設定
-	pDevice = InitDraw(pDevice, s_pVtxBuff);
+	InitDraw(pDevice, s_pVtxBuff);
 
 	for (int nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
 	{
@@ -302,12 +302,12 @@ void DrawParticle(void)
 			{
 			case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプ時
 				// テクスチャを加算合成で貼り付けて描画する
-				pDevice = AddSetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
+				AddSetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
 			case PARTICLE_SPLITBALL_ATTACK:	// 別れる球の攻撃時
 			case PARTICLE_PLAYER_DEATH:		// プレイヤーの死亡時
 				// テクスチャを貼り付けて描画する
-				pDevice = SetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
+				SetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
 			default:
 				assert(false);

@@ -180,7 +180,7 @@ void DrawBlock(void)
 		if (pBlock->bUse == true)
 		{// ブロックが使用されている
 
-		 // テクスチャの設定
+			 // テクスチャの設定
 			pDevice->SetTexture(0, s_pTexture);
 
 			// ポリゴン描画
@@ -409,7 +409,6 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 	s_pVtxBuff->Unlock();
 
 	return bisLanding;
-	return false;
 }
 
 

@@ -15,6 +15,7 @@
 #include "map.h"
 #include "block.h"
 #include "ranking.h"
+#include "time.h"
 #include <assert.h>
 
 //------------------------------------
@@ -62,6 +63,9 @@ void InitGame(void)
 	// ランキングの初期化処理
 	InitRanking();
 
+	// タイムの終了処理
+	InitTime();
+
 	SetBlock({ 500.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
 	SetBlock({ 1150.0f,25.0f,0.0f }, 25.0f, 650.0f, 0);
 	SetBlock({ 1800.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
@@ -98,6 +102,9 @@ void UninitGame(void)
 
 	// ランキングの終了処理
 	UninitRanking();
+
+	// タイムの終了処理
+	UninitTime();
 }
 
 //====================================
@@ -111,6 +118,9 @@ void UpdateGame(void)
 		break;
 	case GAMESTATE_NORMAL:
 	{
+		//時間の更新処理
+		UpdateTime();
+
 		//プレイヤーが死んだか判定する
 		Player *player = GetPlayer();
 		if (player->state == PLAYERSTATE_DEATH)
@@ -176,6 +186,8 @@ void DrawGame(void)
 	// ブロックの描画処理
 	DrawBlock();
 	
+	// 時間の描画処理
+	DrawTime();
 	if (s_GameState == GAMESTATE_RANKING)
 	{
 		DrawRanking();
