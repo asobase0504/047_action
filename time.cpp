@@ -43,7 +43,7 @@ void InitTime(void)
 		&s_pTexture);
 
 	//タイムの初期化処理
-	s_pos = D3DXVECTOR3(1000.0f, 500.0f, 0.0f);
+	s_pos = D3DXVECTOR3(450.0f, 150.0f, 0.0f);
 	s_col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	s_nTime = 0;
 
@@ -63,7 +63,7 @@ void InitTime(void)
 	for (int i = 0; i < TIME_MAX; i++)
 	{
 		// 頂点座標の設定
-		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_pos.x - 120.0f * i, s_pos.y, s_pos.z), 100.0f, 100.0f);
+		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_pos.x - 60.0f * i, s_pos.y, s_pos.z), 50.0f, 50.0f);
 
 		// カラーの設定
 		SetRectColor(pVtx, &(s_col));
@@ -111,7 +111,7 @@ void UpdateTime(void)
 	s_nTime++;
 	int aNumber[8];
 
-	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
+	VERTEX_2D *pVtx;	// 頂点情報へのポインタ
 
 	//繰り上げ処理
 	if (s_nTime % 100 >= 60)
@@ -166,11 +166,4 @@ void DrawTime(void)
 	{
 		pDevice = SetDraw(pDevice, s_pTexture, i * 4);
 	}
-}
-
-//=========================================
-// 設定処理
-//=========================================
-void SetEnemy(D3DXVECTOR3 pos)
-{
 }
