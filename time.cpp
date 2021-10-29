@@ -72,7 +72,7 @@ void InitTime(void)
 		InitRectRhw(pVtx);
 
 		// テクスチャ座標の設定
-		SetRextTex(pVtx, 0.0f, 1.0f, 0.0f, 0.1f);
+		SetRectTex(pVtx, 0.0f, 1.0f, 0.0f, 0.1f);
 
 		pVtx += 4;
 	}
@@ -139,7 +139,7 @@ void UpdateTime(void)
 		nTime /= 10;
 	
 		// テクスチャ座標の設定
-		SetRextTex(pVtx, 0.0f, 1.0f, 0.0f + aTex[i], 0.1f + aTex[i]);
+		SetRectTex(pVtx, 0.0f, 1.0f, 0.0f + aTex[i], 0.1f + aTex[i]);
 
 		i++;
 		pVtx += 4;

@@ -11,6 +11,7 @@
 #include "particle.h"
 #include "ranking.h"
 #include "setup.h"
+#include "score.h"
 
 #include "time.h"
 
@@ -239,7 +240,7 @@ void UninitTitle(void)
 //=========================================
 void UpdateTitle(void)
 {
-	int nTexCnt;
+	// int nTexCnt;
 	s_nTimeTitle++;
 
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ

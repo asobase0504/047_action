@@ -144,7 +144,7 @@ void InitRectTex(VERTEX_2D * vtx)
 //=========================================
 // 頂点バッファのテクスチャ座標の設定
 //=========================================
-void SetRextTex(VERTEX_2D * vtx, float top, float bottom, float left, float right)
+void SetRectTex(VERTEX_2D * vtx, float top, float bottom, float left, float right)
 {
 	vtx[0].tex = D3DXVECTOR2(left, top);
 	vtx[1].tex = D3DXVECTOR2(right, top);

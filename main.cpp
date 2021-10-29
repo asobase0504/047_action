@@ -16,6 +16,7 @@
 #include "title.h"
 #include "result.h"
 #include "ranking.h"
+#include "score.h"
 #include "player.h"
 #include "particle.h"
 #include "effect.h"
@@ -513,7 +514,7 @@ void SetMode(MODE mode)
 
 	case MODE_RANKING:	// ƒ‰ƒ“ƒLƒ“ƒO‰æ–Ê
 		InitRanking();
-		// 		SetRanking(GetScore());
+ 		SetRanking(GetScore());
 		break;
 	}
 

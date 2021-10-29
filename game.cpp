@@ -16,6 +16,7 @@
 #include "block.h"
 #include "ranking.h"
 #include "time.h"
+#include "score.h"
 #include <assert.h>
 
 //------------------------------------
@@ -23,10 +24,11 @@
 //------------------------------------
 typedef enum
 {
-	GAMESTATE_NONE = 0,	//何もしてないとき
-	GAMESTATE_NORMAL,	//ゲームプレイ時
-	GAMESTATE_END,		//ゲーム終了時
-	GAMESTATE_RANKING,	//ランキング表示時
+	GAMESTATE_NONE = 0,			// 何もしてないとき
+	GAMESTATE_NORMAL,			// ゲームプレイ時
+	GAMESTATE_END,				// ゲーム終了時
+	GAMESTATE_RANKING_INIT,		// ランキングの初期化
+	GAMESTATE_RANKING_NORMAL,	// ランキング表示時
 }GAMESTATE;
 
 //------------------------------------
@@ -66,13 +68,24 @@ void InitGame(void)
 	// タイムの終了処理
 	InitTime();
 
+	// スコアの初期化
+	InitScore();
+
+	// ブロックの設定
 	SetBlock({ 500.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
 	SetBlock({ 1150.0f,25.0f,0.0f }, 25.0f, 650.0f, 0);
 	SetBlock({ 1800.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
 	SetBlock({ 1150.0f,SCREEN_HEIGHT-25.0f,0.0f }, 25.0f, 650.0f, 0);
 
+	// エネミーの設定
 	SetEnemy({ 1100.0f,550.0f,0.0f }, ENEMYTYPE_SPLITBALL_FIRST);
 	SetEnemy({ 1100.0f,70.0f,0.0f }, ENEMYTYPE_EXTENDBALL_UP);
+
+	// スコアの設定
+	SetScore(1234);
+
+	// ランキングの読込
+	ResetRanking();
 
 	s_nRankInterval = 0;
 }
@@ -105,6 +118,9 @@ void UninitGame(void)
 
 	// タイムの終了処理
 	UninitTime();
+
+	// スコアの終了処理
+	UninitScore();
 }
 
 //====================================
@@ -121,6 +137,9 @@ void UpdateGame(void)
 		//時間の更新処理
 		UpdateTime();
 
+		// スコアの更新処理
+		UpdateScore();
+
 		//プレイヤーが死んだか判定する
 		Player *player = GetPlayer();
 		if (player->state == PLAYERSTATE_DEATH)
@@ -134,10 +153,15 @@ void UpdateGame(void)
 		s_nRankInterval++;
 		if (s_nRankInterval >= 100)
 		{
-			s_GameState = GAMESTATE_RANKING;	//ランキング表示時に移行
+			s_GameState = GAMESTATE_RANKING_INIT;	//ランキング表示時に移行
 		}
 		break;
-	case GAMESTATE_RANKING:
+	case GAMESTATE_RANKING_INIT:
+	//	InitRanking();
+		SetRanking(GetScore());
+		s_GameState = GAMESTATE_RANKING_NORMAL;	//ランキング表示時に移行
+		break;
+	case GAMESTATE_RANKING_NORMAL:
 		UpdateRanking();
 		break;
 	default:
@@ -188,7 +212,10 @@ void DrawGame(void)
 	
 	// 時間の描画処理
 	DrawTime();
-	if (s_GameState == GAMESTATE_RANKING)
+
+	// スコアの描画処理
+	DrawScore();
+	if (s_GameState == GAMESTATE_RANKING_NORMAL)
 	{
 		DrawRanking();
 	}

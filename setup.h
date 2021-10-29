@@ -22,7 +22,7 @@ void SetRectUpRightPos	(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHe
 void InitRectColor		(VERTEX_2D *vtx);					// 	--------------------	// 頂点バッファの色の初期化
 void SetRectColor		(VERTEX_2D *vtx, D3DXCOLOR *inColor);							// 頂点バッファの色設定
 void InitRectTex		(VERTEX_2D *vtx);					// 	--------------------	// 頂点バッファのテクスチャ座標の初期化
-void SetRextTex			(VERTEX_2D *vtx,float top,float bottom,float left,float right);	// 頂点バッファのテクスチャ座標の設定
+void SetRectTex			(VERTEX_2D *vtx,float top,float bottom,float left,float right);	// 頂点バッファのテクスチャ座標の設定
 void InitRectRhw		(VERTEX_2D *vtx);
 
 // 				// 
