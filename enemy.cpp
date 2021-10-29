@@ -11,6 +11,7 @@
 #include "effect.h"
 #include "player.h"
 #include "block.h"
+#include "score.h"
 #include <assert.h>
 
 //------------------------------------
@@ -24,6 +25,13 @@ static LPDIRECT3DTEXTURE9 s_pTexture[ENEMYTYPE_MAX] = {};		// テクスチャバッファ
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;			// 頂点バッファ
 static Enemy s_aEnemy[MAX_ENEMY];							// 敵の情報
 static int s_nEnemyCnt = 0;									// 敵の数
+
+//------------------------------------
+// プロトタイプ宣言
+//------------------------------------
+static void NeutralEnemy(Enemy *pEnemy);				// 待機処理
+static void AttackEnemy(Enemy *pEnemy);				// 攻撃処理
+static void DieEnemy(Enemy *pEnemy);					// 死亡処理
 
 //====================================
 // 敵の初期化処理
@@ -89,15 +97,7 @@ void InitEnemy(void)
 	{
 		pEnemy = &(s_aEnemy[nCntEnemy]);
 
-		// 頂点座標の設定
-		SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
-
-		// 頂点カラーの設定
-		SetRectColor(pVtx, &(pEnemy->col));
-		// テクスチャ座標の設定
-		InitRectTex(pVtx);
-		// rhwの設定
-		InitRectRhw(pVtx);
+		InitRect(pVtx);
 
 		pVtx += 4;
 	}
@@ -110,9 +110,7 @@ void InitEnemy(void)
 //====================================
 void UninitEnemy(void)
 {
-	int nCntEnemy;
-
-	for (nCntEnemy = 0; nCntEnemy < ENEMYTYPE_MAX; nCntEnemy++)
+	for (int nCntEnemy = 0; nCntEnemy < ENEMYTYPE_MAX; nCntEnemy++)
 	{
 		// テクスチャの破棄
 		if (s_pTexture[nCntEnemy] != NULL)
@@ -137,12 +135,11 @@ void UpdateEnemy(void)
 {
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 	Enemy *pEnemy;			// 敵のポインタ
-	int nCntEnemy;
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (nCntEnemy = 0; nCntEnemy < MAX_ENEMY; nCntEnemy++)
+	for (int nCntEnemy = 0; nCntEnemy < MAX_ENEMY; nCntEnemy++)
 	{
 		pEnemy = &(s_aEnemy[nCntEnemy]);
 
@@ -173,7 +170,29 @@ void UpdateEnemy(void)
 			bisLanding = CollisionBlockEnemy(pEnemy, pVtx[3].pos, pVtx[0].pos);
 
 			// 頂点座標の設定
-			SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
+			switch (pEnemy->type)
+			{
+			case ENEMYTYPE_SPLITBALL_FIRST:		// 別れる球の最初
+			case ENEMYTYPE_SPLITBALL_SECOND:	// 別れる球の２回目
+			case ENEMYTYPE_SPLITBALL_LAST:		// 別れる球の最後
+
+				SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
+
+				break;
+			case ENEMYTYPE_EXTENDBALL_UP:			// 伸びる円、上から下
+
+				SetRectUpRightPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
+				break;
+			case ENEMYTYPE_EXTENDBALL_DWON:			// 伸びる円、下から上
+				break;
+			case ENEMYTYPE_EXTENDBALL_LEFT:			// 伸びる円、左から右
+				break;
+			case ENEMYTYPE_EXTENDBALL_RIGHT:		// 伸びる円、右から左
+				break;
+			default:
+				assert(false);	// 本来通らない場所
+				break;
+			}
 
 			// カラーの設定
 			SetRectColor(pVtx, &(pEnemy->col));
@@ -189,7 +208,7 @@ void UpdateEnemy(void)
 //====================================
 // 敵の待機処理
 //====================================
-void NeutralEnemy(Enemy *pEnemy)
+static void NeutralEnemy(Enemy *pEnemy)
 {
 	switch (pEnemy->type)
 	{
@@ -226,7 +245,7 @@ void NeutralEnemy(Enemy *pEnemy)
 //====================================
 // 敵の攻撃処理
 //====================================
-void AttackEnemy(Enemy *pEnemy)
+static void AttackEnemy(Enemy *pEnemy)
 {
 	Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
 	float fRotDest;					// 敵とプレイヤーを結ぶ線の角度
@@ -246,8 +265,8 @@ void AttackEnemy(Enemy *pEnemy)
 		{
 			// 突進攻撃
 			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-			pEnemy->move.x = sinf(fRotDest) * 10.0f;
-			pEnemy->move.y = cosf(fRotDest) * 10.0f;
+			pEnemy->move.x = sinf(fRotDest) * 20.0f;
+			pEnemy->move.y = cosf(fRotDest) * 20.0f;
 
 			pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 			// 攻撃サイクルのリセット
@@ -255,7 +274,7 @@ void AttackEnemy(Enemy *pEnemy)
 		}
 		break;
 	case ENEMYTYPE_EXTENDBALL_UP:			// 伸びる円、上から下
-		pEnemy->fHeight++;
+		pEnemy->fHeight += 1.5f;
 		break;
 	case ENEMYTYPE_EXTENDBALL_DWON:			// 伸びる円、下から上
 		if (pEnemy->nAtkInterval >= 150)
@@ -285,23 +304,28 @@ void AttackEnemy(Enemy *pEnemy)
 //====================================
 // 敵の死亡処理
 //====================================
-void DieEnemy(Enemy *pEnemy)
+static void DieEnemy(Enemy *pEnemy)
 {
 	switch (pEnemy->type)
 	{
 	case ENEMYTYPE_SPLITBALL_FIRST:		// 別れる球の最初
 		SetEnemy(pEnemy->pos, ENEMYTYPE_SPLITBALL_SECOND);
 		SetEnemy(pEnemy->pos, ENEMYTYPE_SPLITBALL_SECOND);
+		AddScore(100);
 		pEnemy->bUse = false;
 		break;
 	case ENEMYTYPE_SPLITBALL_SECOND:	// 別れる球の２回目
 		SetEnemy(pEnemy->pos, ENEMYTYPE_SPLITBALL_LAST);
 		SetEnemy(pEnemy->pos, ENEMYTYPE_SPLITBALL_LAST);
+		AddScore(100);
 		pEnemy->bUse = false;
 		break;
 	case ENEMYTYPE_SPLITBALL_LAST:		// 別れる球の最後
+		AddScore(100);
+		pEnemy->bUse = false;
 		break;	// 消す処理
 	case ENEMYTYPE_EXTENDBALL_UP:		// 伸びる円、上から下
+		AddScore(50);
 		pEnemy->bUse = false;
 		break;
 	case ENEMYTYPE_EXTENDBALL_DWON:		// 伸びる円、下から上
@@ -505,7 +529,7 @@ int GetCntEnemy(void)
 //====================================
 // ブロックの当たり判定処理
 //====================================
-bool CollisionEnemy(Player *pPlayer, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
+bool CollisionEnemy(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 {
 	bool bisLanding = false;
 	// 当たり判定処理

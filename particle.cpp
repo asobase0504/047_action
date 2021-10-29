@@ -238,13 +238,13 @@ void UpdateParticle(void)
 			else
 			{
 				// 移動量を更新(減衰)
-				pParticle->move.x += (0 - pParticle->move.x) * 0.015f;
-				pParticle->move.y += (0 - pParticle->move.y) * 0.015f;
+				pParticle->move.x += (0 - pParticle->move.x) * 0.03f;
+				pParticle->move.y += (0 - pParticle->move.y) * 0.03f;
 			}
 		}
 			break;
 		case PARTICLE_SPLITBALL_ATTACK:
-			pParticle->fRaduus--;
+			pParticle->fRaduus -= 2;
 			if (pParticle->fRaduus <= 0)
 			{
 				pParticle->bUse = false;
@@ -345,8 +345,8 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 		{
 		case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプパーティクル
 			pParticle->pos = pos;
-			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.1f);
-			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.1f);
+			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
+			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->move.z = 0.0f;
 			pParticle->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			pParticle->fRaduus = 10.0f;
@@ -364,11 +364,11 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			break;
 		case PARTICLE_PLAYER_DEATH:
 			pParticle->pos = pos;
-			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 5.0f);
-			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 5.0f);
+			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 10.0f);
+			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 10.0f);
 			pParticle->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 			pParticle->fRaduus = 7.0f;
-			pParticle->nMaxLife = 75;
+			pParticle->nMaxLife = 40;
 			pParticle->nLife = pParticle->nMaxLife;
 			break;
 		default:

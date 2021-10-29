@@ -43,7 +43,6 @@ void InitPlayer(void)
 	pPlayer->move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 移動量を初期化
 	pPlayer->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);					// 向きを初期化
 	pPlayer->nLife = 3;												// 体力の
-	pPlayer->fMove = PLAYER_MOVE;									// 移動速度
 	pPlayer->fWidth = PLAYER_WIDTH;									// プレイヤーの幅
 	pPlayer->fHeigth = PLAYER_HEIGTH;								// プレイヤーの高さ
 	pPlayer->bUse = true;											// プレイヤーの表示の有無
@@ -147,9 +146,6 @@ void UpdatePlayer(void)
 		// 前回の回転を更新
 		pPlayer->rotOld = pPlayer->rot;
 
-		// 移動処理
-		MovePlayer();
-
 		// ジャンプ処理
 		if (pPlayer->nJumpCnt < PLAYER_JUMPMAX)
 		{// ジャンプ回数
@@ -170,9 +166,9 @@ void UpdatePlayer(void)
 		}
 
 		// 回転処理
-		if (GetKeyboardPress(DIK_Q))
+		if (GetKeyboardPress(DIK_A))
 		{
-			pPlayer->rot.z += 0.1f;
+			pPlayer->rot.z += 0.25f;
 
 			// 中心座標の移行
 			if (pPlayer->rot.z >= 0.0f && pPlayer->Centerpos == PLAYER_POS_RIGHT)
@@ -182,9 +178,9 @@ void UpdatePlayer(void)
 				pPlayer->Centerpos = PLAYER_POS_LEFT;
 			}
 		}
-		if (GetKeyboardPress(DIK_E))
+		if (GetKeyboardPress(DIK_D))
 		{
-			pPlayer->rot.z -= 0.1f;
+			pPlayer->rot.z -= 0.25f;
 
 			// 中心座標の移行
 			if (pPlayer->rot.z <= 0.0f && pPlayer->Centerpos == PLAYER_POS_LEFT)
@@ -274,10 +270,10 @@ void UpdatePlayer(void)
 	bisLanding = CollisionBlock(pPlayer, pVtx[3].pos, pVtx[0].pos);
 
 	// 敵との当たり判定
-	CollisionEnemy(pPlayer, pVtx[0].pos, pVtx[1].pos);
-	CollisionEnemy(pPlayer, pVtx[1].pos, pVtx[2].pos);
-	CollisionEnemy(pPlayer, pVtx[2].pos, pVtx[3].pos);
-	CollisionEnemy(pPlayer, pVtx[3].pos, pVtx[0].pos);
+	CollisionEnemy(pVtx[0].pos, pVtx[1].pos);
+	CollisionEnemy(pVtx[1].pos, pVtx[2].pos);
+	CollisionEnemy(pVtx[2].pos, pVtx[3].pos);
+	CollisionEnemy(pVtx[3].pos, pVtx[0].pos);
 
 	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
@@ -307,43 +303,6 @@ void DrawPlayer(void)
 
 		// ポリゴンの描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-	}
-}
-
-//=========================================
-// プレイヤーの移動処理
-//=========================================
-void MovePlayer(void)
-{
-	Player *pPlayer;
-	pPlayer = &(s_player);
-
-	// キーボードの移動処理
-	switch (pPlayer->jumpstate)
-	{
-	case JUMP_NOW:
-		if (GetJoypadPress(JOYKEY_LEFT) || GetKeyboardPress(DIK_A))
-		{// Aキーが押された
-			pPlayer->move.x += sinf(D3DX_PI * -0.5f) * (pPlayer->fMove * 0.5f);
-		}
-		else if (GetJoypadPress(JOYKEY_RIGHT) || GetKeyboardPress(DIK_D))
-		{// Dキーが押された
-			pPlayer->move.x += sinf(D3DX_PI * 0.5f) * (pPlayer->fMove * 0.5f);
-		}
-		break;
-	case JUMP_NONE:
-		if (GetJoypadPress(JOYKEY_LEFT) || GetKeyboardPress(DIK_A))
-		{// Aキーが押された
-			pPlayer->move.x += sinf(D3DX_PI * -0.5f) * pPlayer->fMove;
-		}
-		else if (GetJoypadPress(JOYKEY_RIGHT) || GetKeyboardPress(DIK_D))
-		{// Dキーが押された
-			pPlayer->move.x += sinf(D3DX_PI * 0.5f) * pPlayer->fMove;
-		}
-		break;
-	default:
-		assert(false);
-		break;
 	}
 }
 

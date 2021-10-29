@@ -13,10 +13,9 @@
 #define PLAYER_TEX		("data/TEXTURE/player00.png")	// プレイヤーのテクスチャ
 #define PLAYER_WIDTH	(35.0f)							// プレイヤーの幅
 #define PLAYER_HEIGTH	(35.0f)							// プレイヤーの高さ
-#define PLAYER_MOVE		(0.05f)							// プレイヤー移動量
-#define PLAYER_JUMPMOVE	(15.0f)							// プレイヤーの跳躍量
+#define PLAYER_JUMPMOVE	(25.0f)							// プレイヤーの跳躍量
 #define PLAYER_JUMPMAX	(10)							// プレイヤーの跳躍回数
-#define WOARD_GRAVITY	(0.3f)							// 世界の重力
+#define WOARD_GRAVITY	(1.0f)							// 世界の重力
 
 //------------------------------------
 // プレイヤーの状態

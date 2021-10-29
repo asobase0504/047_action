@@ -117,7 +117,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	ShowWindow(hWnd, nCmdShow);	// ウィンドウの表示状態を設定
 	UpdateWindow(hWnd);			// クライアント領域を更新
 
-								// メッセージループ
+	// メッセージループ
 	while (1)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0)
@@ -147,7 +147,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 			}
 			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
 			{// 60分の1秒経過
-				dwCurrentTime = dwExecLastTime;	// 処理開始の時刻[現在時刻]を保存
+				dwExecLastTime = dwCurrentTime;	// 処理開始の時刻[現在時刻]を保存
 
 				// 更新処理
 				Update();

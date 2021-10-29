@@ -466,8 +466,8 @@ bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION positi
 	float v_Bv = D3DXVec2Cross(&(v), &(vBlock.vector));
 	float v_Tv = D3DXVec2Cross(&(v), &(vTarget.vector));
 
-	float hit1 = v_Tv / Bv_Tv;
-	float hit2 = v_Bv / Bv_Tv;
+	float hit1 = v_Bv / Bv_Tv;
+	float hit2 = v_Tv / Bv_Tv;
 
 	return !((hit1 < 0.0f) || (hit1 > 1.0f) || (hit2 < 0.0f) || (hit2 > 1.0f));
 }

@@ -67,16 +67,14 @@ typedef struct
 void InitEnemy(void);							// ‰Šú‰»ˆ—
 void UninitEnemy(void);							// I—¹ˆ—
 void UpdateEnemy(void);							// XVˆ—
-void NeutralEnemy(Enemy *pEnemy);				// ‘Ò‹@ˆ—
-void AttackEnemy(Enemy *pEnemy);				// UŒ‚ˆ—
-void DieEnemy(Enemy *pEnemy);					// €–Sˆ—
-void DeleteEnemy(void);
+void DeleteEnemy(void);							// ‘S–Å‚³‚¹‚éˆ—
 void DrawEnemy(void);							// •`‰æˆ—
 void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type);	// İ’èˆ—
-void HitEnemy(int nCntEnemy, int nDamage);		// “–‚½‚è”»’èˆ—
-int GetCntEnemy(void);							// “G‚Ì”æ“¾ˆ—
+void SummonEnemy(void);							// ¢Š«ˆ—
 Enemy *GetEnemy(void);							// æ“¾ˆ—
-bool CollisionEnemy(Player *pPlayer, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2);
-bool CrossingEnemy(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2, JUDGE_POSITION position, Enemy enemy);
+int GetCntEnemy(void);							// “G‚Ì”æ“¾ˆ—
+void HitEnemy(int nCntEnemy, int nDamage);		// “–‚½‚è”»’èˆ—
 
+bool CollisionEnemy(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2);	//“–‚½‚è”»’èˆ—
+bool CrossingEnemy(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2, JUDGE_POSITION position, Enemy enemy);	//“–‚½‚è”»’è‚ÌŒvZˆ—
 #endif // !_ENEMY_H_
