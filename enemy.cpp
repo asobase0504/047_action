@@ -222,10 +222,10 @@ static void NeutralEnemy(Enemy *pEnemy)
 
 			// 少しだけプレイヤーの反対方向にmove
 			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-			pEnemy->move.x = -(sinf(fRotDest) * 1.0f);
-			pEnemy->move.y = -(cosf(fRotDest) * 1.0f);
+			pEnemy->move.x = sinf(fRotDest) * 0.5f;
+			pEnemy->move.y = cosf(fRotDest) * 0.5f;
 
-			pEnemy->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pEnemy->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 		}
 		break;
 	case EXTENDBALL_UP:			// 伸びる円、上から下
@@ -410,40 +410,34 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			switch (pEnemy->type)
 			{
 			case SPLITBALL_FIRST:
-				// 少しだけプレイヤーの反対方向にmove
-				fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-				pEnemy->move.x = -(sinf(fRotDest) * 1.0f);
-				pEnemy->move.y = -(cosf(fRotDest) * 1.0f);
+				// エネミーの待機動作
+				NeutralEnemy(pEnemy);
 				// 寿命設定
-				pEnemy->nLife = 5;
+				pEnemy->nLife = 1;
 				// 画像の大きさ設定
 				pEnemy->fHeight = 60.0f;	// 高さ
 				pEnemy->fWidth = 60.0f;	// 幅
 				break;
 			case SPLITBALL_SECOND:
-				// 少しだけプレイヤーの反対方向にmove
-				fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-				pEnemy->move.x = -(sinf(fRotDest) * 1.0f);
-				pEnemy->move.y = -(cosf(fRotDest) * 1.0f);
+				// エネミーの待機動作
+				NeutralEnemy(pEnemy);
 				// 位置を少し散らす
 				pEnemy->pos.x = pos.x + (float)(rand() % 50);
 				pEnemy->pos.y = pos.y + -(float)(rand() % 50);
 				// 寿命設定
-				pEnemy->nLife = 5;
+				pEnemy->nLife = 1;
 				// 画像の大きさ設定
 				pEnemy->fHeight = 50.0f;	// 高さ
 				pEnemy->fWidth = 50.0f;		// 幅
 				break;
 			case SPLITBALL_LAST:
-				// 少しだけプレイヤーの反対方向にmove
-				fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-				pEnemy->move.x = -(sinf(fRotDest) * 1.0f);
-				pEnemy->move.y = -(cosf(fRotDest) * 1.0f);
+				// エネミーの待機動作
+				NeutralEnemy(pEnemy);
 				// 位置を少し散らす
 				pEnemy->pos.x = pos.x + (float)(rand() % 20);
 				pEnemy->pos.y = pos.y + -(float)(rand() % 20);
 				// 寿命設定
-				pEnemy->nLife = 5;
+				pEnemy->nLife = 1;
 				// 画像の大きさ設定
 				pEnemy->fHeight = 40.0f;	// 高さ
 				pEnemy->fWidth = 40.0f;		// 幅
@@ -466,9 +460,6 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			// 頂点座標の設定
 			SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
 			
-			// 頂点カラーの設定
-			pEnemy->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-
 			// 向き設定
 
 			pEnemy->bUse = true;	// 使用している状態にする

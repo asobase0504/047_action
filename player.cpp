@@ -87,9 +87,12 @@ void InitPlayer(void)
 	pVtx[3].pos.z = 0.0f;
 
 	// 頂点カラーの設定
-	InitRectColor(pVtx);
+	SetRectColor(pVtx,&((D3DXCOLOR(0.0f,1.0f,1.0f,1.0f))));
+
 	// テクスチャ座標の設定
+
 	InitRectTex(pVtx);
+
 	// rhwの設定
 	InitRectRhw(pVtx);
 
