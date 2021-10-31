@@ -34,13 +34,13 @@ typedef enum
 //------------------------------------
 typedef enum
 {
-	ENEMYTYPE_SPLITBALL_FIRST,	// 別れる球最初
-	ENEMYTYPE_SPLITBALL_SECOND,	// 別れる球二回目
-	ENEMYTYPE_SPLITBALL_LAST,	// 別れる球
-	ENEMYTYPE_EXTENDBALL_UP,	// 伸びる円、上から下
-	ENEMYTYPE_EXTENDBALL_DWON,	// 伸びる円、下から上
-	ENEMYTYPE_EXTENDBALL_LEFT,	// 伸びる円、左から右
-	ENEMYTYPE_EXTENDBALL_RIGHT,	// 伸びる円、右から左
+	SPLITBALL_FIRST,	// 別れる球最初
+	SPLITBALL_SECOND,	// 別れる球二回目
+	SPLITBALL_LAST,		// 別れる球
+	EXTENDBALL_UP,		// 伸びる円、上から下
+	EXTENDBALL_DWON,	// 伸びる円、下から上
+	EXTENDBALL_LEFT,	// 伸びる円、左から右
+	EXTENDBALL_RIGHT,	// 伸びる円、右から左
 	ENEMYTYPE_MAX,
 }ENEMYTYPE;
 
@@ -70,7 +70,6 @@ void UpdateEnemy(void);							// 更新処理
 void DeleteEnemy(void);							// 全滅させる処理
 void DrawEnemy(void);							// 描画処理
 void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type);	// 設定処理
-void SummonEnemy(void);							// 召喚処理
 Enemy *GetEnemy(void);							// 取得処理
 int GetCntEnemy(void);							// 敵の数取得処理
 void HitEnemy(int nCntEnemy, int nDamage);		// 当たり判定処理

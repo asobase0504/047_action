@@ -250,7 +250,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 		{// ブロックが生きてたら
 
 			// 上
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock]))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock],NULL))
 			{
 				pPlayer->move.y = 0.0f;
  				pPlayer->pos.y = pBlock->pos.y - pBlock->fHeight;
@@ -258,35 +258,31 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 				pPlayer->jumpstate = JUMP_NONE;
 				bisLanding = true;
 
-				pBlock->col = D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f);
 			}
 
 			// 下
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock]))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], NULL))
 			{
 				pPlayer->move.y = 0.0f;
 				pPlayer->pos.y = pBlock->pos.y + pBlock->fHeight + pPlayer->fHeigth;
-				pBlock->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 			}
 
 			// 左
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock]))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], NULL))
 			{
 				pPlayer->move.x = 0.0f;
 				pPlayer->pos.x = pBlock->pos.x - pBlock->fWidth - pPlayer->fWidth;
 				pPlayer->rot.z = pPlayer->rotOld.z;
 // 				pPlayer->pos.x = pPlayer->pos.x - 5.0f;
-				pBlock->col = D3DXCOLOR(0.5f, 1.0f, 0.5f, 1.0f);
 			}
 
 			// 右
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock]))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], NULL))
 			{
 				pPlayer->move.x = 0.0f;
 				pPlayer->pos.x = pBlock->pos.x + pBlock->fWidth + pPlayer->fWidth;
 				pPlayer->rot.z = pPlayer->rotOld.z;
 // 				pPlayer->pos.x = pPlayer->pos.x + 5.0f;
-				pBlock->col = D3DXCOLOR(0.5f, 0.5f, 1.0f, 1.0f);
 			}
 		}
 	}
@@ -317,67 +313,65 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 		{// ブロックが生きてたら
 
 		 // 上
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock]))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock], NULL))
 			{
 // 				pEnemy->move *= -1.0f;
 				pEnemy->pos.y = pBlock->pos.y - pBlock->fHeight - pEnemy->fHeight - 1.0f;
 
 				switch (pEnemy->type)
 				{
-				case ENEMYTYPE_SPLITBALL_FIRST:
-				case ENEMYTYPE_SPLITBALL_SECOND:
-				case ENEMYTYPE_SPLITBALL_LAST:
+				case SPLITBALL_FIRST:
+				case SPLITBALL_SECOND:
+				case SPLITBALL_LAST:
 					if (pEnemy->nAtkInterval < 150)
 					{
 						pEnemy->nLife--;
 						pEnemy->nAtkInterval = 150;
 					}
 					break;
-				case ENEMYTYPE_EXTENDBALL_UP:
+				case EXTENDBALL_UP:
 					pEnemy->nLife--;
 					break;
-				case ENEMYTYPE_EXTENDBALL_DWON:
-				case ENEMYTYPE_EXTENDBALL_LEFT:
-				case ENEMYTYPE_EXTENDBALL_RIGHT:
+				case EXTENDBALL_DWON:
+				case EXTENDBALL_LEFT:
+				case EXTENDBALL_RIGHT:
 				default:
 					break;
 				}
 				bisLanding = true;
 
-				pBlock->col = D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f);
 			}
 
 			// 下
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock]))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
 // 				pEnemy->move *= -1.0f;
 				pEnemy->pos.y = pBlock->pos.y + pBlock->fHeight + pEnemy->fHeight + 5.0f;
 				switch (pEnemy->type)
 				{
-				case ENEMYTYPE_SPLITBALL_FIRST:
-				case ENEMYTYPE_SPLITBALL_SECOND:
-				case ENEMYTYPE_SPLITBALL_LAST:
+				case SPLITBALL_FIRST:
+				case SPLITBALL_SECOND:
+				case SPLITBALL_LAST:
 					if (pEnemy->nAtkInterval < 150)
 					{
 						pEnemy->nLife--;
 						pEnemy->nAtkInterval = 150;
 					}
 					break;
-				case ENEMYTYPE_EXTENDBALL_UP:
+				case EXTENDBALL_UP:
 					break;
-				case ENEMYTYPE_EXTENDBALL_DWON:
+				case EXTENDBALL_DWON:
 					pEnemy->nLife--;
 					break;
-				case ENEMYTYPE_EXTENDBALL_LEFT:
-				case ENEMYTYPE_EXTENDBALL_RIGHT:
+				case EXTENDBALL_LEFT:
+				case EXTENDBALL_RIGHT:
 				default:
 					break;
 				}
-				pBlock->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 			}
 
 			// 左
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock]))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
 // 				pEnemy->move *= -1.0f;
 // 				pEnemy->pos.x = pBlock->pos.x - pBlock->fWidth - pEnemy->fWidth - 1.0f;
@@ -387,11 +381,10 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 					pEnemy->nLife--;
 					pEnemy->nAtkInterval = 150;
 				}
-				pBlock->col = D3DXCOLOR(0.5f, 1.0f, 0.5f, 1.0f);
 			}
 
 			// 右
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock]))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
 // 				pEnemy->move *= -1.0f;
 // 				pEnemy->pos.x = pBlock->pos.x + pBlock->fWidth + pEnemy->fWidth + 1.0f;
@@ -401,7 +394,6 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 					pEnemy->nLife--;
 					pEnemy->nAtkInterval = 150;
 				} 
-				pBlock->col = D3DXCOLOR(0.5f, 0.5f, 1.0f, 1.0f);
 			}
 		}
 	}
@@ -415,7 +407,7 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 //====================================
 // ブロックの線分の交差判定処理
 //====================================
-bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION position,Block block)
+bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION position,Block block, D3DXVECTOR3 *Point)
 {
 	// 当たり判定処理
 	Block *pBlock = &(block);

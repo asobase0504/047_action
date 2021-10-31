@@ -17,6 +17,7 @@
 #include "ranking.h"
 #include "time.h"
 #include "score.h"
+#include "summon.h"
 #include <assert.h>
 
 //------------------------------------
@@ -78,8 +79,9 @@ void InitGame(void)
 	SetBlock({ 1150.0f,SCREEN_HEIGHT-25.0f,0.0f }, 25.0f, 650.0f, 0);
 
 	// エネミーの設定
-	SetEnemy({ 1100.0f,550.0f,0.0f }, ENEMYTYPE_SPLITBALL_FIRST);
-	SetEnemy({ 1100.0f,70.0f,0.0f }, ENEMYTYPE_EXTENDBALL_UP);
+	SetEnemy({ 1100.0f,550.0f,0.0f }, SPLITBALL_FIRST);
+	SetEnemy({ 1600.0f,550.0f,0.0f }, SPLITBALL_FIRST);
+	SetEnemy({ 1100.0f,70.0f,0.0f }, EXTENDBALL_UP);
 
 	// スコアの設定
 	SetScore(1234);
@@ -134,11 +136,17 @@ void UpdateGame(void)
 		break;
 	case GAMESTATE_NORMAL:
 	{
+		//敵の召喚
+		UpdateSummon();
+
 		//時間の更新処理
 		UpdateTime();
 
 		// スコアの更新処理
 		UpdateScore();
+
+		// エネミーの更新処理
+		UpdateEnemy();
 
 		//プレイヤーが死んだか判定する
 		Player *player = GetPlayer();
@@ -179,9 +187,6 @@ void UpdateGame(void)
 
 	// プレイヤーの更新処理
 	UpdatePlayer();
-
-	// エネミーの更新処理
-	UpdateEnemy();
 
 	// ブロックの更新処理
 	UpdateBlock();
