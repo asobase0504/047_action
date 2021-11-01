@@ -237,7 +237,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 	bool bisLanding = false;
 	// 当たり判定処理
 	Block *pBlock = s_aBlock;
-
+	D3DXVECTOR3 Outpos = D3DXVECTOR3(0.0f,0.0f,0.0f);	//当たり判定の交点
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -249,25 +249,27 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 		if (pBlock->bUse == true)
 		{// ブロックが生きてたら
 
-			// 上
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock],NULL))
+			// ブロック上
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock], NULL))
 			{
 				pPlayer->move.y = 0.0f;
- 				pPlayer->pos.y = pBlock->pos.y - pBlock->fHeight;
+				pPlayer->pos.y = pBlock->pos.y - pBlock->fHeight;
 				pPlayer->nJumpCnt = 0;
 				pPlayer->jumpstate = JUMP_NONE;
 				bisLanding = true;
 
 			}
 
-			// 下
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], NULL))
+			// ブロック下
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], &(Outpos)))
 			{
-				pPlayer->move.y = 0.0f;
-				pPlayer->pos.y = pBlock->pos.y + pBlock->fHeight + pPlayer->fHeigth;
+				D3DXVECTOR3 p;
+				p = pos1 - Outpos;
+  				pPlayer->move.y = 0.0f;
+				pPlayer->pos.y = pBlock->pos.y + p.y;
 			}
 
-			// 左
+			// ブロック左
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], NULL))
 			{
 				pPlayer->move.x = 0.0f;
@@ -276,7 +278,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 // 				pPlayer->pos.x = pPlayer->pos.x - 5.0f;
 			}
 
-			// 右
+			// ブロック右
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], NULL))
 			{
 				pPlayer->move.x = 0.0f;
@@ -300,7 +302,6 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 	bool bisLanding = false;
 	// 当たり判定処理
 	Block *pBlock = s_aBlock;
-
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -391,7 +392,7 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 //====================================
 // ブロックの線分の交差判定処理
 //====================================
-bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION position,Block block, D3DXVECTOR3 *Point)
+bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION position,Block block, D3DXVECTOR3 *Outpos)
 {
 	// 当たり判定処理
 	Block *pBlock = &(block);
@@ -445,7 +446,14 @@ bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION positi
 	float hit1 = v_Bv / Bv_Tv;
 	float hit2 = v_Tv / Bv_Tv;
 
-	return !((hit1 < 0.0f) || (hit1 > 1.0f) || (hit2 < 0.0f) || (hit2 > 1.0f));
+	if ((hit1 < 0.0f) || (hit1 > 1.0f) || (hit2 < 0.0f) || (hit2 > 1.0f))
+	{
+		return false;
+	}
+
+	Outpos = &(vTarget.start + vTarget.vector * v_Bv);
+	Outpos->z = 0.0f;
+	return true;
 }
 
 //====================================
