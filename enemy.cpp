@@ -178,32 +178,31 @@ void UpdateEnemy(void)
 			// 座標の移動処理
 			pEnemy->pos += pEnemy->move;
 
-			float bisLanding;
 			// それぞれの頂点座標の当たり判定
-			bisLanding = CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[1].pos);
-			bisLanding = CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[2].pos);
-			bisLanding = CollisionBlockEnemy(pEnemy, pVtx[2].pos, pVtx[3].pos);
-			bisLanding = CollisionBlockEnemy(pEnemy, pVtx[3].pos, pVtx[0].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[1].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[2].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[2].pos, pVtx[3].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[3].pos, pVtx[0].pos);
 
 			// 頂点座標の設定
 			switch (pEnemy->type)
 			{
-			case SPLITBALL_FIRST:		// 別れる球の最初
+			case SPLITBALL_FIRST:	// 別れる球の最初
 			case SPLITBALL_SECOND:	// 別れる球の２回目
-			case SPLITBALL_LAST:		// 別れる球の最後
+			case SPLITBALL_LAST:	// 別れる球の最後
 
 				SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
 
 				break;
-			case EXTENDBALL_UP:			// 伸びる円、上から下
+			case EXTENDBALL_UP:		// 伸びる円、上から下
 
 				SetRectUpRightPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
 				break;
-			case EXTENDBALL_DWON:			// 伸びる円、下から上
+			case EXTENDBALL_DWON:	// 伸びる円、下から上
 				break;
-			case EXTENDBALL_LEFT:			// 伸びる円、左から右
+			case EXTENDBALL_LEFT:	// 伸びる円、左から右
 				break;
-			case EXTENDBALL_RIGHT:		// 伸びる円、右から左
+			case EXTENDBALL_RIGHT:	// 伸びる円、右から左
 				break;
 			case GOSTRAIGHT_UP:		// 直進する長方形、上から下
 				SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
@@ -242,9 +241,9 @@ static void NeutralEnemy(Enemy *pEnemy)
 {
 	switch (pEnemy->type)
 	{
-	case SPLITBALL_FIRST:		// 別れる球の最初
+	case SPLITBALL_FIRST:	// 別れる球の最初
 	case SPLITBALL_SECOND:	// 別れる球の２回目
-	case SPLITBALL_LAST:		// 別れる球の最後
+	case SPLITBALL_LAST:	// 別れる球の最後
 		if (pEnemy->nAtkInterval >= 150)
 		{
 			float fRotDest;
@@ -277,7 +276,7 @@ static void NeutralEnemy(Enemy *pEnemy)
 	case DAMEGE_WALL:		// ダメージ壁
 		break;
 	default:
-		assert(false);	// 本来通らない場所
+		assert(false);		// 本来通らない場所
 		break;
 	}
 }
@@ -292,9 +291,9 @@ static void AttackEnemy(Enemy *pEnemy)
 
 	switch (pEnemy->type)
 	{
-	case SPLITBALL_FIRST:		// 別れる球の最初
+	case SPLITBALL_FIRST:	// 別れる球の最初
 	case SPLITBALL_SECOND:	// 別れる球の２回目
-	case SPLITBALL_LAST:		// 別れる球の最後
+	case SPLITBALL_LAST:	// 別れる球の最後
 		if (pEnemy->nAtkInterval <= 150 && pEnemy->nAtkInterval % 5 == 0)
 		{
 			// パーティクル
@@ -313,22 +312,22 @@ static void AttackEnemy(Enemy *pEnemy)
 			pEnemy->nAtkInterval = 0;
 		}
 		break;
-	case EXTENDBALL_UP:			// 伸びる円、上から下
+	case EXTENDBALL_UP:		// 伸びる円、上から下
 		pEnemy->fHeight += 1.5f;
 		break;
-	case EXTENDBALL_DWON:			// 伸びる円、下から上
+	case EXTENDBALL_DWON:	// 伸びる円、下から上
 		if (pEnemy->nAtkInterval >= 150)
 		{
 			pEnemy->fHeight += 5.0f;
 		}
 		break;
-	case EXTENDBALL_LEFT:			// 伸びる円、左から右
+	case EXTENDBALL_LEFT:	// 伸びる円、左から右
 		if (pEnemy->nAtkInterval >= 150)
 		{
 			pEnemy->fWidth += 5.0f;
 		}
 		break;
-	case EXTENDBALL_RIGHT:		// 伸びる円、右から左
+	case EXTENDBALL_RIGHT:	// 伸びる円、右から左
 		if (pEnemy->nAtkInterval >= 150)
 		{
 			pEnemy->fWidth += 5.0f;
@@ -349,7 +348,7 @@ static void AttackEnemy(Enemy *pEnemy)
 	case DAMEGE_WALL:		// ダメージ壁
 		break;
 	default:
-		assert(false);	// 本来通らない場所
+		assert(false);		// 本来通らない場所
 		break;
 	}
 
@@ -471,21 +470,21 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			// 種類設定
 			pEnemy->type = type;
 
+			// 攻撃間隔の設定
 			pEnemy->nAtkInterval = 0;
 
-			float fRotDest;	// 敵とプレイヤーを結ぶ線の角度
 			switch (pEnemy->type)
 			{
-			case SPLITBALL_FIRST:
+			case SPLITBALL_FIRST:	// 別れる球の最初
 				// エネミーの待機動作
 				NeutralEnemy(pEnemy);
 				// 寿命設定
 				pEnemy->nLife = 1;
 				// 画像の大きさ設定
-				pEnemy->fHeight = 60.0f;	// 高さ
-				pEnemy->fWidth = 60.0f;	// 幅
+				pEnemy->fHeight	= 60.0f;	// 高さ
+				pEnemy->fWidth	= 60.0f;	// 幅
 				break;
-			case SPLITBALL_SECOND:
+			case SPLITBALL_SECOND:	// 別れる球の2回目
 				// エネミーの待機動作
 				NeutralEnemy(pEnemy);
 				// 位置を少し散らす
@@ -494,10 +493,10 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 				// 寿命設定
 				pEnemy->nLife = 1;
 				// 画像の大きさ設定
-				pEnemy->fHeight = 50.0f;	// 高さ
-				pEnemy->fWidth = 50.0f;		// 幅
+				pEnemy->fHeight	= 50.0f;	// 高さ
+				pEnemy->fWidth	= 50.0f;		// 幅
 				break;
-			case SPLITBALL_LAST:
+			case SPLITBALL_LAST:	// 別れる球の最後
 				// エネミーの待機動作
 				NeutralEnemy(pEnemy);
 				// 位置を少し散らす
@@ -506,48 +505,47 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 				// 寿命設定
 				pEnemy->nLife = 1;
 				// 画像の大きさ設定
-				pEnemy->fHeight = 40.0f;	// 高さ
-				pEnemy->fWidth = 40.0f;		// 幅
+				pEnemy->fHeight	= 40.0f;	// 高さ
+				pEnemy->fWidth	= 40.0f;	// 幅
 				break;
-			case EXTENDBALL_UP:			// 伸びる円、上から下
-			case EXTENDBALL_DWON:			// 伸びる円、下から上
-			case EXTENDBALL_LEFT:			// 伸びる円、左から右
-			case EXTENDBALL_RIGHT:		// 伸びる円、右から左
+			case EXTENDBALL_UP:		// 伸びる円、上から下
+			case EXTENDBALL_DWON:	// 伸びる円、下から上
+			case EXTENDBALL_LEFT:	// 伸びる円、左から右
+			case EXTENDBALL_RIGHT:	// 伸びる円、右から左
 				// 寿命設定
-				pEnemy->nLife = 10;
+				pEnemy->nLife = 1;
 				// 画像の大きさ設定
-				pEnemy->fHeight = 10.0f;	// 高さ
-				pEnemy->fWidth = 10.0f;		// 幅
+				pEnemy->fHeight	= 10.0f;	// 高さ
+				pEnemy->fWidth	= 10.0f;		// 幅
 				break;
 			case GOSTRAIGHT_UP:		// 直進する長方形、上から下
 			case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
 				// 寿命設定
 				pEnemy->nLife = 1;
 				// 画像の大きさ設定
-				pEnemy->fHeight = 10.0f;	// 高さ
-				pEnemy->fWidth = 5.0f;		// 幅
+				pEnemy->fHeight	= 10.0f;	// 高さ
+				pEnemy->fWidth	= 5.0f;		// 幅
 				break;
 			case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
 			case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
 				// 寿命設定
 				pEnemy->nLife = 1;
 				// 画像の大きさ設定
-				pEnemy->fHeight = 5.0f;	// 高さ
-				pEnemy->fWidth = 10.0f;		// 幅
+				pEnemy->fHeight	= 5.0f;		// 高さ
+				pEnemy->fWidth	= 10.0f;	// 幅
 				break;
 			case DAMEGE_WALL:		// ダメージ壁
 				break;
 			default:
-				assert(false);	// 本来通らない場所
+				assert(false);		// 本来通らない場所
 				break;
 			}
 
 			// 頂点座標の設定
 			SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
 			
-			// 向き設定
-
-			pEnemy->bUse = true;	// 使用している状態にする
+			// 使用している状態にする
+			pEnemy->bUse = true;
 
 			// 敵の数をプラス
 			s_nEnemyCnt++;
@@ -556,7 +554,6 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 		}
 		pVtx += 4;
 	}
-
 	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
 }
@@ -667,30 +664,31 @@ bool CrossingEnemy(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2, JUDGE_POSITION positi
 	{
 	case POSITION_UP:
 		// ブロックのベクトルの獲得
-		vEnemy.start = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
+		vEnemy.start  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
 		vEnemy.vector = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z) - vEnemy.start;
 		break;
 	case POSITION_DWON:
 		// ブロックのベクトルの獲得
-		vEnemy.start = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z);
+		vEnemy.start  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z);
 		vEnemy.vector = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.start;
 		break;
 	case POSITION_LEFT:
 		// ブロックのベクトルの獲得
-		vEnemy.start = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
+		vEnemy.start  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
 		vEnemy.vector = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.start;
 		break;
 	case POSITION_RIGHT:
 		// ブロックのベクトルの獲得
-		vEnemy.start = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
+		vEnemy.start  = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
 		vEnemy.vector = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.start;
 		break;
 	default:
+		assert(false);
 		break;
 	}
 
 	// 被対象のベクトルの獲得
-	vTarget.start = *pPos2;
+	vTarget.start  = *pPos2;
 	vTarget.vector = *pPos1 - *pPos2;
 
 	// ベクトルの始点同士の距離。
