@@ -83,6 +83,7 @@ void UninitPlayer(void);
 void UpdatePlayer(void);
 void DrawPlayer(void);
 void MovePlayer(void);
+void JumpPlayer(void);
 void HitPlayer(int nDamege);
 Player* GetPlayer(void);
 void RectPlayer(VERTEX_2D *pVtx, PLAYER_CENTERPOS Centerpos);

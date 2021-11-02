@@ -132,35 +132,9 @@ void UpdatePlayer(void)
 		// 前回の回転を更新
 		pPlayer->rotOld = pPlayer->rot;
 
-		// ジャンプ処理
-		if (pPlayer->nJumpCnt < PLAYER_JUMPMAX)
-		{// ジャンプ回数
-			if (GetKeyboardTrigger(DIK_SPACE))
-			{
-				pPlayer->jumpstate = JUMP_NOW;
-				pPlayer->nJumpCnt++;
-				// 			pPlayer->pos.y -= 12.0f;
-				pPlayer->move.y = 0.0f;
-				pPlayer->move.y += -PLAYER_JUMPMOVE;
-
-				for (int i = 0; i < 40; i++)
-				{
-					SetParticle(pPlayer->pos, PARTICLE_PLAYER_JUMP);
-				}
-
-			}
-		}
-
+		JumpPlayer();
 		MovePlayer();
 		
-		// 床に着いたらジャンプ制限のリセット
-		if (pPlayer->pos.y > SCREEN_HEIGHT)
-		{
-			pPlayer->nJumpCnt = 0;
-			pPlayer->jumpstate = JUMP_NONE;
-			pPlayer->move.y = 0.0f;
-			pPlayer->pos.y = SCREEN_HEIGHT;
-		}
 		break;
 	case PLAYERSTATE_DEATH:	// プレイヤーが死んだ場合
 		pPlayer->bUse = false;
@@ -288,6 +262,41 @@ void MovePlayer(void)
 		pPlayer->pos.y = pPlayer->pos.y - cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
 		pPlayer->pos.z = 0.0f;
 
+	}
+}
+
+//=========================================
+// プレイヤーのジャンプ処理
+//=========================================
+void JumpPlayer(void)
+{
+	Player *pPlayer = &(s_player);
+
+	// ジャンプ処理
+	if (pPlayer->nJumpCnt < PLAYER_JUMPMAX)
+	{// ジャンプ回数
+		if (GetKeyboardTrigger(DIK_SPACE))
+		{
+			pPlayer->jumpstate = JUMP_NOW;
+			pPlayer->nJumpCnt++;
+			// 			pPlayer->pos.y -= 12.0f;
+			pPlayer->move.y = 0.0f;
+			pPlayer->move.y += -PLAYER_JUMPMOVE;
+
+			for (int i = 0; i < 40; i++)
+			{
+				SetParticle(pPlayer->pos, PARTICLE_PLAYER_JUMP);
+			}
+
+		}
+	}
+	// 床に着いたらジャンプ制限のリセット
+	if (pPlayer->pos.y > SCREEN_HEIGHT)
+	{
+		pPlayer->nJumpCnt = 0;
+		pPlayer->jumpstate = JUMP_NONE;
+		pPlayer->move.y = 0.0f;
+		pPlayer->pos.y = SCREEN_HEIGHT;
 	}
 }
 

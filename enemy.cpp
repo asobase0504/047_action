@@ -452,7 +452,6 @@ void DrawEnemy(void)
 void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 {
 	Enemy *pEnemy;	// 敵のポインタ
-	Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
 	int nCntEnemy;
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
