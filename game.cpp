@@ -26,18 +26,6 @@
 #define RANK_INTERVAL	(100)
 
 //------------------------------------
-// ゲームステータスの列挙型
-//------------------------------------
-typedef enum
-{
-	GAMESTATE_NONE = 0,			// 何もしてないとき
-	GAMESTATE_NORMAL,			// ゲームプレイ時
-	GAMESTATE_END,				// ゲーム終了時
-	GAMESTATE_RANKING_INIT,		// ランキングの初期化
-	GAMESTATE_RANKING_NORMAL,	// ランキング表示時
-}GAMESTATE;
-
-//------------------------------------
 // スタティック変数
 //------------------------------------
 static int s_nRankInterval;
@@ -78,15 +66,14 @@ void InitGame(void)
 	InitScore();
 
 	// ブロックの設定
-	SetBlock({ 500.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
-	SetBlock({ 1150.0f,25.0f,0.0f }, 25.0f, 650.0f, 0);
-	SetBlock({ 1800.0f,800.0f,0.0f }, 800.0f, 25.0f, 0);
-	SetBlock({ 1150.0f,SCREEN_HEIGHT-25.0f,0.0f }, 25.0f, 650.0f, 0);
+	SetBlock(D3DXVECTOR3(500.0f,800.0f,0.0f), 800.0f, 25.0f, 0);
+	SetBlock(D3DXVECTOR3(1150.0f,25.0f,0.0f), 25.0f, 650.0f, 0);
+	SetBlock(D3DXVECTOR3(1800.0f,800.0f,0.0f), 800.0f, 25.0f, 0);
+	SetBlock(D3DXVECTOR3(1150.0f,SCREEN_HEIGHT-25.0f,0.0f), 25.0f, 650.0f, 0);
 
 	//// エネミーの設定
-	SetEnemy({ 1100.0f,550.0f,0.0f }, GOSTRAIGHT_RIGHT);
-	SetEnemy({ 1100.0f,570.0f,0.0f }, GOSTRAIGHT_RIGHT);
-	//SetEnemy({ 1100.0f,70.0f,0.0f }, EXTENDBALL_UP);
+	SetEnemy(D3DXVECTOR3(1100.0f,550.0f,0.0f), GOSTRAIGHT_RIGHT);
+	SetEnemy(D3DXVECTOR3(1100.0f,570.0f,0.0f), GOSTRAIGHT_RIGHT);
 
 	// スコアの設定
 	SetScore(1234);
@@ -141,8 +128,13 @@ void UpdateGame(void)
 	switch (s_GameState)
 	{
 	case GAMESTATE_NONE:
+	{
 		RetryGame();
+		Player *pPlayer = GetPlayer();
+		pPlayer->state = PLAYERSTATE_REVIVAL;
+		s_GameState = GAMESTATE_NORMAL;
 		break;
+	}
 	case GAMESTATE_NORMAL:
 	{
 		//敵の召喚
@@ -176,6 +168,7 @@ void UpdateGame(void)
 	case GAMESTATE_RANKING_INIT:
 		SetRanking(GetScore());
 		s_GameState = GAMESTATE_RANKING_NORMAL;	//ランキング表示時に移行
+
 		break;
 	case GAMESTATE_RANKING_NORMAL:
 		UpdateRanking();
@@ -258,4 +251,12 @@ void RetryGame(void)
 
 	// エネミーの初期化処理
 	InitEnemy();
+}
+
+//====================================
+// ゲームのステータス設定処理
+//====================================
+void SetGameState(GAMESTATE state)
+{
+	s_GameState = state;
 }

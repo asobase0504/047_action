@@ -11,6 +11,7 @@
 #include "setup.h"
 #include "input.h"
 #include "sound.h"
+#include "game.h"
 #include "ranking.h"
 #include "score.h"
 #include "fade.h"
@@ -465,8 +466,11 @@ void UpdateRanking(void)
 		switch (s_SelectCheck)
 		{
 		case 0:
-			s_RankState = RANKSTATE_END;
-			
+			if (GetKeyboardTrigger(DIK_RETURN))
+			{
+				SetGameState(GAMESTATE_NONE);
+			}
+
 			break;
 		case 1:
 			// 時間制限もしくは、エンターキーでリザルト画面に移行
