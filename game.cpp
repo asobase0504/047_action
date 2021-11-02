@@ -130,9 +130,9 @@ void UpdateGame(void)
 	case GAMESTATE_NONE:
 	{
 		RetryGame();
-		Player *pPlayer = GetPlayer();
-		pPlayer->state = PLAYERSTATE_REVIVAL;
-		s_GameState = GAMESTATE_NORMAL;
+		Player *pPlayer	= GetPlayer();
+		pPlayer->state	= PLAYERSTATE_REVIVAL;
+		s_GameState		= GAMESTATE_NORMAL;
 		break;
 	}
 	case GAMESTATE_NORMAL:
@@ -243,6 +243,9 @@ void RetryGame(void)
 	// エネミーの終了処理
 	UninitEnemy();
 
+	// ランキングの終了処理
+	UninitRanking();
+
 	// 時間の初期化処理
 	InitTime();
 
@@ -251,6 +254,9 @@ void RetryGame(void)
 
 	// エネミーの初期化処理
 	InitEnemy();
+
+	// ランキングの初期化処理
+	InitRanking();
 }
 
 //====================================

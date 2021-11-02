@@ -240,70 +240,26 @@ void UninitTitle(void)
 //=========================================
 void UpdateTitle(void)
 {
-	float ii = rand();
 	// int nTexCnt;
 	s_nTimeTitle++;
 
-	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
+	VERTEX_2D *pVtx;	// 頂点情報へのポインタ
 
-	//// 
-	//// タイトルの画像
-	//// 
+	// タイトルの画像
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	//if (s_Tex[4].col.a >= 1.0f && s_Tex[1].col.a <= 1.0f)
-	//{// タイトルの影のフェード
-	//	s_Tex[1].col.a += 0.001f;
-	//}
-	//if (s_Tex[4].col.a <= 1.0f)
-	//{// タイトルのフェード
-	//	s_Tex[4].col.a += 0.005f;
-	//}
-
-	//for (nTexCnt = 0; nTexCnt < MAX_TEXTURE; nTexCnt++)
-	//{
-	//	SetRectColor(pVtx, &(s_Tex[nTexCnt].col));
-	//	// 頂点カラーの設定
-	//	pVtx += 4;
-	//}
-
 	// ゲームモードに移行
-	if (s_bFadeCheek == false)
+	if (!(s_bFadeCheek))
 	{
-		if (GetJoypadTrigger(JOYKEY_B) || GetKeyboardTrigger(DIK_RETURN) == true)
-		{// EnterキーかパッドのBを押された時
+		if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_RETURN))
+		{// EnterキーかパッドのAを押された時
 		 // 決定音の再生
 			PlaySound(SOUND_LABEL_SE_ENTER);
 			s_bFadeCheek = true;	// フェード処理に入る
 		}
-
-		//// 点滅処理
-		//switch (s_presstype)
-		//{
-		//case TYPE_NOME:		// 点灯状態
-		//	// 頂点カラーの設定
-		//	SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)));
-		//	if (s_nTypeCnt == 50)
-		//	{	// 消灯状態に移行
-		//		s_presstype = TYPE_BLINK;
-		//		s_nTypeCnt = 0;
-		//	}
-		//	break;
-		//case TYPE_BLINK:	// 消灯状態
-		//	// 頂点カラーの設定
-		//	SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f)));
-		//	if (s_nTypeCnt == 50)
-		//	{	// 点灯状態に移行
-		//		s_presstype = TYPE_NOME;
-		//		s_nTypeCnt = 0;
-		//	}
-		//	break;
-		//default:
-		//	break;
-		//}
 	}
-	else if (s_bFadeCheek == true)
+	else if (s_bFadeCheek)
 	{
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)));
@@ -336,11 +292,6 @@ void UpdateTitle(void)
 	}
 	// 切り替えタイミング
 	s_nTypeCnt++;
-
-	//if (s_nTimeTitle >= 1500)
-	//{
-	//	SetFade(MODE_RANKING);
-	//}
 
 }
 
