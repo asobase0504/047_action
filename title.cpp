@@ -50,21 +50,28 @@ typedef enum
 
 typedef struct
 {
+	LPDIRECT3DTEXTURE9 tex;
+	LPDIRECT3DVERTEXBUFFER9 VtxBuff;
 	D3DXVECTOR3 pos;	// 位置
 	D3DXCOLOR col;		// 色
 	bool bUse;			// 使用してるかどうか
-}TitleObj;
+}OBJECT;
 
 // グローバル変数
+static OBJECT SelectBg;
+static OBJECT ScreenBg;
+static OBJECT Title;
+static OBJECT GameStart;
+static OBJECT Tutorial;
+static OBJECT Exit;
 static LPDIRECT3DTEXTURE9 s_pTexture[OBJ_MAX] = {};		// テクスチャへのポインタ
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = {};			// 頂点バッファへのポインタ
-static TitleObj s_Tex[MAX_TEXTURE] = {};
+//static OBJECT s_Tex[MAX_TEXTURE] = {};
 static PRESS_TYPE s_presstype;
-static TitleObj press;
-static int s_nTypeCnt;	// 縮小と拡大の間隔
+static int s_nTypeCnt;		// 縮小と拡大の間隔
 static bool s_bFadeCheek;	// フェード処置に移行するかの処理
 static bool s_bPreassUse;
-static int s_nFadeCnt;	// フェード処理に行くまでの間隔
+static int s_nFadeCnt;		// フェード処理に行くまでの間隔
 static int s_nTimeTitle;
 
 //=========================================
@@ -72,60 +79,117 @@ static int s_nTimeTitle;
 //=========================================
 void InitTitle(void)
 {
+	VERTEX_2D *pVtx;							// 頂点情報へのポインタ
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
 	int nTexCnt;
 
 	// 音楽の再生
 	PlaySound(SOUND_LABEL_BGM000);
 
-	// テクスチャの読込	   
-	D3DXCreateTextureFromFile(pDevice,
-		NULL,
-		&s_pTexture[OBJ_BG]);
+	/*							*/
+	/*	スクリーン背景の初期化	*/
+	/*							*/
+	// 変数の初期化
+	SelectBg.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	SelectBg.col = D3DXCOLOR(1.0f, 0.9f, 0.8f, 1.0f);
 
 	// テクスチャの読込	   
-	D3DXCreateTextureFromFile(pDevice,
-		SELECTBG,
-		&s_pTexture[OBJ_SELECTBG]);
+	D3DXCreateTextureFromFile(pDevice, NULL, &SelectBg.tex);
+
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_2D,
+		D3DPOOL_MANAGED,
+		&SelectBg.VtxBuff,
+		NULL);
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	SelectBg.VtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 頂点座標の設定
+	SetRectUpLeftPos(pVtx, SelectBg.pos, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	// 頂点カラーの設定
+	SetRectColor(pVtx, &(SelectBg.col));
+
+	// rhwの設定
+	InitRectRhw(pVtx);
+
+	// テクスチャ座標の設定
+	InitRectTex(pVtx);
+
+	// 頂点バッファをアンロックする
+	SelectBg.VtxBuff->Unlock();
+
+
+	/*							*/
+	/*	選択画面背景の初期化	*/
+	/*							*/
+	// 変数の初期化
+	SelectBg.pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	SelectBg.col = D3DXCOLOR(1.0f, 0.9f, 0.8f, 1.0f);
 
 	// テクスチャの読込	   
-	D3DXCreateTextureFromFile(pDevice,
-		TITLE,
-		&s_pTexture[OBJ_TITLE]);
+	D3DXCreateTextureFromFile(pDevice,SELECTBG,&ScreenBg.tex);
 
-	// テクスチャの読込	   
-	D3DXCreateTextureFromFile(pDevice,
-		GAMESTART,
-		&s_pTexture[OBJ_GAMESTART]);
+	// 頂点バッファの生成
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_2D,
+		D3DPOOL_MANAGED,
+		&ScreenBg.VtxBuff,
+		NULL);
 
-	// テクスチャの読込	   
-	D3DXCreateTextureFromFile(pDevice,
-		TUTORIAL,
-		&s_pTexture[OBJ_TUTORIAL]);
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	SelectBg.VtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
+	// 頂点座標の設定
+	SetRectUpLeftPos(pVtx, SelectBg.pos, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	// 頂点カラーの設定
+	SetRectColor(pVtx, &(SelectBg.col));
+
+	// rhwの設定
+	InitRectRhw(pVtx);
+
+	// テクスチャ座標の設定
+	InitRectTex(pVtx);
+
+	// 頂点バッファをアンロックする
+	SelectBg.VtxBuff->Unlock();
+
+	/*							*/
+	/*	選択画面背景の初期化	*/
+	/*							*/
 	// テクスチャの読込	   
-	D3DXCreateTextureFromFile(pDevice,
-		EXIT,
-		&s_pTexture[OBJ_EXIT]);
+	D3DXCreateTextureFromFile(pDevice,TITLE,&Title.tex);
+
+	/*							*/
+	/*	選択画面背景の初期化	*/
+	/*							*/
+	// テクスチャの読込	   
+	D3DXCreateTextureFromFile(pDevice,GAMESTART,&GameStart.tex);
+
+	/*							*/
+	/*	選択画面背景の初期化	*/
+	/*							*/
+	// テクスチャの読込	   
+	D3DXCreateTextureFromFile(pDevice,TUTORIAL,&Tutorial.tex);
+
+	/*							*/
+	/*	選択画面背景の初期化	*/
+	/*							*/
+	// テクスチャの読込	   
+	D3DXCreateTextureFromFile(pDevice,EXIT,&Exit.tex);
 
 	// プレスタイトルの初期化処理
 	s_presstype = TYPE_NOME;						// 点滅状態
 	s_nTypeCnt = 0;									// 拡大と収縮のタイミング
-	press.pos = D3DXVECTOR3(80.0f, 575.0f, 0.0f);	// 座標
-	press.col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// カラー
-	press.bUse = false;								// プレスが使用している否か
 
 	s_bFadeCheek = false;							// フェード処理に移行するかの変数
 	s_nFadeCnt = 0;									// フェード処理に移行するまでの間隔
 	s_nTimeTitle = 0;
-
-	// タイトル画面の初期化処理
-	for (nTexCnt = 0; nTexCnt < OBJ_MAX; nTexCnt++)
-	{
-		s_Tex[nTexCnt].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		s_Tex[nTexCnt].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-		s_Tex[nTexCnt].bUse = true;
-	}
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * OBJ_MAX,
@@ -135,7 +199,6 @@ void InitTitle(void)
 		&s_pVtxBuff,
 		NULL);
 
-	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -151,7 +214,6 @@ void InitTitle(void)
 	
 			// 頂点カラーの設定
 			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.9f, 0.8f, 1.0f)));
-			s_Tex[i].bUse = true;
 			break;
 		case OBJ_SELECTBG:
 			// 頂点座標の設定
@@ -240,14 +302,15 @@ void UninitTitle(void)
 //=========================================
 void UpdateTitle(void)
 {
-	// int nTexCnt;
-	s_nTimeTitle++;
-
 	VERTEX_2D *pVtx;	// 頂点情報へのポインタ
 
 	// タイトルの画像
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+
+	// 頂点バッファをアンロックする
+	s_pVtxBuff->Unlock();
 
 	// ゲームモードに移行
 	if (!(s_bFadeCheek))
@@ -261,38 +324,10 @@ void UpdateTitle(void)
 	}
 	else if (s_bFadeCheek)
 	{
-		// 頂点カラーの設定
-		SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)));
-
-		if (s_nFadeCnt % 5 == 0)
-		{
-			pVtx[0].pos.x -= 7.0f;
-			pVtx[0].pos.y -= 1.0f;
-			pVtx[0].pos.z += 0.0f;
-
-			pVtx[1].pos.x += 7.0f;
-			pVtx[1].pos.y -= 1.0f;
-			pVtx[1].pos.z += 0.0f;
-
-			pVtx[2].pos.x -= 7.0f;
-			pVtx[2].pos.y += 1.0f;
-			pVtx[2].pos.z += 0.0f;
-
-			pVtx[3].pos.x += 7.0f;
-			pVtx[3].pos.y += 1.0f;
-			pVtx[3].pos.z += 0.0f;
-		}
-		if (s_nFadeCnt == 20)
-		{
-			s_presstype = TYPE_BLINK;
-			s_nFadeCnt = 0;
-			SetFade(MODE_GAME);	// ゲームモードに移行
-		}
-		s_nFadeCnt++;
+		s_presstype = TYPE_BLINK;
+		s_nFadeCnt = 0;
+		SetFade(MODE_GAME);	// ゲームモードに移行
 	}
-	// 切り替えタイミング
-	s_nTypeCnt++;
-
 }
 
 //=========================================
@@ -300,23 +335,20 @@ void UpdateTitle(void)
 //=========================================
 void DrawTitle(void)
 {
-	LPDIRECT3DDEVICE9 pDevice;
-	int nTexCnt;
-
 	// デバイスの取得
-	pDevice = GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
 	// 背景の描写
 	// 頂点バッファをデータストリーム設定
 	InitDraw(pDevice, s_pVtxBuff);
 
-	for (nTexCnt = 0; nTexCnt < OBJ_MAX; nTexCnt++)
+	for (int i = 0; i < OBJ_MAX; i++)
 	{
-		if (s_Tex[nTexCnt].bUse == true)
+		if (s_Tex[i].bUse == true)
 		{
 			// ポリゴン描画
 			// テクスチャの設定
-			SetDraw(pDevice, s_pTexture[nTexCnt], nTexCnt * 4);
+			SetDraw(pDevice, s_pTexture[i], i * 4);
 		}
 	}
 
