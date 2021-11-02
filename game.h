@@ -14,5 +14,7 @@ void InitGame(void);	// 初期化処理
 void UninitGame(void);	// 終了処理
 void UpdateGame(void);	// 更新処理
 void DrawGame(void);	// 描画処理
+void RetryGame(void);	// retry処理
 void RankSwitch(void);	// ランキング表示の切り替え
+
 #endif // !_POLYGON_H_

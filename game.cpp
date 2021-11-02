@@ -21,7 +21,12 @@
 #include <assert.h>
 
 //------------------------------------
-//ゲームステータスの列挙型
+// マクロ定義
+//------------------------------------
+#define RANK_INTERVAL	(100)
+
+//------------------------------------
+// ゲームステータスの列挙型
 //------------------------------------
 typedef enum
 {
@@ -136,6 +141,7 @@ void UpdateGame(void)
 	switch (s_GameState)
 	{
 	case GAMESTATE_NONE:
+		RetryGame();
 		break;
 	case GAMESTATE_NORMAL:
 	{
@@ -162,7 +168,7 @@ void UpdateGame(void)
 	case GAMESTATE_END:
 		//ランキング表示までの余韻
 		s_nRankInterval++;
-		if (s_nRankInterval >= 100)
+		if (s_nRankInterval >= RANK_INTERVAL)
 		{
 			s_GameState = GAMESTATE_RANKING_INIT;	//ランキング表示時に移行
 		}
@@ -227,4 +233,29 @@ void DrawGame(void)
 	{
 		DrawRanking();
 	}
+}
+
+
+//====================================
+// retry処理
+//====================================
+void RetryGame(void)
+{
+	// 時間の終了処理
+	UninitTime();
+
+	// スコアの終了処理
+	UninitScore();
+
+	// エネミーの終了処理
+	UninitEnemy();
+
+	// 時間の初期化処理
+	InitTime();
+
+	// スコアの初期化処理
+	InitScore();
+
+	// エネミーの初期化処理
+	InitEnemy();
 }
