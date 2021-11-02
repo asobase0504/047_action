@@ -25,6 +25,22 @@ static LPDIRECT3DTEXTURE9 s_pTexture[ENEMYTYPE_MAX] = {};		// テクスチャバッファ
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;			// 頂点バッファ
 static Enemy s_aEnemy[MAX_ENEMY];							// 敵の情報
 static int s_nEnemyCnt = 0;									// 敵の数
+int score[] =
+{
+	100,	// 別れる球最初
+	50,		// 別れる球二回目
+	25,		// 別れる球
+	40,		// 伸びる円、上から下
+	40,		// 伸びる円、下から上
+	40,		// 伸びる円、左から右
+	40,		// 伸びる円、右から左
+	10,		// 直進する長方形、上から下
+	10,		// 直進する長方形、下から上
+	10,		// 直進する長方形、左から右
+	10,		// 直進する長方形、右から左
+	0,		// ダメージ壁
+
+};
 
 //------------------------------------
 // プロトタイプ宣言
@@ -189,6 +205,20 @@ void UpdateEnemy(void)
 				break;
 			case EXTENDBALL_RIGHT:		// 伸びる円、右から左
 				break;
+			case GOSTRAIGHT_UP:		// 直進する長方形、上から下
+				SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
+				break;
+			case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
+				SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
+				break;
+			case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
+				SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
+				break;
+			case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+				SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
+				break;
+			case DAMEGE_WALL:		// ダメージ壁
+				break;
 			default:
 				assert(false);	// 本来通らない場所
 				break;
@@ -225,16 +255,26 @@ static void NeutralEnemy(Enemy *pEnemy)
 			pEnemy->move.x = sinf(fRotDest) * 0.5f;
 			pEnemy->move.y = cosf(fRotDest) * 0.5f;
 
-			pEnemy->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+			pEnemy->col = D3DXCOLOR(0.9f, 0.35f, 0.4f, 1.0f);
 		}
 		break;
-	case EXTENDBALL_UP:			// 伸びる円、上から下
+	case EXTENDBALL_UP:		// 伸びる円、上から下
 		break;
-	case EXTENDBALL_DWON:			// 伸びる円、下から上
+	case EXTENDBALL_DWON:	// 伸びる円、下から上
 		break;
-	case EXTENDBALL_LEFT:			// 伸びる円、左から右
+	case EXTENDBALL_LEFT:	// 伸びる円、左から右
 		break;
-	case EXTENDBALL_RIGHT:		// 伸びる円、右から左
+	case EXTENDBALL_RIGHT:	// 伸びる円、右から左
+		break;
+	case GOSTRAIGHT_UP:		// 直進する長方形、上から下
+		break;
+	case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
+		break;
+	case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
+		break;
+	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+		break;
+	case DAMEGE_WALL:		// ダメージ壁
 		break;
 	default:
 		assert(false);	// 本来通らない場所
@@ -279,20 +319,34 @@ static void AttackEnemy(Enemy *pEnemy)
 	case EXTENDBALL_DWON:			// 伸びる円、下から上
 		if (pEnemy->nAtkInterval >= 150)
 		{
-			pEnemy->fHeight += 5;
+			pEnemy->fHeight += 5.0f;
 		}
 		break;
 	case EXTENDBALL_LEFT:			// 伸びる円、左から右
 		if (pEnemy->nAtkInterval >= 150)
 		{
-			pEnemy->fWidth += 5;
+			pEnemy->fWidth += 5.0f;
 		}
 		break;
 	case EXTENDBALL_RIGHT:		// 伸びる円、右から左
 		if (pEnemy->nAtkInterval >= 150)
 		{
-			pEnemy->fWidth += 5;
+			pEnemy->fWidth += 5.0f;
 		}
+		break;
+	case GOSTRAIGHT_UP:		// 直進する長方形、上から下
+		pEnemy->move.y = 5.0f;
+		break;
+	case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
+		pEnemy->move.y = -5.0f;
+		break;
+	case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
+		pEnemy->move.x = 5.0f;
+		break;
+	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+		pEnemy->move.x = -5.0f;
+		break;
+	case DAMEGE_WALL:		// ダメージ壁
 		break;
 	default:
 		assert(false);	// 本来通らない場所
@@ -306,9 +360,12 @@ static void AttackEnemy(Enemy *pEnemy)
 //====================================
 static void DieEnemy(Enemy *pEnemy)
 {
+//	assert(sizeof(score)/sizeof(score[0]) != ENEMYTYPE_MAX);
+	AddScore(score[pEnemy->type]);
+
 	switch (pEnemy->type)
 	{
-	case SPLITBALL_FIRST:		// 別れる球の最初
+	case SPLITBALL_FIRST:	// 別れる球の最初
 		SetEnemy(pEnemy->pos, SPLITBALL_SECOND);
 		SetEnemy(pEnemy->pos, SPLITBALL_SECOND);
 		AddScore(100);
@@ -320,7 +377,7 @@ static void DieEnemy(Enemy *pEnemy)
 		AddScore(100);
 		pEnemy->bUse = false;
 		break;
-	case SPLITBALL_LAST:		// 別れる球の最後
+	case SPLITBALL_LAST:	// 別れる球の最後
 		AddScore(100);
 		pEnemy->bUse = false;
 		break;	// 消す処理
@@ -328,11 +385,28 @@ static void DieEnemy(Enemy *pEnemy)
 		AddScore(50);
 		pEnemy->bUse = false;
 		break;
-	case EXTENDBALL_DWON:		// 伸びる円、下から上
+	case EXTENDBALL_DWON:	// 伸びる円、下から上
+		pEnemy->bUse = false;
 		break;
-	case EXTENDBALL_LEFT:		// 伸びる円、左から右
+	case EXTENDBALL_LEFT:	// 伸びる円、左から右
+		pEnemy->bUse = false;
 		break;
 	case EXTENDBALL_RIGHT:	// 伸びる円、右から左
+		pEnemy->bUse = false;
+		break;
+	case GOSTRAIGHT_UP:		// 直進する長方形、上から下
+		pEnemy->bUse = false;
+		break;
+	case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
+		pEnemy->bUse = false;
+		break;
+	case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
+		pEnemy->bUse = false;
+		break;
+	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+		pEnemy->bUse = false;
+		break;
+	case DAMEGE_WALL:		// ダメージ壁
 		break;
 	default:
 		assert(false);	// 本来通らない場所
@@ -341,11 +415,12 @@ static void DieEnemy(Enemy *pEnemy)
 }
 
 //====================================
-// 敵の描画処理
+// 敵の終了処理
 //====================================
 void DeleteEnemy(void)
 {
 }
+
 //====================================
 // 敵の描画処理
 //====================================
@@ -358,22 +433,15 @@ void DrawEnemy(void)
 	// デバイスの取得
 	pDevice = GetDevice();
 
-	// 頂点バッファをデータストリーム設定
-	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_2D));
-
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
+	InitDraw(pDevice, s_pVtxBuff);
 
 	for (nCntEnemy = 0; nCntEnemy < MAX_ENEMY; nCntEnemy++)
 	{
 		pEnemy = &(s_aEnemy[nCntEnemy]);
 		if (pEnemy->bUse == true)
 		{
-			// テクスチャの設定
-			pDevice->SetTexture(0, s_pTexture[pEnemy->type]);
-
-			// ポリゴン描画
-			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntEnemy * 4, 2);
+			//テクスチャの描画
+			SetDraw(pDevice, s_pTexture[pEnemy->type], nCntEnemy * 4);
 		}
 	}
 }
@@ -451,6 +519,24 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 				// 画像の大きさ設定
 				pEnemy->fHeight = 10.0f;	// 高さ
 				pEnemy->fWidth = 10.0f;		// 幅
+				break;
+			case GOSTRAIGHT_UP:		// 直進する長方形、上から下
+			case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
+				// 寿命設定
+				pEnemy->nLife = 1;
+				// 画像の大きさ設定
+				pEnemy->fHeight = 10.0f;	// 高さ
+				pEnemy->fWidth = 5.0f;		// 幅
+				break;
+			case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
+			case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+				// 寿命設定
+				pEnemy->nLife = 1;
+				// 画像の大きさ設定
+				pEnemy->fHeight = 5.0f;	// 高さ
+				pEnemy->fWidth = 10.0f;		// 幅
+				break;
+			case DAMEGE_WALL:		// ダメージ壁
 				break;
 			default:
 				assert(false);	// 本来通らない場所

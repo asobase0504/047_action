@@ -41,6 +41,11 @@ typedef enum
 	EXTENDBALL_DWON,	// 伸びる円、下から上
 	EXTENDBALL_LEFT,	// 伸びる円、左から右
 	EXTENDBALL_RIGHT,	// 伸びる円、右から左
+	GOSTRAIGHT_UP,		// 直進する長方形、上から下
+	GOSTRAIGHT_DWON,	// 直進する長方形、下から上
+	GOSTRAIGHT_LEFT,	// 直進する長方形、左から右
+	GOSTRAIGHT_RIGHT,	// 直進する長方形、右から左
+	DAMEGE_WALL,		// ダメージ壁
 	ENEMYTYPE_MAX,
 }ENEMYTYPE;
 

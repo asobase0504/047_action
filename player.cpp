@@ -68,29 +68,13 @@ void InitPlayer(void)
 	// 中心座標から上の頂点の角度を算出する
 	pPlayer->fAngle = atan2f(pPlayer->fWidth, pPlayer->fHeigth);
 
-
 	// 頂点座標の設定
-	pVtx[0].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (-D3DX_PI + pPlayer->fAngle)) * pPlayer->fLength;
-	pVtx[0].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (-D3DX_PI + pPlayer->fAngle)) * pPlayer->fLength;
-	pVtx[0].pos.z = 0.0f;
-
-	pVtx[1].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (D3DX_PI - pPlayer->fAngle)) * pPlayer->fLength;
-	pVtx[1].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (D3DX_PI - pPlayer->fAngle)) * pPlayer->fLength;
-	pVtx[1].pos.z = 0.0f;
-
-	pVtx[2].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z - (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
-	pVtx[2].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z - (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
-	pVtx[2].pos.z = 0.0f;
-
-	pVtx[3].pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
-	pVtx[3].pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + (D3DX_PI / 2.0f)) * pPlayer->fWidth / 2.0f;
-	pVtx[3].pos.z = 0.0f;
+	InitRectPos(pVtx);
 
 	// 頂点カラーの設定
-	SetRectColor(pVtx,&((D3DXCOLOR(0.0f,1.0f,1.0f,1.0f))));
+	SetRectColor(pVtx,&((D3DXCOLOR(0.4f,0.71f,0.63f,1.0f))));
 
 	// テクスチャ座標の設定
-
 	InitRectTex(pVtx);
 
 	// rhwの設定
@@ -126,7 +110,6 @@ void UninitPlayer(void)
 void UpdatePlayer(void)
 {
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
-	// int nAnimationTime;
 	Player *pPlayer;
 	pPlayer = &(s_player);
 
@@ -168,69 +151,8 @@ void UpdatePlayer(void)
 			}
 		}
 
-		// 回転処理
-		if (GetKeyboardPress(DIK_A))
-		{
-			pPlayer->rot.z += 0.25f;
-
-			// 中心座標の移行
-			if (pPlayer->rot.z >= 0.0f && pPlayer->Centerpos == PLAYER_POS_RIGHT)
-			{
-				pPlayer->pos.x = pPlayer->pos.x - sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-				pPlayer->pos.y = pPlayer->pos.y - cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-				pPlayer->Centerpos = PLAYER_POS_LEFT;
-			}
-		}
-		if (GetKeyboardPress(DIK_D))
-		{
-			pPlayer->rot.z -= 0.25f;
-
-			// 中心座標の移行
-			if (pPlayer->rot.z <= 0.0f && pPlayer->Centerpos == PLAYER_POS_LEFT)
-			{
-				pPlayer->pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-				pPlayer->pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-				pPlayer->Centerpos = PLAYER_POS_RIGHT;
-			}
-		}
-
-		// 位置を更新
-		pPlayer->pos.x += pPlayer->move.x;
-		pPlayer->pos.y += pPlayer->move.y;
-
-		// 移動量を更新(減衰)
-		pPlayer->move.x += (0 - pPlayer->move.x) * 0.025f;
-
-		// 回転して床に辺が面したとき
-		if (-D3DX_PI / 2 >= pPlayer->rot.z)
-		{
-			pPlayer->rot.z = 0;
-
-			pPlayer->pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-			pPlayer->pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-			pPlayer->pos.z = 0.0f;
-
-		}
-		else if (D3DX_PI / 2 <= pPlayer->rot.z)
-		{
-			pPlayer->rot.z = 0;
-
-			pPlayer->pos.x = pPlayer->pos.x - sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-			pPlayer->pos.y = pPlayer->pos.y - cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-			pPlayer->pos.z = 0.0f;
-
-		}
-
-		// マップ端にいった場合反対のマップ端に出る
-		if (pPlayer->pos.x - pPlayer->fWidth >= SCREEN_WIDTH)
-		{
-			pPlayer->pos.x = -pPlayer->fWidth;
-		}
-		else if (pPlayer->pos.x + pPlayer->fWidth <= 0)
-		{
-			pPlayer->pos.x = SCREEN_WIDTH + pPlayer->fWidth;
-		}
-
+		MovePlayer();
+		
 		// 床に着いたらジャンプ制限のリセット
 		if (pPlayer->pos.y > SCREEN_HEIGHT)
 		{
@@ -306,6 +228,66 @@ void DrawPlayer(void)
 
 		// ポリゴンの描画
 		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	}
+}
+
+//=========================================
+// プレイヤーの移動処理
+//=========================================
+void MovePlayer(void)
+{
+	Player *pPlayer = &(s_player);
+
+	// 位置を更新
+	pPlayer->pos.x += pPlayer->move.x;
+	pPlayer->pos.y += pPlayer->move.y;
+	// 移動量を更新(減衰)
+	pPlayer->rot.z += (0 - pPlayer->rot.z) * 0.08f;
+
+	// 回転処理
+	if (GetKeyboardPress(DIK_A))
+	{
+		pPlayer->rot.z += 0.25f;
+
+		// 中心座標の移行
+		if (pPlayer->rot.z >= 0.0f && pPlayer->Centerpos == PLAYER_POS_RIGHT)
+		{
+			pPlayer->pos.x = pPlayer->pos.x - sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+			pPlayer->pos.y = pPlayer->pos.y - cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+			pPlayer->Centerpos = PLAYER_POS_LEFT;
+		}
+	}
+	if (GetKeyboardPress(DIK_D))
+	{
+		pPlayer->rot.z -= 0.25f;
+
+		// 中心座標の移行
+		if (pPlayer->rot.z <= 0.0f && pPlayer->Centerpos == PLAYER_POS_LEFT)
+		{
+			pPlayer->pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+			pPlayer->pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+			pPlayer->Centerpos = PLAYER_POS_RIGHT;
+		}
+	}
+
+	// 回転して床に辺が面したとき
+	if (-D3DX_PI / 2 >= pPlayer->rot.z)
+	{
+		pPlayer->rot.z = 0;
+
+		pPlayer->pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+		pPlayer->pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+		pPlayer->pos.z = 0.0f;
+
+	}
+	else if (D3DX_PI / 2 <= pPlayer->rot.z)
+	{
+		pPlayer->rot.z = 0;
+
+		pPlayer->pos.x = pPlayer->pos.x - sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+		pPlayer->pos.y = pPlayer->pos.y - cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+		pPlayer->pos.z = 0.0f;
+
 	}
 }
 

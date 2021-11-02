@@ -40,7 +40,7 @@ void InitBlock(void)
 		pBlock = &(s_aBlock[nCntBlock]);
 		pBlock->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		pBlock->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		pBlock->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pBlock->col = D3DXCOLOR(0.5f, 0.35f, 0.25f, 1.0f);
 		pBlock->bUse = false;
 		pBlock->fHeight = 50.0f;
 		pBlock->fWidth = 50.0f;

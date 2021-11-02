@@ -79,8 +79,8 @@ void InitGame(void)
 	SetBlock({ 1150.0f,SCREEN_HEIGHT-25.0f,0.0f }, 25.0f, 650.0f, 0);
 
 	//// エネミーの設定
-	//SetEnemy({ 1100.0f,550.0f,0.0f }, SPLITBALL_FIRST);
-	//SetEnemy({ 1600.0f,550.0f,0.0f }, SPLITBALL_FIRST);
+	SetEnemy({ 1100.0f,550.0f,0.0f }, GOSTRAIGHT_RIGHT);
+	SetEnemy({ 1100.0f,570.0f,0.0f }, GOSTRAIGHT_RIGHT);
 	//SetEnemy({ 1100.0f,70.0f,0.0f }, EXTENDBALL_UP);
 
 	// スコアの設定
