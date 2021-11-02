@@ -130,6 +130,9 @@ void UninitGame(void)
 //====================================
 void UpdateGame(void)
 {
+	SetEnemy({ 1100.0f,550.0f,0.0f }, GOSTRAIGHT_RIGHT);
+	SetEnemy({ 1100.0f,570.0f,0.0f }, GOSTRAIGHT_RIGHT);
+
 	switch (s_GameState)
 	{
 	case GAMESTATE_NONE:
@@ -165,7 +168,6 @@ void UpdateGame(void)
 		}
 		break;
 	case GAMESTATE_RANKING_INIT:
-	//	InitRanking();
 		SetRanking(GetScore());
 		s_GameState = GAMESTATE_RANKING_NORMAL;	//ランキング表示時に移行
 		break;
@@ -176,6 +178,7 @@ void UpdateGame(void)
 		assert(false);
 		break;
 	}
+
 	// 背景の更新処理
 	UpdateBG();
 

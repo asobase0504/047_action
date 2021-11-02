@@ -20,8 +20,9 @@
 //------------------------------------
 // マクロ定義
 //------------------------------------
-#define MENU_MAX_WIDTH	(400.0f)
-#define MENU_MAX_HEIGTH	(500.0f)
+#define SELECT_NUMBER	(2)
+#define SERECT_WIDTH	(200.0f)
+#define SERECT_HEIGTH	(50.0f)
 
 //------------------------------------
 // ランキングのステータス列挙型
@@ -46,15 +47,18 @@ typedef struct
 // グローバル変数
 //------------------------------------
 static RANKSTATE s_RankState;	//ランキング処理の状態
-static LPDIRECT3DTEXTURE9		s_pTextureRank	= NULL;	// テクスチャへのポインタ	(背景)
-static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffRank	= NULL;	// 頂点バッファへのポインタ	(背景)
-static LPDIRECT3DTEXTURE9		s_pTextureScore = NULL;	// テクスチャへのポインタ	(スコア)
-static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffScore = NULL;	// 頂点バッファへのポインタ	(スコア)
-static LPDIRECT3DTEXTURE9		s_pTextureBg	= NULL;	// テクスチャへのポインタ	(順位)
-static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffBg	= NULL;	// 頂点バッファへのポインタ	(順位)
-static LPDIRECT3DTEXTURE9		s_pTextureMenu	= NULL;	// テクスチャへのポインタ	(画面)
-static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffMenu	= NULL;	// 頂点バッファへのポインタ	(画面)
+static LPDIRECT3DTEXTURE9		s_pTextureRank		= NULL;	// テクスチャへのポインタ	(背景)
+static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffRank		= NULL;	// 頂点バッファへのポインタ	(背景)
+static LPDIRECT3DTEXTURE9		s_pTextureScore		= NULL;	// テクスチャへのポインタ	(スコア)
+static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffScore		= NULL;	// 頂点バッファへのポインタ	(スコア)
+static LPDIRECT3DTEXTURE9		s_pTextureBg		= NULL;	// テクスチャへのポインタ	(順位)
+static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffBg		= NULL;	// 頂点バッファへのポインタ	(順位)
+static LPDIRECT3DTEXTURE9		s_pTextureMenu		= NULL;	// テクスチャへのポインタ	(画面)
+static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffMenu		= NULL;	// 頂点バッファへのポインタ	(画面)
+static LPDIRECT3DTEXTURE9		s_pTextureSelect[SELECT_NUMBER] = {};	// テクスチャへのポインタ	(選択)
+static LPDIRECT3DVERTEXBUFFER9	s_pVtxBuffSelect	= {};	// 頂点バッファへのポインタ	(選択)
 
+//ランキング表示関連の変数
 static RankScore	s_aRankScore[MAX_RANK];	// ランキングスコア情報
 static int			s_nRankUpdate = -1;		// 更新ランクNo.
 static int			s_nTimerRanking;		// ランキング画面表示タイマー
@@ -62,10 +66,14 @@ static D3DXCOLOR	s_Timercol;				// 明滅時のカラーの設定
 static bool			s_bBlink;				// スコアの明滅の切り替え
 static int			s_nTimerBlink;			// スコアの明滅の間隔
 
+//メニュー画面全体関連の変数
 static float		s_fWidthMenu;	// メニュー画面の幅
 static float		s_fHeigthMenu;	// メニュー画面の高さ
 static int			s_MenuCnt;		// メニュー画面のカウント
 
+//select関連の変数
+static D3DXCOLOR	s_Selectcol[SELECT_NUMBER];	// select中カラーの設定
+static int			s_SelectCheck;				// select側をチェック
 
 //=========================================
 // ランキングの初期化処理
@@ -84,6 +92,7 @@ void InitRanking(void)
 
 	s_fWidthMenu = 0;
 	s_fHeigthMenu = 0;
+	s_SelectCheck = 0;
 
 	// テクスチャの読込 (背景)
 	D3DXCreateTextureFromFile(pDevice,
@@ -105,6 +114,15 @@ void InitRanking(void)
 		"data/TEXTURE/number001.png",
 		&s_pTextureScore);
 
+	// テクスチャの読込 (選択：もう一度)
+	D3DXCreateTextureFromFile(pDevice,
+		NULL,
+		&s_pTextureSelect[0]);
+
+	// テクスチャの読込 (選択：終了)
+	D3DXCreateTextureFromFile(pDevice,
+		NULL,
+		&s_pTextureSelect[1]);
 
 	// 頂点バッファの生成 (背景)
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
@@ -138,10 +156,17 @@ void InitRanking(void)
 		&s_pVtxBuffScore,
 		NULL);
 
-	// 
+	// 頂点バッファの生成 (選択)
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * SELECT_NUMBER,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_2D,
+		D3DPOOL_MANAGED,
+		&s_pVtxBuffSelect,
+		NULL);
+
 	// 背景
-	// 
-	s_pVtxBuffBg->Lock(0, 0, (void**)&pVtx, 0);		// 頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	s_pVtxBuffBg->Lock(0, 0, (void**)&pVtx, 0);
 	{
 		//長方形の初期化
 		InitRect(pVtx);
@@ -152,12 +177,12 @@ void InitRanking(void)
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.3f)));
 	}
-	s_pVtxBuffBg->Unlock();		// 頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
+	s_pVtxBuffBg->Unlock();
 
-	// 
 	// メニュー画面
-	// 
-	s_pVtxBuffMenu->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	s_pVtxBuffMenu->Lock(0, 0, (void**)&pVtx, 0);
 	{
 		// 頂点座標の設定
 		SetRectCenterPos(pVtx, D3DXVECTOR3(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f), s_fWidthMenu, s_fHeigthMenu);
@@ -171,12 +196,12 @@ void InitRanking(void)
 		// rhwの設定
 		InitRectRhw(pVtx);
 	}
-	s_pVtxBuffMenu->Unlock();	// 頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
+	s_pVtxBuffMenu->Unlock();
 
-	// 
 	// 順位の初期化
-	// 
-	s_pVtxBuffRank->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	s_pVtxBuffRank->Lock(0, 0, (void**)&pVtx, 0);
 	{
 		for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 		{
@@ -200,9 +225,7 @@ void InitRanking(void)
 	}
 	s_pVtxBuffRank->Unlock();	// 頂点バッファをアンロックする
 
-	// 
 	// スコアの初期化
-	// 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuffScore->Lock(0, 0, (void**)&pVtx, 0);
 	{
@@ -229,7 +252,32 @@ void InitRanking(void)
 			}
 		}
 	}
-	s_pVtxBuffScore->Unlock();	// 頂点バッファをアンロックする
+	// 頂点バッファをアンロックする
+	s_pVtxBuffScore->Unlock();
+
+	// 選択画面
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	s_pVtxBuffSelect->Lock(0, 0, (void**)&pVtx, 0);
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			// 頂点座標の設定
+			SetRectUpRightPos(pVtx, D3DXVECTOR3(800.0f + 400.0f * i, 950.0f, 0.0f), SERECT_WIDTH, SERECT_HEIGTH);
+
+			// 頂点カラーの設定
+			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)));
+
+			// テクスチャ座標の設定
+			InitRectTex(pVtx);
+
+			// rhwの設定
+			InitRectRhw(pVtx);
+			pVtx += 4;
+		}
+	}
+	// 頂点バッファをアンロックする
+	s_pVtxBuffSelect->Unlock();
+
 }
 
 //=========================================
@@ -294,6 +342,23 @@ void UninitRanking(void)
 		s_pVtxBuffMenu = NULL;
 	}
 
+	// テクスチャの破棄
+	for (int i = 0; i < 2; i++)
+	{
+		if (s_pTextureSelect[i] != NULL)
+		{
+			s_pTextureSelect[i]->Release();
+			s_pTextureSelect[i] = NULL;
+		}
+	}
+
+	// 頂点バッファの破棄
+	if (s_pVtxBuffSelect != NULL)
+	{
+		s_pVtxBuffSelect->Release();
+		s_pVtxBuffSelect = NULL;
+	}
+
 }
 
 //=========================================
@@ -332,7 +397,8 @@ void UpdateRanking(void)
 
 		if (s_MenuCnt <= -10.0f)
 		{
-			s_pVtxBuffRank->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
+			// 頂点バッファをロックし、頂点情報へのポインタを取得
+			s_pVtxBuffRank->Lock(0, 0, (void**)&pVtx, 0);
 			for (int i = 0; i < MAX_RANK; i++)
 			{
 				// 頂点カラーの設定
@@ -340,11 +406,15 @@ void UpdateRanking(void)
 
 				pVtx += 4;
 			}
-			s_pVtxBuffRank->Unlock();	// 頂点バッファをアンロックする
+			// 頂点バッファをアンロックする
+			s_pVtxBuffRank->Unlock();
 
-			s_pVtxBuffScore->Lock(0, 0, (void**)&pVtx, 0);	// 頂点バッファをロックし、頂点情報へのポインタを取得
+			// スコアの更新
+			// 頂点バッファをロックし、頂点情報へのポインタを取得
+			s_pVtxBuffScore->Lock(0, 0, (void**)&pVtx, 0);
 			for (int nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 			{
+				// 今回更新されたランキングか否か
 				if (nCntRank == s_nRankUpdate)
 				{	// 今回のスコアの点滅
 					for (int nCntScore = 0; nCntScore < MAX_SCORE; nCntScore++)
@@ -365,23 +435,59 @@ void UpdateRanking(void)
 					}
 				}
 			}
-			s_pVtxBuffScore->Unlock();	// 頂点バッファをアンロックする
+			// 頂点バッファをアンロックする
+			s_pVtxBuffScore->Unlock();
 		}
 
-		// 時間制限もしくは、エンターキーでリザルト画面に移行
-		if (s_nTimerRanking >= 3000 || GetKeyboardTrigger(DIK_RETURN))
+		//選択の切り替え
+		if (GetKeyboardTrigger(DIK_A) || GetKeyboardTrigger(DIK_D))
 		{
-			//初期化
+			s_SelectCheck = s_SelectCheck ? 0 : 1;
+		}
+
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		s_pVtxBuffSelect->Lock(0, 0, (void**)&pVtx, 0);
+		for (int i = 0; i < SELECT_NUMBER; i++)
+		{
+			if (i == s_SelectCheck)
+			{
+				SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+			}
+			else
+			{
+				SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f)));
+			}
+			pVtx += 4;
+		}
+		// 頂点バッファをアンロックする
+		s_pVtxBuffSelect->Unlock();
+
+		switch (s_SelectCheck)
+		{
+		case 0:
 			s_RankState = RANKSTATE_END;
-			s_MenuCnt = 33;
-			s_fHeigthMenu = 0.0f;
-			s_fWidthMenu = 0.0f;
+			
+			break;
+		case 1:
+			// 時間制限もしくは、エンターキーでリザルト画面に移行
+			if (GetKeyboardTrigger(DIK_RETURN))
+			{
+				//初期化
+				s_RankState = RANKSTATE_NONE;
+				s_MenuCnt = 33;
+				s_fHeigthMenu = 0.0f;
+				s_fWidthMenu = 0.0f;
 
-			// 決定音の再生
-			PlaySound(SOUND_LABEL_SE_ENTER);
+				// 決定音の再生
+				PlaySound(SOUND_LABEL_SE_ENTER);
 
-			// リザルト画面に移行
-			SetFade(MODE_RESULT);
+				// リザルト画面に移行
+				SetFade(MODE_RESULT);
+			}
+			break;
+		default:
+			assert(false);
+			break;
 		}
 		break;
 	case RANKSTATE_END:
@@ -452,6 +558,12 @@ void DrawRanking(void)
 		{// スコア
 			SetDraw(pDevice, s_pTextureScore, (nCntRank * 4 * MAX_SCORE) + (nCntScore * 4));	// 描画処理
 		}
+	}
+
+	InitDraw(pDevice, s_pVtxBuffSelect);
+	for (int i = 0; i < SELECT_NUMBER; i++)
+	{
+		SetDraw(pDevice, s_pTextureSelect[i], i * 4);	// 描画処理
 	}
 }
 

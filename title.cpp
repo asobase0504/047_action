@@ -240,6 +240,7 @@ void UninitTitle(void)
 //=========================================
 void UpdateTitle(void)
 {
+	float ii = rand();
 	// int nTexCnt;
 	s_nTimeTitle++;
 
