@@ -117,13 +117,27 @@ void UninitGame(void)
 	UninitScore();
 }
 
+#ifdef _DEBUG
+
+int D_nCnt = 0;
+
+#endif // _DEBUG
+
 //====================================
 // XVˆ—
 //====================================
 void UpdateGame(void)
 {
-	SetEnemy({ 1100.0f,550.0f,0.0f }, GOSTRAIGHT_RIGHT);
-	SetEnemy({ 1100.0f,570.0f,0.0f }, GOSTRAIGHT_RIGHT);
+
+#ifdef _DEBUG
+	D_nCnt++;
+	if (D_nCnt >= 10)
+	{
+		D_nCnt = 0;
+		SetEnemy(D3DXVECTOR3(1100.0f,550.0f,0.0f), GOSTRAIGHT_RIGHT);
+		SetEnemy(D3DXVECTOR3(1100.0f,570.0f,0.0f), GOSTRAIGHT_RIGHT);
+	}
+#endif // _DEBUG
 
 	switch (s_GameState)
 	{
