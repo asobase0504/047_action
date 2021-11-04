@@ -265,6 +265,7 @@ void RetryGame(void)
 
 	// スコアの初期化処理
 	InitScore();
+	SetScore(0);
 
 	// エネミーの初期化処理
 	InitEnemy();

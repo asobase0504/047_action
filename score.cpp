@@ -112,12 +112,12 @@ void DrawScore()
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
-	//
+	// 描画設定
 	InitDraw(pDevice, s_pVtxBuff);
 
 	for (nCntScore = 0; nCntScore < MAX_SCORE; nCntScore++)
 	{
-		//
+		// テクスチャの描画
 		SetDraw(pDevice, s_pTexture, nCntScore * 4);
 	}
 
