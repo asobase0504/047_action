@@ -317,7 +317,7 @@ void SelectTitle(void)
 	{
 	case SELECT_GAMESTART:
 		s_Object[SELECT_GAMESTART].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-		if (GetKeyboardTrigger(DIK_A))
+		if (GetKeyboardTrigger(DIK_W))
 		{
 			s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 			s_Select = SELECT_EXIT;
@@ -330,7 +330,7 @@ void SelectTitle(void)
 		break;
 	case SELECT_TUTORIAL:
 		s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-		if (GetKeyboardTrigger(DIK_A))
+		if (GetKeyboardTrigger(DIK_W))
 		{
 			s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 			s_Select = SELECT_GAMESTART;
@@ -343,7 +343,7 @@ void SelectTitle(void)
 		break;
 	case SELECT_EXIT:
 		s_Object[SELECT_EXIT].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-		if (GetKeyboardTrigger(DIK_A))
+		if (GetKeyboardTrigger(DIK_W))
 		{
 			s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 			s_Select = SELECT_TUTORIAL;

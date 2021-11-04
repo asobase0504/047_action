@@ -10,74 +10,54 @@
 //------------------------------------
 #include "main.h"
 #include "fade.h"
+#include "setup.h"
 
 //------------------------------------
 // グローバル変数
 //------------------------------------
-LPDIRECT3DVERTEXBUFFER9 s_pVtxBuffFade = NULL;	// 頂点バッファへのポインタ
-FADE s_fade;									// フェードの状態
-MODE s_modeNext;								// 次の画面(モード)
-D3DXCOLOR s_colorFade;							// ポリゴン(フェード)の色
+static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	// 頂点バッファへのポインタ
+static FADE s_fade;									// フェードの状態
+static MODE s_modeNext;								// 次の画面(モード)
+static D3DXCOLOR s_colorFade;						// ポリゴン(フェード)の色
 
 //====================================
 // 画面遷移の初期化処理
 //====================================
 void InitFade(MODE modeNext)
 {
-	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポイント
-
-								// デバイスの取得
-	pDevice = GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスの取得
 
 	s_fade = FADE_IN;		// フェードイン状態に
 	s_modeNext = modeNext;	// 次の画面(モード)を設定
 	s_colorFade = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);	// 黒いポリゴン(不透明)にしておく
 
-
-														// 頂点バッファの生成
+	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
-		&s_pVtxBuffFade,
+		&s_pVtxBuff,
 		NULL);
 
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
-							// 頂点バッファをロックし、頂点情報へのポインタを取得
-	s_pVtxBuffFade->Lock(0, 0, (void**)&pVtx, 0);
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 頂点座標の設定
-	pVtx[0].pos.x = 0.0f;
-	pVtx[0].pos.y = 0.0f;
-	pVtx[0].pos.z = 0.0f;
-
-	pVtx[1].pos.x = SCREEN_WIDTH;
-	pVtx[1].pos.y = 0.0f;
-	pVtx[1].pos.z = 0.0f;
-
-	pVtx[2].pos.x = 0.0f;
-	pVtx[2].pos.y = SCREEN_HEIGHT;
-	pVtx[2].pos.z = 0.0f;
-
-	pVtx[3].pos.x = SCREEN_WIDTH;
-	pVtx[3].pos.y = SCREEN_HEIGHT;
-	pVtx[3].pos.z = 0.0f;
+	SetRectUpLeftPos(pVtx, D3DXVECTOR3(0.0f, 0.0f, 0.0f), SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	// rhwの設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
+	InitRectRhw(pVtx);
 
 	// 頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)));
+
+	// テクスチャ座標の設定
+	InitRectTex(pVtx);
 
 	// 頂点バッファをアンロックする
-	s_pVtxBuffFade->Unlock();
+	s_pVtxBuff->Unlock();
 
 	// モードの設定
 	SetMode(s_modeNext);
@@ -89,10 +69,10 @@ void InitFade(MODE modeNext)
 void UninitFade(void)
 {
 	// 頂点バッファの破棄
-	if (s_pVtxBuffFade != NULL)
+	if (s_pVtxBuff != NULL)
 	{
-		s_pVtxBuffFade->Release();
-		s_pVtxBuffFade = NULL;
+		s_pVtxBuff->Release();
+		s_pVtxBuff = NULL;
 	}
 }
 
@@ -131,19 +111,14 @@ void UpdateFade(void)
 
 		VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
-								// 頂点バッファをロックし、頂点情報へのポインタを取得
-		s_pVtxBuffFade->Lock(0, 0, (void**)&pVtx, 0);
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 		// 頂点カラーの設定
-		pVtx[0].col = s_colorFade;
-		pVtx[1].col = s_colorFade;
-		pVtx[2].col = s_colorFade;
-		pVtx[3].col = s_colorFade;
+		SetRectColor(pVtx, &(s_colorFade));
 
 		// 頂点バッファをアンロックする
-		s_pVtxBuffFade->Unlock();
-
-
+		s_pVtxBuff->Unlock();
 	}
 }
 
@@ -154,23 +129,19 @@ void DrawFade(void)
 {
 	LPDIRECT3DDEVICE9 pDevice;	// デバイスへのポイント
 
-								// デバイスの取得
+	// デバイスの取得
 	pDevice = GetDevice();
 
-	// 頂点バッファをデータストリーム設定
-	pDevice->SetStreamSource(0, s_pVtxBuffFade, 0, sizeof(VERTEX_2D));
+	// 描画処理
+	InitDraw(pDevice, s_pVtxBuff);
 
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-	// テクスチャの設定
-	pDevice->SetTexture(0, NULL);
-
-	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-
+	// テクスチャの描画
+	SetDraw(pDevice, NULL, 0);
 }
 
+//====================================
+// 画面遷移の設定処理
+//====================================
 void SetFade(MODE modeNext)
 {
 	if (s_modeNext != modeNext)

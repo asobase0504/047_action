@@ -435,6 +435,9 @@ void Draw(void)
 			break;
 		}
 
+		// フェード処理
+		DrawFade();
+
 #ifdef _DEBUG
 		// FPSの表示
 		DrawFPS();
