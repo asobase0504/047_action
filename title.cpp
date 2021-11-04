@@ -47,6 +47,14 @@ typedef enum
 	OBJ_MAX			// 
 }OBJ_TYPE;
 
+// 選択されたオブジェクト
+typedef enum
+{
+	SELECT_GAMESTART = OBJ_GAMESTART,
+	SELECT_TUTORIAL,
+	SELECT_EXIT,
+}SELECT_MODE;
+
 typedef struct
 {
 	LPDIRECT3DVERTEXBUFFER9 pVtxBuff;	// 頂点バッファへのポインタ
@@ -59,6 +67,7 @@ typedef struct
 }OBJECT;
 
 // グローバル変数
+static SELECT_MODE s_Select;
 static OBJECT s_Object[OBJ_MAX] = {};
 static bool	s_bFadeCheek;	// フェード処置に移行するかの処理
 static int	s_nFadeCnt;		// フェード処理に行くまでの間隔
@@ -106,6 +115,7 @@ void InitTitle(void)
 
 	s_bFadeCheek = false;	// フェード処理に移行するかの変数
 	s_nFadeCnt = 0;			// フェード処理に移行するまでの間隔
+	s_Select = SELECT_GAMESTART;
 
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
@@ -201,7 +211,6 @@ void InitTitle(void)
 		// 使用に切り替え
 		object->bUse = true;
 	}
-	InitTime();
 }
 
 //=========================================
@@ -241,30 +250,99 @@ void UpdateTitle(void)
 {
 	VERTEX_2D *pVtx;	// 頂点情報へのポインタ
 
+	// 選択処理
+	SelectTitle();
+
 	for (int i = 0; i < OBJ_MAX; i++)
 	{
-		// 頂点バッファをロックし、頂点情報へのポインタを取得
-		s_Object[i].pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+		OBJECT *object = &(s_Object[i]);
 
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		object->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		// 頂点カラーの設定
+		SetRectColor(pVtx, &(object->col));
 
 		// 頂点バッファをアンロックする
-		s_Object[i].pVtxBuff->Unlock();
+		object->pVtxBuff->Unlock();
 	}
 
-	// ゲームモードに移行
-	if (!(s_bFadeCheek))
+	switch (s_Select)
 	{
-		if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_RETURN))
-		{// EnterキーかパッドのAを押された時
-		 // 決定音の再生
-			PlaySound(SOUND_LABEL_SE_ENTER);
-			s_bFadeCheek = true;	// フェード処理に入る
+	case SELECT_GAMESTART:
+		// ゲームモードに移行
+		if (!(s_bFadeCheek))
+		{
+			if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_RETURN))
+			{// EnterキーかパッドのAを押された時
+			 // 決定音の再生
+				PlaySound(SOUND_LABEL_SE_ENTER);
+				s_bFadeCheek = true;	// フェード処理に入る
+			}
 		}
+		else if (s_bFadeCheek)
+		{
+			s_nFadeCnt = 0;
+			SetFade(MODE_GAME);	// ゲームモードに移行
+		}
+		break;
+	case SELECT_TUTORIAL:
+		break;
+	case SELECT_EXIT:
+		break;
+	default:
+		break;
 	}
-	else if (s_bFadeCheek)
+}
+
+//=========================================
+// 選択処理
+//=========================================
+void SelectTitle(void)
+{
+	switch (s_Select)
 	{
-		s_nFadeCnt = 0;
-		SetFade(MODE_GAME);	// ゲームモードに移行
+	case SELECT_GAMESTART:
+		s_Object[SELECT_GAMESTART].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+		if (GetKeyboardTrigger(DIK_A))
+		{
+			s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			s_Select = SELECT_EXIT;
+		}
+		if (GetKeyboardTrigger(DIK_S))
+		{
+			s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			s_Select = SELECT_TUTORIAL;
+		}
+		break;
+	case SELECT_TUTORIAL:
+		s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+		if (GetKeyboardTrigger(DIK_A))
+		{
+			s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			s_Select = SELECT_GAMESTART;
+		}
+		if (GetKeyboardTrigger(DIK_S))
+		{
+			s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			s_Select = SELECT_EXIT;
+		}
+		break;
+	case SELECT_EXIT:
+		s_Object[SELECT_EXIT].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+		if (GetKeyboardTrigger(DIK_A))
+		{
+			s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			s_Select = SELECT_TUTORIAL;
+		}
+		if (GetKeyboardTrigger(DIK_S))
+		{
+			s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			s_Select = SELECT_GAMESTART;
+		}
+		break;
+	default:
+		break;
 	}
 }
 

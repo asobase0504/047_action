@@ -19,6 +19,7 @@ typedef struct
 void InitTitle(void);
 void UninitTitle(void);
 void UpdateTitle(void);
+void SelectTitle(void);
 void DrawTitle(void);
 
 #endif // !_POLYGON_H_
