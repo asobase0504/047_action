@@ -28,7 +28,7 @@ void InitScore()
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/number001.png",
+		"data/TEXTURE/number002.png",
 		&s_pTexture);
 
 	// スコアの情報の初期化
@@ -48,7 +48,7 @@ void InitScore()
 
 	for (int i = 0; i < MAX_SCORE; i++)
 	{
-		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_posScore.x - 60.0f * i, s_posScore.y, s_posScore.z), 50.0f, 50.0f);
+		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_posScore.x - 55.0f * i, s_posScore.y, s_posScore.z), 60.0f, 60.0f);
 
 		// rhwの設定
 		InitRectRhw(pVtx);

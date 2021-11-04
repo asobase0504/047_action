@@ -112,7 +112,7 @@ void InitRanking(void)
 
 	// テクスチャの読込 (スコア)
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/number001.png",
+		"data/TEXTURE/number002.png",
 		&s_pTextureScore);
 
 	// テクスチャの読込 (選択：もう一度)

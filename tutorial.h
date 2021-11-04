@@ -14,6 +14,7 @@ void InitTutorial(void);
 void UninitTutorial(void);
 void UpdateTutorial(void);
 void DrawTutorial(void);
+void TextTutorial(void);
 
 #endif // !_TUTORIAL_H_
 

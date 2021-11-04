@@ -16,7 +16,7 @@
 //------------------------------------
 //É}ÉNÉçíËã`
 //------------------------------------
-#define TIME_POS	"data/TEXTURE/number001.png"
+#define TIME_POS	"data/TEXTURE/number002.png"
 #define TIME_MAX	(6)
 
 //------------------------------------
