@@ -366,7 +366,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			pParticle->pos = pos;
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 10.0f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 10.0f);
-			pParticle->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+			pParticle->col = D3DXCOLOR(0.4f, 0.71f, 0.63f, 1.0f);
 			pParticle->fRaduus = 7.0f;
 			pParticle->nMaxLife = 40;
 			pParticle->nLife = pParticle->nMaxLife;
@@ -380,10 +380,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 
 		SetRectCenterPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
 
-		pVtx[0].col = pParticle->col;
-		pVtx[1].col = pParticle->col;
-		pVtx[2].col = pParticle->col;
-		pVtx[3].col = pParticle->col;
+		SetRectColor(pVtx, &(pParticle->col));
 
 		pVtx += 4;
 		break;
