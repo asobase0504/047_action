@@ -10,18 +10,15 @@
 //-----------------------------------------
 #include "main.h"
 #include "input.h"
-#include "fade.h"
-#include "game.h"
 #include "sound.h"
+#include "fade.h"
 #include "title.h"
+#include "game.h"
+#include "tutorial.h"
 #include "result.h"
 #include "ranking.h"
 #include "score.h"
 #include "player.h"
-#include "particle.h"
-#include "effect.h"
-#include "bg.h"
-#include "block.h"
 #include <stdio.h>
 
 //-----------------------------------------
@@ -326,6 +323,9 @@ void Uninit(void)
 	// ゲーム画面の終了処理
 	UninitGame();
 
+	// チュートリアル画面の終了処理
+	UninitTutorial();
+
 	// リザルト画面の終了処理
 	UninitResult();
 
@@ -381,12 +381,17 @@ void Update(void)
 		UpdateGame();
 		break;
 
+	case MODE_TUTORIAL:	// チュートリアル画面
+		UpdateTutorial();
+		break;
+
 	case MODE_RESULT:	// リザルト画面
 		UpdateResult();
 		break;
 
 	case MODE_RANKING:	// ランキング画面
 		UpdateRanking();
+		break;
 	}
 
 	// フェードの更新処理
@@ -417,12 +422,17 @@ void Draw(void)
 			DrawGame();
 			break;
 
+		case MODE_TUTORIAL:	// チュートリアル画面
+			DrawTutorial();
+			break;
+
 		case MODE_RESULT:	// リザルト画面
 			DrawResult();
 			break;
 
 		case MODE_RANKING:	// ランキング画面
 			DrawRanking();
+			break;
 		}
 
 #ifdef _DEBUG
@@ -488,6 +498,10 @@ void SetMode(MODE mode)
 		UninitGame();
 		break;
 
+	case MODE_TUTORIAL:	// チュートリアル画面
+		UninitTutorial();
+		break;
+
 	case MODE_RESULT:	// リザルト画面
 		UninitResult();
 		break;
@@ -506,6 +520,10 @@ void SetMode(MODE mode)
 
 	case MODE_GAME:		// ゲーム画面
 		InitGame();
+		break;
+
+	case MODE_TUTORIAL:	// チュートリアル画面
+		InitTutorial();
 		break;
 
 	case MODE_RESULT:	// リザルト画面

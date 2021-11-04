@@ -123,7 +123,7 @@ void UpdateFade(void)
 				s_colorFade.a = 1.0f;
 				s_fade = FADE_IN;	// フェードイン常置に
 
-									// モード設定(次の画面に移行)
+				// モード設定(次の画面に移行)
 				SetMode(s_modeNext);
 			}
 

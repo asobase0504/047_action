@@ -610,7 +610,7 @@ bool CollisionEnemy(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
-							// 頂点バッファをロックし、頂点情報へのポインタを取得
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	for (int nCntEnemy = 0; nCntEnemy < MAX_BLOCK; nCntEnemy++)

@@ -34,7 +34,7 @@ typedef struct
 // プロトタイプ宣言
 //-----------------------------------------
 void InitEffect(void);		// 初期化処理
-void UnInitEffect(void);	// 終了処理
+void UninitEffect(void);	// 終了処理
 void UpdateEffect(void);	// 更新処理
 void DrawEffect(void);		// 描画処理
 void SetEffect(D3DXVECTOR3 pos, EFFCT_TYPE type);	// 設定処理

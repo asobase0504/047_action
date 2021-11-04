@@ -91,7 +91,7 @@ void InitEffect(void)
 //====================================
 // èIóπèàóù
 //====================================
-void UnInitEffect(void)
+void UninitEffect(void)
 {
 	for (int i = 0; i < EFFECT_MAX; i++)
 	{

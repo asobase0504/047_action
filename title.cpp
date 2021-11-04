@@ -282,11 +282,24 @@ void UpdateTitle(void)
 		}
 		else if (s_bFadeCheek)
 		{
-			s_nFadeCnt = 0;
 			SetFade(MODE_GAME);	// ゲームモードに移行
 		}
 		break;
 	case SELECT_TUTORIAL:
+		// ゲームモードに移行
+		if (!(s_bFadeCheek))
+		{
+			if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_RETURN))
+			{// EnterキーかパッドのAを押された時
+			 // 決定音の再生
+				PlaySound(SOUND_LABEL_SE_ENTER);
+				s_bFadeCheek = true;	// フェード処理に入る
+			}
+		}
+		else if (s_bFadeCheek)
+		{
+			SetFade(MODE_TUTORIAL);	// チュートリアル画面に移行
+		}
 		break;
 	case SELECT_EXIT:
 		break;

@@ -93,7 +93,7 @@ void UninitGame(void)
 	UninitBG();
 
 	// エフェクトの終了処理
-	UnInitEffect();
+	UninitEffect();
 
 	// パーティクルの終了処理
 	UninitParticle();
