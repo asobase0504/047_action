@@ -71,9 +71,7 @@ void InitGame(void)
 	SetBlock(D3DXVECTOR3(1800.0f,800.0f,0.0f), 800.0f, 25.0f, 0);
 	SetBlock(D3DXVECTOR3(1150.0f,SCREEN_HEIGHT-25.0f,0.0f), 25.0f, 650.0f, 0);
 
-	//// エネミーの設定
-	SetEnemy(D3DXVECTOR3(1100.0f,550.0f,0.0f), GOSTRAIGHT_RIGHT);
-	SetEnemy(D3DXVECTOR3(1100.0f,570.0f,0.0f), GOSTRAIGHT_RIGHT);
+	OnesideTopSummon();
 
 	// スコアの設定
 	SetScore(1234);
@@ -129,15 +127,16 @@ int D_nCnt = 0;
 void UpdateGame(void)
 {
 
-#ifdef _DEBUG
-	D_nCnt++;
-	if (D_nCnt >= 10)
-	{
-		D_nCnt = 0;
-		SetEnemy(D3DXVECTOR3(1100.0f,550.0f,0.0f), GOSTRAIGHT_RIGHT);
-		SetEnemy(D3DXVECTOR3(1100.0f,570.0f,0.0f), GOSTRAIGHT_RIGHT);
-	}
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	D_nCnt++;
+//	if (D_nCnt >= 10)
+//	{
+//		D_nCnt = 0;
+//		SetEnemy(D3DXVECTOR3(1100.0f,550.0f,0.0f), GOSTRAIGHT_RIGHT);
+//		SetEnemy(D3DXVECTOR3(1100.0f,570.0f,0.0f), GOSTRAIGHT_RIGHT);
+//	}
+//#endif // _DEBUG
+
 
 	switch (s_GameState)
 	{
@@ -152,7 +151,7 @@ void UpdateGame(void)
 	case GAMESTATE_NORMAL:
 	{
 		//敵の召喚
-//		UpdateSummon();
+		UpdateSummon();
 
 		//時間の更新処理
 		UpdateTime();

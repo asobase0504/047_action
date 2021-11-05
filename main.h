@@ -43,7 +43,9 @@ typedef enum
 	POSITION_RIGHT,		// ブロックの右辺
 }JUDGE_POSITION;
 
+//------------------------------------
 // 画面(モード)の種類
+//------------------------------------
 typedef enum
 {
 	MODE_TITLE = 0,	// タイトル画面

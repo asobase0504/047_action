@@ -23,7 +23,7 @@ typedef enum
 	SOLO_EXTENDBALL_LEFT,
 	SOLO_EXTENDBALL_RIGHT,
 	GROUP_TWOSPLITBALL,
-	SUMMON_TYPE_MAX,
+	SUMMON_TYPE_MAX
 }SUMMON_TYPE;
 
 //------------------------------------
@@ -31,5 +31,9 @@ typedef enum
 //------------------------------------
 void UpdateSummon(void);
 void EnemySummon(SUMMON_TYPE type);
+void OnesideTopSummon(void);
+void OnesideBtomSummon(void);
+void OnesideLeftSummon(void);
+void OnesideRigthSummon(void);
 
 #endif // !_SUMMON_H_

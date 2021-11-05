@@ -16,7 +16,6 @@
 // マクロ定義
 //------------------------------------
 #define SPLITBALL_TEX	"data/TEXTURE/enemy000.png"
-#define EXTENDBALL_TEX	"data/TEXTURE/enemy001.png"
 #define MAX_ENEMY	(128)
 
 //------------------------------------
@@ -24,8 +23,9 @@
 //------------------------------------
 typedef enum
 {
-	ENEMYSTATE_NORMAL = 0,	// 通常状態
-	ENEMYSTATE_DAMAGE,		// ダメージ判定
+	ENEMYSTATE_SUMMON = 0,	// 召喚中
+	ENEMYSTATE_NEUTRAL,		// 通常状態
+	ENEMYSTATE_ATTACK,		// ダメージ判定
 	ENEMYSTATE_MAX
 }ENEMYSTATE;
 
@@ -46,7 +46,7 @@ typedef enum
 	GOSTRAIGHT_LEFT,	// 直進する長方形、左から右
 	GOSTRAIGHT_RIGHT,	// 直進する長方形、右から左
 	DAMEGE_WALL,		// ダメージ壁
-	ENEMYTYPE_MAX,
+	ENEMYTYPE_MAX
 }ENEMYTYPE;
 
 //------------------------------------
@@ -55,6 +55,7 @@ typedef enum
 typedef struct
 {
 	ENEMYTYPE type;
+	ENEMYSTATE state;
 	D3DXVECTOR3 pos;	// 位置
 	float fWidth;		// 画像の幅
 	float fHeight;		// 画像の高さ
@@ -69,15 +70,14 @@ typedef struct
 //------------------------------------
 // プロトタイプ宣言
 //------------------------------------
-void InitEnemy(void);							// 初期化処理
-void UninitEnemy(void);							// 終了処理
-void UpdateEnemy(void);							// 更新処理
-void DeleteEnemy(void);							// 全滅させる処理
-void DrawEnemy(void);							// 描画処理
-void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type);	// 設定処理
-Enemy *GetEnemy(void);							// 取得処理
-int GetCntEnemy(void);							// 敵の数取得処理
-void HitEnemy(int nCntEnemy, int nDamage);		// 当たり判定処理
+void InitEnemy	(void);								// 初期化処理
+void UninitEnemy(void);								// 終了処理
+void UpdateEnemy(void);								// 更新処理
+void DrawEnemy	(void);								// 描画処理
+void SetEnemy	(D3DXVECTOR3 pos, ENEMYTYPE type);	// 設定処理
+Enemy *GetEnemy	(void);								// 取得処理
+int GetCntEnemy	(void);								// 敵の数取得処理
+void HitEnemy	(int nCntEnemy);					// 当たり判定処理
 
 bool CollisionEnemy(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2);	//当たり判定処理
 bool CrossingEnemy(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2, JUDGE_POSITION position, Enemy enemy);	//当たり判定の計算処理

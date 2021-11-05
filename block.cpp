@@ -316,25 +316,7 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 		 // ã
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock], NULL))
 			{
- 				pEnemy->move.y *= -1.0f;
-//				pEnemy->pos.y = pBlock->pos.y - pBlock->fHeight - pEnemy->fHeight - 1.0f;
 
-				switch (pEnemy->type)
-				{
-				case SPLITBALL_FIRST:
-				case SPLITBALL_SECOND:
-				case SPLITBALL_LAST:
-						pEnemy->nLife--;
-					break;
-				case EXTENDBALL_UP:
-					pEnemy->nLife--;
-					break;
-				case EXTENDBALL_DWON:
-				case EXTENDBALL_LEFT:
-				case EXTENDBALL_RIGHT:
-				default:
-					break;
-				}
 				bisLanding = true;
 
 			}

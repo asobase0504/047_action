@@ -82,3 +82,23 @@ void EnemySummon(SUMMON_TYPE type)
 		break;
 	}
 }
+
+//====================================
+// ï«àÍñ Ç…è¢ä´(è„)
+//====================================
+void OnesideTopSummon(void)
+{
+	int Summon = 0;
+	int Cnt = 0;
+
+	while (Summon <= 20)
+	{
+		Cnt++;
+		if (Cnt >= 60)
+		{
+			Cnt = 0;
+			Summon++;
+			SetEnemy(D3DXVECTOR3(500.0f + Summon * 20.0f, 30.0f, 0.0f),GOSTRAIGHT_UP);
+		}
+	}
+}
