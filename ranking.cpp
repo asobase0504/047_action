@@ -107,7 +107,7 @@ void InitRanking(void)
 
 	// テクスチャの読込 (順位)
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/ranking_rank1.png",
+		"data/TEXTURE/ranking_rank2.png",
 		&s_pTextureRank);
 
 	// テクスチャの読込 (スコア)
@@ -210,7 +210,7 @@ void InitRanking(void)
 			s_aRankScore[nCntRank].pos = D3DXVECTOR3(650.0f, 200.0f + nCntRank * 150.0f, 0.0f);
 
 			// 頂点座標の設定
-			SetRectCenterPos(pVtx, s_aRankScore[nCntRank].pos, 75.0f, 75.0f);
+			SetRectCenterPos(pVtx, s_aRankScore[nCntRank].pos, 70.0f, 70.0f);
 
 			// 頂点カラーの設定
 			SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 0.0f)));
@@ -238,7 +238,7 @@ void InitRanking(void)
 			for (nCntScore = 0; nCntScore < MAX_SCORE; nCntScore++)
 			{
 				//頂点座標の設定
-				SetRectUpRightPos(pVtx, D3DXVECTOR3(pScore->pos.x - nCntScore * 65, pScore->pos.y, pScore->pos.z), 60.0f, 70.0f);
+				SetRectUpRightPos(pVtx, D3DXVECTOR3(pScore->pos.x - nCntScore * 70, pScore->pos.y - 15.0f, pScore->pos.z), 75.0f, 100.0f);
 
 				// 頂点カラーの設定
 				SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 0.0f)));
