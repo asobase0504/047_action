@@ -107,44 +107,23 @@ int nCnt = 0;
 //====================================
 void UpdateBlock(void)
 {
-	int nCntBlock;			// ブロックの最大数分
-	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
-	Block *pBlock;
+	VERTEX_2D *pVtx;
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	for (nCntBlock = 0; nCntBlock < MAX_BLOCK; nCntBlock++)
+	for (int i = 0; i < MAX_BLOCK; i++)
 	{
 		// アドレスの取得
-		pBlock = &(s_aBlock[nCntBlock]);
+		Block *pBlock = &(s_aBlock[i]);
 
-		if (pBlock->bUse == true)
+		if (pBlock->bUse)
 		{// ブロックが使用されている
 
-			 // 頂点座標の設定
+			// 頂点座標の設定
 			SetRectCenterPos(pVtx, pBlock->pos, pBlock->fWidth, pBlock->fHeight);
-
+			// 色の設定
 			SetRectColor(pVtx, &(pBlock->col));
 
-
-			// 画面端に言った場合
-			if (pBlock->pos.x <= 0)
-			{
-				pBlock->bUse = false; // 使用していない状態にする
-			}
-			if (pBlock->pos.y <= 20)
-			{
-				pBlock->bUse = false; // 使用していない状態にする
-			}
-			if (pBlock->pos.x >= SCREEN_WIDTH)
-			{
-				pBlock->bUse = false; // 使用していない状態にする
-			}
-			if (pBlock->pos.y >= SCREEN_HEIGHT)
-			{
-				pBlock->bUse = false; // 使用していない状態にする
-			}
 		}
 		pVtx += 4;
 	}
@@ -158,76 +137,59 @@ void UpdateBlock(void)
 //====================================
 void DrawBlock(void)
 {
-	LPDIRECT3DDEVICE9 pDevice;
-	Block *pBlock;
-	int nCntBlock;
-
 	// デバイスの取得
-	pDevice = GetDevice();
+	 LPDIRECT3DDEVICE9 pDevice = GetDevice();
 
-	// 頂点バッファをデータストリーム設定
-	pDevice->SetStreamSource(0, s_pVtxBuff, 0, sizeof(VERTEX_2D));
+	// 描画処理
+	InitDraw(pDevice, s_pVtxBuff);
 
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_2D);
-
-
-	for (nCntBlock = 0; nCntBlock < MAX_BLOCK; nCntBlock++)
+	for (int i = 0; i < MAX_BLOCK; i++)
 	{
 		// アドレスの取得
-		pBlock = &(s_aBlock[nCntBlock]);
+		Block *pBlock = &(s_aBlock[i]);
 
 		if (pBlock->bUse == true)
 		{// ブロックが使用されている
-
-			 // テクスチャの設定
-			pDevice->SetTexture(0, s_pTexture);
-
-			// ポリゴン描画
-			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCntBlock * 4, 2);
-
+			//描画処理
+			SetDraw(pDevice, s_pTexture, i * 4);
 		}
 	}
-
 }
 
 //====================================
 // ブロックの設定処理
 //====================================
-void SetBlock(D3DXVECTOR3 pos,float fHeight, float fWidth, int type)
+void SetBlock(D3DXVECTOR3 pos,float fHeight, float fWidth)
 {
-	int nCntBlock;
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
-	Block *pBlock;
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (nCntBlock = 0; nCntBlock < MAX_BLOCK; nCntBlock++)
+	for (int i = 0; i < MAX_BLOCK; i++)
 	{
 		// アドレスの取得
-		pBlock = &(s_aBlock[nCntBlock]);
+		Block *pBlock = &(s_aBlock[i]);
 		if (!pBlock->bUse)
 		{// ブロックが使用されていない場合
 
-			pBlock->pos = pos;
-			pBlock->fHeight = fHeight;
-			pBlock->fWidth = fWidth;
+			pBlock->pos = pos;			// 座標の設定
+			pBlock->fHeight = fHeight;	// 高さの設定
+			pBlock->fWidth = fWidth;	// 幅の設定
 
 			// 頂点座標の設定
 			SetRectCenterPos(pVtx, pBlock->pos, pBlock->fWidth, pBlock->fHeight);
 
 			pBlock->bUse = true;	// 使用している状態にする
 			break;
-
 		}
 		pVtx += 4;
 	}
-
 	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
-
 }
+
+D3DXVECTOR3 g_Outpos;
 
 //====================================
 // ブロックとプレイヤーの当たり判定処理
@@ -236,21 +198,19 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 {
 	bool bisLanding = false;
 	// 当たり判定処理
-	Block *pBlock = s_aBlock;
 	D3DXVECTOR3 Outpos = D3DXVECTOR3(0.0f,0.0f,0.0f);	//当たり判定の交点
-	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
-
+	VERTEX_2D *pVtx;	// 頂点情報へのポインタ
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	for (int nCntBlock = 0; nCntBlock < MAX_BLOCK; nCntBlock++)
+	for (int i = 0; i < MAX_BLOCK; i++)
 	{
-		pBlock = &(s_aBlock[nCntBlock]);
-		if (pBlock->bUse == true)
+		Block *pBlock = &(s_aBlock[i]);
+		if (pBlock->bUse)
 		{// ブロックが生きてたら
 
 			// ブロック上
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock], NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, *pBlock, NULL))
 			{
 				pPlayer->move.y = 0.0f;
 				pPlayer->pos.y = pBlock->pos.y - pBlock->fHeight;
@@ -261,16 +221,16 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 			}
 
 			// ブロック下
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], &(Outpos)))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, *pBlock, &(Outpos)))
 			{
 				D3DXVECTOR3 p;
-				p = pos1 - Outpos;
+				p = Outpos;
   				pPlayer->move.y = 0.0f;
-				pPlayer->pos.y = pBlock->pos.y + p.y;
+				pPlayer->pos.y = pBlock->pos.y + pBlock->fHeight + p.y;
 			}
 
 			// ブロック左
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, *pBlock, NULL))
 			{
 				pPlayer->move.x = 0.0f;
 				pPlayer->pos.x = pBlock->pos.x - pBlock->fWidth - pPlayer->fWidth;
@@ -279,7 +239,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 			}
 
 			// ブロック右
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, *pBlock, NULL))
 			{
 				pPlayer->move.x = 0.0f;
 				pPlayer->pos.x = pBlock->pos.x + pBlock->fWidth + pPlayer->fWidth;
@@ -291,6 +251,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();
 
+	g_Outpos = Outpos;
 	return bisLanding;
 }
 
@@ -425,16 +386,19 @@ bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION positi
 	float v_Bv = D3DXVec2Cross(&(v), &(vBlock.vector));
 	float v_Tv = D3DXVec2Cross(&(v), &(vTarget.vector));
 
-	float hit1 = v_Bv / Bv_Tv;
-	float hit2 = v_Tv / Bv_Tv;
+	float hit1 = v_Tv / Bv_Tv;
+	float hit2 = v_Bv / Bv_Tv;
 
 	if ((hit1 < 0.0f) || (hit1 > 1.0f) || (hit2 < 0.0f) || (hit2 > 1.0f))
 	{
 		return false;
 	}
 
-	Outpos = &(vTarget.start + vTarget.vector * v_Bv);
-	Outpos->z = 0.0f;
+	if (Outpos != NULL)
+	{
+		Outpos->x = vBlock.start.x + vBlock.vector.x * hit1;
+		Outpos->y = vBlock.start.y + vBlock.vector.y * hit1;
+	}
 	return true;
 }
 
@@ -444,4 +408,9 @@ bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION positi
 Block* GetBlock(void)
 {
 	return s_aBlock;
+}
+
+D3DXVECTOR3 GetOut(void)
+{
+	return g_Outpos;
 }

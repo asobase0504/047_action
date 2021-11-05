@@ -13,6 +13,7 @@
 #include "sound.h"
 #include "fade.h"
 #include "title.h"
+#include "block.h"
 #include "game.h"
 #include "tutorial.h"
 #include "result.h"
@@ -469,12 +470,14 @@ void DrawFPS(void)
 	Player *pPlayer;
 
 	pPlayer = GetPlayer();
+	D3DXVECTOR3 out = GetOut();
 
 	// 文字列に代入
 	wsprintf(&aStr[0][0], "FPS: %d\n", g_nCountFPS);
 
 	// 文字列に代入
 	sprintf(&aStr[1][0], "rot: %f\n", pPlayer->rot.z);
+	sprintf(&aStr[2][0], "Outy: %f,%f,%f\n", out.x, out.y, out.z);
 
 
 	// テキストの描画
@@ -483,6 +486,10 @@ void DrawFPS(void)
 	rect = { 0,30,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[1][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	rect = { 0,60,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[2][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
 
 //=========================================
