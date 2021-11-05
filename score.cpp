@@ -7,6 +7,7 @@
 #include "main.h"
 #include "setup.h"
 #include "score.h"
+#include "number.h"
 
 
 // グローバル変数
@@ -131,10 +132,10 @@ void SetScore(int nScore)
 	// ローカル変数
 	s_nScore = nScore;
 	VERTEX_2D *pVtx;
-	int aNumber[8];
+	int aNumber[MAX_SCORE];
 	int nTime = s_nScore;
 	int i = 0;
-	float aTex[8];
+	float aTex[MAX_SCORE];
 	
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -164,16 +165,15 @@ void AddScore(int nValue)
 	// ローカル変数
 	s_nScore += nValue;
 	VERTEX_2D *pVtx;
-	int aNumber[8];
+	int aNumber[MAX_SCORE];
+	float aTex[MAX_SCORE];
 	int nTime = s_nScore;
-	int i = 0;
-	float aTex[8];
 
 	// 頂点バッファをロックし、頂点情報へのポインタを取得
 	s_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 一桁ずつに分ける
-	while (nTime != 0)
+	for(int i = 0; i < MAX_SCORE;i++)
 	{
 		aNumber[i] = nTime % 10;
 		aTex[i] = aNumber[i] * 0.1f;
@@ -182,7 +182,6 @@ void AddScore(int nValue)
 		// テクスチャ座標の設定
 		SetRectTex(pVtx, 0.0f, 1.0f, 0.0f + aTex[i], 0.1f + aTex[i]);
 
-		i++;
 		pVtx += 4;
 	}
 	// 頂点バッファをアンロックする
