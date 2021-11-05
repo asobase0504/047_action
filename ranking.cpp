@@ -22,8 +22,8 @@
 // マクロ定義
 //------------------------------------
 #define SELECT_NUMBER	(2)
-#define SERECT_WIDTH	(200.0f)
-#define SERECT_HEIGTH	(50.0f)
+#define SERECT_WIDTH	(256.0f)
+#define SERECT_HEIGTH	(128.0f)
 
 //------------------------------------
 // ランキングのステータス列挙型
@@ -117,12 +117,12 @@ void InitRanking(void)
 
 	// テクスチャの読込 (選択：もう一度)
 	D3DXCreateTextureFromFile(pDevice,
-		NULL,
+		"data/TEXTURE/retry.png",
 		&s_pTextureSelect[0]);
 
 	// テクスチャの読込 (選択：終了)
 	D3DXCreateTextureFromFile(pDevice,
-		NULL,
+		"data/TEXTURE/result.png",
 		&s_pTextureSelect[1]);
 
 	// 頂点バッファの生成 (背景)
@@ -263,7 +263,7 @@ void InitRanking(void)
 		for (int i = 0; i < 2; i++)
 		{
 			// 頂点座標の設定
-			SetRectUpRightPos(pVtx, D3DXVECTOR3(800.0f + 400.0f * i, 950.0f, 0.0f), SERECT_WIDTH, SERECT_HEIGTH);
+			SetRectUpRightPos(pVtx, D3DXVECTOR3(850.0f + 400.0f * i, 875.0f, 0.0f), SERECT_WIDTH, SERECT_HEIGTH);
 
 			// 頂点カラーの設定
 			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)));
