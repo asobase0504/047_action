@@ -113,7 +113,18 @@ void UpdatePlayer(void)
 	Player *pPlayer;
 	pPlayer = &(s_player);
 
-	switch (pPlayer->state)
+	if (GetKeyboardPress(DIK_P))
+	{
+		pPlayer->pos.y -= 1.0f;
+		pPlayer->move.y = 0.0f;
+	}
+	if (GetKeyboardPress(DIK_L))
+	{
+		pPlayer->pos.y = 1015.0f;
+		pPlayer->move.y = 0.0f;
+	}
+
+ 	switch (pPlayer->state)
 	{
 	case PLAYERSTATE_APPEAR:	// プレイヤーが出現中
 		pPlayer->state = PLAYERSTATE_NORMAL;
@@ -164,15 +175,15 @@ void UpdatePlayer(void)
 
 	// それぞれの頂点座標の当たり判定
 	bisLanding = CollisionBlock(pPlayer, pVtx[0].pos, pVtx[1].pos);
-	bisLanding = CollisionBlock(pPlayer, pVtx[1].pos, pVtx[2].pos);
+	bisLanding = CollisionBlock(pPlayer, pVtx[0].pos, pVtx[2].pos);
+	bisLanding = CollisionBlock(pPlayer, pVtx[1].pos, pVtx[3].pos);
 	bisLanding = CollisionBlock(pPlayer, pVtx[2].pos, pVtx[3].pos);
-	bisLanding = CollisionBlock(pPlayer, pVtx[3].pos, pVtx[0].pos);
 
 	// 敵との当たり判定
 	CollisionEnemy(pVtx[0].pos, pVtx[1].pos);
-	CollisionEnemy(pVtx[1].pos, pVtx[2].pos);
+	CollisionEnemy(pVtx[0].pos, pVtx[2].pos);
+	CollisionEnemy(pVtx[1].pos, pVtx[3].pos);
 	CollisionEnemy(pVtx[2].pos, pVtx[3].pos);
-	CollisionEnemy(pVtx[3].pos, pVtx[0].pos);
 
 	// 頂点バッファをアンロックする
 	s_pVtxBuff->Unlock();

@@ -165,7 +165,7 @@ void UpdateEnemy(void)
 			pEnemy->col.a += 0.05f;
 			if (pEnemy->col.a >= 1.0f)
 			{
-				ENEMYSTATE_NEUTRAL;
+				pEnemy->state = ENEMYSTATE_NEUTRAL;
 			}
 			break;
 		case ENEMYSTATE_NEUTRAL:	// 待機処理
@@ -226,9 +226,13 @@ static void NeutralEnemy(Enemy *pEnemy)
 		Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
 		float fRotDest;
 		fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-		pEnemy->move.x = sinf(fRotDest) * 1.0f;
-		pEnemy->move.y = cosf(fRotDest) * 1.0f;
+		pEnemy->move.x = pEnemy->move.x + sinf(fRotDest) * 1.0f;
+		pEnemy->move.y = pEnemy->move.y + cosf(fRotDest) * 1.0f;
 		pEnemy->col = D3DXCOLOR(0.9f, 0.35f, 0.4f, 1.0f);
+		if ((pPlayer->pos.x - pEnemy->pos.x <= 100.0f) || (pPlayer->pos.y - pEnemy->pos.y <= 100.0f))
+		{
+			pEnemy->state = ENEMYSTATE_ATTACK;
+		}
 	}
 		break;
 	case EXTENDBALL_UP:		// 伸びる円、上から下
@@ -240,13 +244,10 @@ static void NeutralEnemy(Enemy *pEnemy)
 	case EXTENDBALL_RIGHT:	// 伸びる円、右から左
 		break;
 	case GOSTRAIGHT_UP:		// 直進する長方形、上から下
-		break;
 	case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
-		break;
 	case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
-		break;
 	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
-		break;
+		pEnemy->state = ENEMYSTATE_ATTACK;
 	case DAMEGE_WALL:		// ダメージ壁
 		break;
 	default:
@@ -268,22 +269,23 @@ static void AttackEnemy(Enemy *pEnemy)
 	{
 		Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
 		float fRotDest;					// 敵とプレイヤーを結ぶ線の角度
-		if (pEnemy->nAtkInterval <= 150 && pEnemy->nAtkInterval % 5 == 0)
+		if (pEnemy->nAtkInterval % 5 == 0)
 		{
 			// パーティクル
 			SetParticle(pEnemy->pos, PARTICLE_SPLITBALL_ATTACK);
 		}
-		if (pEnemy->nAtkInterval >= 300)
+		if (pEnemy->nAtkInterval >= 200)
 		{
-			// 突進攻撃
-			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-			pEnemy->move.x = sinf(fRotDest) * 10.0f;
-			pEnemy->move.y = cosf(fRotDest) * 10.0f;
-
-			pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-			// 攻撃サイクルのリセット
 			pEnemy->nAtkInterval = 0;
+			pEnemy->state = ENEMYSTATE_NEUTRAL;
 		}
+		// 突進攻撃
+		fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
+		pEnemy->move.x = sinf(fRotDest) * 10.0f;
+		pEnemy->move.y = cosf(fRotDest) * 10.0f;
+
+		pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+		// 攻撃サイクルのリセット
 	}
 		break;
 	case SPLITBALL_SECOND:	// 別れる球の２回目
@@ -537,8 +539,8 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			// 寿命設定
 			pEnemy->nLife = 1;
 			// 画像の大きさ設定
-			pEnemy->fHeight = 5.0f;		// 高さ
-			pEnemy->fWidth = 10.0f;	// 幅
+			pEnemy->fHeight	= 5.0f;		// 高さ
+			pEnemy->fWidth	= 10.0f;	// 幅
 			break;
 		case DAMEGE_WALL:		// ダメージ壁
 			break;
@@ -682,23 +684,23 @@ bool CrossingEnemy(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2, JUDGE_POSITION positi
 	{
 	case POSITION_UP:
 		// ブロックのベクトルの獲得
-		vEnemy.start  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
-		vEnemy.vector = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z) - vEnemy.start;
+		vEnemy.s  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
+		vEnemy.v = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z) - vEnemy.s;
 		break;
 	case POSITION_DWON:
 		// ブロックのベクトルの獲得
-		vEnemy.start  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z);
-		vEnemy.vector = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.start;
+		vEnemy.s  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z);
+		vEnemy.v = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.s;
 		break;
 	case POSITION_LEFT:
 		// ブロックのベクトルの獲得
-		vEnemy.start  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
-		vEnemy.vector = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.start;
+		vEnemy.s  = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
+		vEnemy.v = D3DXVECTOR3(pEnemy->pos.x - pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.s;
 		break;
 	case POSITION_RIGHT:
 		// ブロックのベクトルの獲得
-		vEnemy.start  = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
-		vEnemy.vector = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.start;
+		vEnemy.s  = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y - pEnemy->fHeight, pEnemy->pos.z);
+		vEnemy.v = D3DXVECTOR3(pEnemy->pos.x + pEnemy->fWidth, pEnemy->pos.y + pEnemy->fHeight, pEnemy->pos.z) - vEnemy.s;
 		break;
 	default:
 		assert(false);
@@ -706,22 +708,22 @@ bool CrossingEnemy(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2, JUDGE_POSITION positi
 	}
 
 	// 被対象のベクトルの獲得
-	vTarget.start  = *pPos2;
-	vTarget.vector = *pPos1 - *pPos2;
+	vTarget.s  = *pPos2;
+	vTarget.v = *pPos1 - *pPos2;
 
 	// ベクトルの始点同士の距離。
-	D3DXVECTOR3 v = vTarget.start - vEnemy.start;
+	D3DXVECTOR3 v = vTarget.s - vEnemy.s;
 
 	// ブロックのベクトルと被対象のベクトルが平行か調べる
-	float Bv_Tv = D3DXVec2Cross(&(vEnemy.vector), &(vTarget.vector));
+	float Bv_Tv = D3DXVec2Cross(&(vEnemy.v), &(vTarget.v));
 	if (Bv_Tv == 0.0f)
 	{
 		// 並行である。
 		return false;
 	}
 
-	float v_Bv = D3DXVec2Cross(&(v), &(vEnemy.vector));
-	float v_Tv = D3DXVec2Cross(&(v), &(vTarget.vector));
+	float v_Bv = D3DXVec2Cross(&(v), &(vEnemy.v));
+	float v_Tv = D3DXVec2Cross(&(v), &(vTarget.v));
 
 	float hit1 = v_Tv / Bv_Tv;
 	float hit2 = v_Bv / Bv_Tv;

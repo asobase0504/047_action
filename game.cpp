@@ -69,12 +69,12 @@ void InitGame(void)
 	SetBlock(D3DXVECTOR3(500.0f,800.0f,0.0f), 800.0f, 25.0f);
 	SetBlock(D3DXVECTOR3(1150.0f,25.0f,0.0f), 25.0f, 650.0f);
 	SetBlock(D3DXVECTOR3(1800.0f,800.0f,0.0f), 800.0f, 25.0f);
-	SetBlock(D3DXVECTOR3(1150.0f,SCREEN_HEIGHT-25.0f,0.0f), 25.0f, 650.0f);
-
-	OnesideTopSummon();
+	SetBlock(D3DXVECTOR3(1150.0f, SCREEN_HEIGHT - 25.0f, 0.0f), 25.0f, 650.0f);
+	SetBlock(D3DXVECTOR3(800.0f, 300.0f, 0.0f), 350.0f, 25.0f);
+	SetBlock(D3DXVECTOR3(1200.0f, 300.0f, 0.0f), 25.0f, 450.0f);
 
 	// スコアの設定
-	SetScore(1234);
+	SetScore(0);
 
 	// ランキングの読込
 	ResetRanking();

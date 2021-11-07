@@ -100,8 +100,6 @@ void UninitBlock(void)
 
 }
 
-int nCnt = 0;
-
 //====================================
 // 更新処理
 //====================================
@@ -148,7 +146,7 @@ void DrawBlock(void)
 		// アドレスの取得
 		Block *pBlock = &(s_aBlock[i]);
 
-		if (pBlock->bUse == true)
+		if (pBlock->bUse)
 		{// ブロックが使用されている
 			//描画処理
 			SetDraw(pDevice, s_pTexture, i * 4);
@@ -210,10 +208,17 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 		{// ブロックが生きてたら
 
 			// ブロック上
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, *pBlock, NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, *pBlock, &(Outpos)))
 			{
-				pPlayer->move.y = 0.0f;
-				pPlayer->pos.y = pBlock->pos.y - pBlock->fHeight;
+				if (pos1.y <= pos2.y)
+				{
+					pPlayer->pos.y -= pos2.y - Outpos.y;
+				}
+				else
+				{
+					pPlayer->pos.y -= pos1.y - Outpos.y;
+				}
+ 				pPlayer->move.y = 0.0f;
 				pPlayer->nJumpCnt = 0;
 				pPlayer->jumpstate = JUMP_NONE;
 				bisLanding = true;
@@ -223,28 +228,30 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 			// ブロック下
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, *pBlock, &(Outpos)))
 			{
-				D3DXVECTOR3 p;
-				p = Outpos;
-  				pPlayer->move.y = 0.0f;
-				pPlayer->pos.y = pBlock->pos.y + pBlock->fHeight + p.y;
+				if (pos1.y >= pos2.y)
+				{
+					pPlayer->pos.y += pos1.y - Outpos.y;
+				}
+				else
+				{
+					pPlayer->pos.y += pos2.y - Outpos.y;
+				}
+				pPlayer->move.y = 0.0f;
 			}
 
 			// ブロック左
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, *pBlock, NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, *pBlock, &(Outpos)))
 			{
-				pPlayer->move.x = 0.0f;
 				pPlayer->pos.x = pBlock->pos.x - pBlock->fWidth - pPlayer->fWidth;
 				pPlayer->rot.z = pPlayer->rotOld.z;
-// 				pPlayer->pos.x = pPlayer->pos.x - 5.0f;
 			}
 
 			// ブロック右
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, *pBlock, NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, *pBlock, &(Outpos)))
 			{
 				pPlayer->move.x = 0.0f;
 				pPlayer->pos.x = pBlock->pos.x + pBlock->fWidth + pPlayer->fWidth;
 				pPlayer->rot.z = pPlayer->rotOld.z;
-// 				pPlayer->pos.x = pPlayer->pos.x + 5.0f;
 			}
 		}
 	}
@@ -277,22 +284,21 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 		 // 上
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock], NULL))
 			{
-
-				bisLanding = true;
-
+				pEnemy->pos.y = pBlock->pos.y - pBlock->fHeight - pEnemy->fHeight + 5.0f;
+				pEnemy->move.y *= -1.0f;
 			}
 
 			// 下
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
  				pEnemy->move.y *= -1.0f;
-//				pEnemy->pos.y = pBlock->pos.y + pBlock->fHeight + pEnemy->fHeight + 5.0f;
+				pEnemy->pos.y = pBlock->pos.y + pBlock->fHeight + pEnemy->fHeight + 5.0f;
 				switch (pEnemy->type)
 				{
 				case SPLITBALL_FIRST:
 				case SPLITBALL_SECOND:
 				case SPLITBALL_LAST:
-						pEnemy->nLife--;
+					pEnemy->nLife--;
 					break;
 				case EXTENDBALL_UP:
 					break;
@@ -310,7 +316,7 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
  				pEnemy->move.x *= -1.0f;
-// 				pEnemy->pos.x = pBlock->pos.x - pBlock->fWidth - pEnemy->fWidth - 1.0f;
+ 				pEnemy->pos.x = pBlock->pos.x - pBlock->fWidth - pEnemy->fWidth - 1.0f;
 				pEnemy->pos.x = pEnemy->pos.x - 5.0f;
 					pEnemy->nLife--;
 			}
@@ -318,10 +324,10 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 			// 右
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
- 				pEnemy->move.x *= -1.0f;
-// 				pEnemy->pos.x = pBlock->pos.x + pBlock->fWidth + pEnemy->fWidth + 1.0f;
-					pEnemy->nLife--;
-					pEnemy->nAtkInterval = 150;
+				pEnemy->move.x *= -1.0f;
+				pEnemy->pos.x = pBlock->pos.x + pBlock->fWidth + pEnemy->fWidth + 1.0f;
+				pEnemy->nLife--;
+				pEnemy->nAtkInterval = 150;
 			}
 		}
 	}
@@ -339,52 +345,52 @@ bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION positi
 {
 	// 当たり判定処理
 	Block *pBlock = &(block);
-	Segment vBlock;
-	Segment vTarget;
+	Segment seg1;
+	Segment seg2;
 
 	switch (position)
 	{
 	case POSITION_UP:
 		// ブロックのベクトルの獲得
-		vBlock.start = D3DXVECTOR3(pBlock->pos.x - pBlock->fWidth, pBlock->pos.y - pBlock->fHeight, pBlock->pos.z);
-		vBlock.vector = D3DXVECTOR3(pBlock->pos.x + pBlock->fWidth, pBlock->pos.y - pBlock->fHeight, pBlock->pos.z) - vBlock.start;
+		seg1.s = D3DXVECTOR3(pBlock->pos.x - pBlock->fWidth, pBlock->pos.y - pBlock->fHeight, pBlock->pos.z);
+		seg1.v = D3DXVECTOR3(pBlock->pos.x + pBlock->fWidth, pBlock->pos.y - pBlock->fHeight, pBlock->pos.z) - seg1.s;
 		break;
 	case POSITION_DWON:
 		// ブロックのベクトルの獲得
-		vBlock.start = D3DXVECTOR3(pBlock->pos.x - pBlock->fWidth, pBlock->pos.y + pBlock->fHeight, pBlock->pos.z);
-		vBlock.vector = D3DXVECTOR3(pBlock->pos.x + pBlock->fWidth, pBlock->pos.y + pBlock->fHeight, pBlock->pos.z) - vBlock.start;
+		seg1.s = D3DXVECTOR3(pBlock->pos.x - pBlock->fWidth, pBlock->pos.y + pBlock->fHeight, pBlock->pos.z);
+		seg1.v = D3DXVECTOR3(pBlock->pos.x + pBlock->fWidth, pBlock->pos.y + pBlock->fHeight, pBlock->pos.z) - seg1.s;
 		break;
 	case POSITION_LEFT:
 		// ブロックのベクトルの獲得
-		vBlock.start = D3DXVECTOR3(pBlock->pos.x - pBlock->fWidth, pBlock->pos.y - pBlock->fHeight, pBlock->pos.z);
-		vBlock.vector = D3DXVECTOR3(pBlock->pos.x - pBlock->fWidth, pBlock->pos.y + pBlock->fHeight, pBlock->pos.z) - vBlock.start;
+		seg1.s = D3DXVECTOR3(pBlock->pos.x - pBlock->fWidth, pBlock->pos.y - pBlock->fHeight, pBlock->pos.z);
+		seg1.v = D3DXVECTOR3(pBlock->pos.x - pBlock->fWidth, pBlock->pos.y + pBlock->fHeight, pBlock->pos.z) - seg1.s;
 		break;
 	case POSITION_RIGHT:
 		// ブロックのベクトルの獲得
-		vBlock.start = D3DXVECTOR3(pBlock->pos.x + pBlock->fWidth, pBlock->pos.y - pBlock->fHeight, pBlock->pos.z);
-		vBlock.vector = D3DXVECTOR3(pBlock->pos.x + pBlock->fWidth, pBlock->pos.y + pBlock->fHeight, pBlock->pos.z) - vBlock.start;
+		seg1.s = D3DXVECTOR3(pBlock->pos.x + pBlock->fWidth, pBlock->pos.y - pBlock->fHeight, pBlock->pos.z);
+		seg1.v = D3DXVECTOR3(pBlock->pos.x + pBlock->fWidth, pBlock->pos.y + pBlock->fHeight, pBlock->pos.z) - seg1.s;
 		break;
 	default:
 		break;
 	}
 
 	// 被対象のベクトルの獲得
-	vTarget.start = *pPos2;
-	vTarget.vector = *pPos1 - *pPos2;
+	seg2.s = *pPos2;
+	seg2.v = *pPos1 - *pPos2;
 
 	// ベクトルの始点同士の距離。
-	D3DXVECTOR3 v = vTarget.start - vBlock.start;
+	D3DXVECTOR3 v = seg2.s - seg1.s;
 
 	// ブロックのベクトルと被対象のベクトルが平行か調べる
-	float Bv_Tv = D3DXVec2Cross(&(vBlock.vector), &(vTarget.vector));
+	float Bv_Tv = D3DXVec2Cross(&(seg1.v), &(seg2.v));
 	if (Bv_Tv == 0.0f)
 	{
 		// 並行である。
 		return false;
 	}
 
-	float v_Bv = D3DXVec2Cross(&(v), &(vBlock.vector));
-	float v_Tv = D3DXVec2Cross(&(v), &(vTarget.vector));
+	float v_Bv = D3DXVec2Cross(&(v), &(seg1.v));
+	float v_Tv = D3DXVec2Cross(&(v), &(seg2.v));
 
 	float hit1 = v_Tv / Bv_Tv;
 	float hit2 = v_Bv / Bv_Tv;
@@ -396,8 +402,7 @@ bool CrossingBlock(D3DXVECTOR3 *pPos1, D3DXVECTOR3 *pPos2 ,JUDGE_POSITION positi
 
 	if (Outpos != NULL)
 	{
-		Outpos->x = vBlock.start.x + vBlock.vector.x * hit1;
-		Outpos->y = vBlock.start.y + vBlock.vector.y * hit1;
+		*Outpos = seg1.s + seg1.v * hit1;
 	}
 	return true;
 }
@@ -410,6 +415,9 @@ Block* GetBlock(void)
 	return s_aBlock;
 }
 
+//====================================
+// 交点の取得処理<デバック用>
+//====================================
 D3DXVECTOR3 GetOut(void)
 {
 	return g_Outpos;

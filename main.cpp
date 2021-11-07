@@ -466,7 +466,7 @@ LPDIRECT3DDEVICE9 GetDevice(void)
 void DrawFPS(void)
 {
 	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
-	char aStr[3][256];	// 表示文字
+	char aStr[4][256];	// 表示文字
 	Player *pPlayer;
 
 	pPlayer = GetPlayer();
@@ -477,7 +477,8 @@ void DrawFPS(void)
 
 	// 文字列に代入
 	sprintf(&aStr[1][0], "rot: %f\n", pPlayer->rot.z);
-	sprintf(&aStr[2][0], "Outy: %f,%f,%f\n", out.x, out.y, out.z);
+	sprintf(&aStr[2][0], "Out: %f,%f,%f\n", out.x, out.y, out.z);
+	sprintf(&aStr[3][0], "pos: %f,%f,%f\n", pPlayer->pos.x, pPlayer->pos.y, pPlayer->pos.z);
 
 
 	// テキストの描画
@@ -490,6 +491,10 @@ void DrawFPS(void)
 	rect = { 0,60,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
 	g_pFont->DrawText(NULL, &aStr[2][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+
+	rect = { 0,90,SCREEN_WIDTH,SCREEN_HEIGHT };
+	// テキストの描画
+	g_pFont->DrawText(NULL, &aStr[3][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
 
 //=========================================

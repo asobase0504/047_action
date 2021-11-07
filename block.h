@@ -31,8 +31,8 @@ typedef struct
 //------------------------------------
 typedef struct
 {
-	D3DXVECTOR3 start;	// 始点
-	D3DXVECTOR3 vector;	// 方向ベクトル
+	D3DXVECTOR3 s;	// 始点
+	D3DXVECTOR3 v;	// 方向ベクトル
 }Segment;
 
 //------------------------------------
