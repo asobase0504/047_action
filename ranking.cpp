@@ -213,7 +213,7 @@ void InitRanking(void)
 			SetRectCenterPos(pVtx, s_aRankScore[nCntRank].pos, 70.0f, 70.0f);
 
 			// 頂点カラーの設定
-			SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 0.0f)));
+			SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
 
 			// テクスチャ座標の設定
 			SetRectTex(pVtx, 0.0f + 0.2f * nCntRank, 0.2f + 0.2f * nCntRank, 0.0f, 1.0f);
@@ -241,7 +241,7 @@ void InitRanking(void)
 				SetRectUpRightPos(pVtx, D3DXVECTOR3(pScore->pos.x - nCntScore * 70, pScore->pos.y - 15.0f, pScore->pos.z), 75.0f, 100.0f);
 
 				// 頂点カラーの設定
-				SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 0.0f)));
+				SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
 
 				// テクスチャ座標の設定
 				SetRectTex(pVtx, 0.0f, 1.0f, 0.0f, 0.1f);
@@ -266,7 +266,7 @@ void InitRanking(void)
 			SetRectUpRightPos(pVtx, D3DXVECTOR3(850.0f + 400.0f * i, 875.0f, 0.0f), SERECT_WIDTH, SERECT_HEIGTH);
 
 			// 頂点カラーの設定
-			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)));
+			SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
 
 			// テクスチャ座標の設定
 			InitRectTex(pVtx);
@@ -380,14 +380,14 @@ void UpdateRanking(void)
 		// 点滅の切り替え処理
 		if (s_nTimerBlink <= 0 && !(s_bBlink))
 		{
-			s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 0.0f);
+			s_Timercol = D3DXCOLOR(0.1f, 0.1f, 0.1f, 0.0f);
 			s_nTimerBlink = 40;
 			s_bBlink = true;
 
 		}
 		if (s_nTimerBlink <= 0 && s_bBlink)
 		{
-			s_Timercol = D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f);
+			s_Timercol = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);
 			s_nTimerBlink = 40;
 			s_bBlink = false;
 		}
@@ -403,7 +403,7 @@ void UpdateRanking(void)
 			for (int i = 0; i < MAX_RANK; i++)
 			{
 				// 頂点カラーの設定
-				SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+				SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
 
 				pVtx += 4;
 			}
@@ -431,7 +431,7 @@ void UpdateRanking(void)
 					for (int nCntScore = 0; nCntScore < MAX_SCORE; nCntScore++)
 					{
 						// 頂点カラーの設定
-						SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+						SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
 						pVtx += 4;
 					}
 				}
@@ -452,11 +452,11 @@ void UpdateRanking(void)
 		{
 			if (i == s_SelectCheck)
 			{
-				SetRectColor(pVtx, &(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+				SetRectColor(pVtx, &(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f)));
 			}
 			else
 			{
-				SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f)));
+				SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
 			}
 			pVtx += 4;
 		}
