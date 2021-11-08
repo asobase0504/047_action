@@ -117,8 +117,64 @@ void UpdateSummon(void)
 			pos = D3DXVECTOR3(1550.0f, 1000.0f - 800.0f, 0.0f);
 			SetEnemy(pos, GOSTRAIGHT_RIGHT);
 		}
+		if (nCnt == 1800)
+		{
+			pos = D3DXVECTOR3(1550.0f, 1000.0f - 100.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f - 300.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f - 500.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f - 700.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f - 900.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+
+			pos = D3DXVECTOR3(350.0f, 1000.0f - 200.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_LEFT);
+			pos = D3DXVECTOR3(350.0f, 1000.0f - 400.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_LEFT);
+			pos = D3DXVECTOR3(350.0f, 1000.0f - 600.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_LEFT);
+			pos = D3DXVECTOR3(350.0f, 1000.0f - 800.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_LEFT);
+			SetWave(2);
+		}
 		break;
 	case WAVE_2:
+		if (nCnt == 50)
+		{
+			pos = D3DXVECTOR3(1550.0f - 50.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(1550.0f - 100.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(1550.0f - 150.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(1550.0f - 200.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(1550.0f - 250.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+
+			pos = D3DXVECTOR3(330.0f + 50.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(330.0f + 100.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(330.0f + 150.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(330.0f + 200.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(330.0f + 250.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+		}
+
+		if (nCnt >= 300 && nCnt <= 600 && nCnt % 20 == 0)
+		{
+			pos = D3DXVECTOR3(330.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(1550.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+		}
+
 		break;
 	case WAVE_3:
 		break;

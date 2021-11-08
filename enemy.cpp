@@ -353,8 +353,8 @@ static void AttackEnemy(Enemy *pEnemy)
 			Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
 			float fRotDest;
 			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-			pEnemy->move.x = pEnemy->move.x + sinf(fRotDest) * 2.5f;
-			pEnemy->move.y = pEnemy->move.y + cosf(fRotDest) * 2.5f;
+			pEnemy->move.x = pEnemy->move.x + sinf(fRotDest) * 0.1f * (float)(pEnemy->nAtkInterval / 20);
+			pEnemy->move.y = pEnemy->move.y + cosf(fRotDest) * 0.1f * (float)(pEnemy->nAtkInterval / 20);
 		}
 		break;
 	case DAMEGE_WALL:		// ダメージ壁
