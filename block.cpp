@@ -6,6 +6,7 @@
 //=========================================
 #include "main.h"
 #include "setup.h"
+#include "particle.h"
 #include "block.h"
 #include "player.h"
 #include "enemy.h"
@@ -222,7 +223,11 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 				pPlayer->nJumpCnt = 0;
 				pPlayer->jumpstate = JUMP_NONE;
 				bisLanding = true;
+				if (pPlayer->rot.z >= 0.05f || pPlayer->rot.z <= -0.05f)
+				{
+					SetParticle(pPlayer->pos, PARTICLE_PLAYER_WALK);
 
+				}
 			}
 
 			// ƒuƒƒbƒN‰º

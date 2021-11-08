@@ -200,17 +200,17 @@ void UpdateEnemy(void)
 
 		pVtx += i * 4;	// ポインタの移動
 
+		// 頂点座標の設定
+		SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
+
+		// それぞれの頂点座標の当たり判定
 		if (pEnemy->state != ENEMYSTATE_SUMMON)
 		{
-			// それぞれの頂点座標の当たり判定
 			CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[1].pos);
 			CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[2].pos);
 			CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[3].pos);
 			CollisionBlockEnemy(pEnemy, pVtx[2].pos, pVtx[3].pos);
 		}
-
-		// 頂点座標の設定
-		SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
 		// カラーの設定
 		SetRectColor(pVtx, &(pEnemy->col));
 
@@ -396,6 +396,12 @@ static void DieEnemy(Enemy *pEnemy)
 	case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
 	case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
 	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+		for (int i = 0; i < 10; i++)
+		{
+			SetParticle(pEnemy->pos, PARTICLE_GOSTRAIGHT_DIE);
+		}
+		pEnemy->bUse = false;
+		break;
 	case REFLECT_TRIANGLE:
 	case BALL_HOMING:
 		pEnemy->bUse = false;

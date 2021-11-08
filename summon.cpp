@@ -64,8 +64,6 @@ void UpdateSummon(void)
 
 		if (nCnt == 1700)
 		{
-			pos = D3DXVECTOR3(330.0f, 100.0f, 0.0f);
-			SetEnemy(pos, SPLITBALL_FIRST);
 			SetWave(1);
 		}
 
@@ -175,6 +173,17 @@ void UpdateSummon(void)
 			SetEnemy(pos, BALL_HOMING);
 		}
 
+		if (nCnt == 800)
+		{
+			pos = D3DXVECTOR3(350.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_LEFT);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+			pos = D3DXVECTOR3(330.0f, 900.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+			pos = D3DXVECTOR3(1550.0f, 900.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING);
+		}
 		break;
 	case WAVE_3:
 		break;
@@ -185,33 +194,6 @@ void UpdateSummon(void)
 	default:
 		break;
 	}
-//		int r = rand() % SUMMON_TYPE_MAX;
-
-//		switch (r)
-//		{
-//		case SOLO_SPLITBALL:
-//			SetEnemy({ 1100.0f,350.0f,0.0f }, SPLITBALL_FIRST);
-//			break;
-//		case SOLO_EXTENDBALL_UP:
-////			SetEnemy(D3DXVECTOR3(100.0f, 100.0f, 100.0f), EXTENDBALL_UP);
-//			break;
-//		case SOLO_EXTENDBALL_DWON:
-////			SetEnemy(D3DXVECTOR3(100.0f, 100.0f, 100.0f), EXTENDBALL_DWON);
-//			break;
-//		case SOLO_EXTENDBALL_LEFT:
-////			SetEnemy(D3DXVECTOR3(100.0f, 100.0f, 100.0f), EXTENDBALL_LEFT);
-//			break;
-//		case SOLO_EXTENDBALL_RIGHT:
-////			SetEnemy(D3DXVECTOR3(100.0f, 100.0f, 100.0f), EXTENDBALL_RIGHT);
-//			break;
-//		case GROUP_TWOSPLITBALL:
-//			SetEnemy({ 1100.0f,350.0f,0.0f }, SPLITBALL_FIRST);
-//			SetEnemy({ 1600.0f,350.0f,0.0f }, SPLITBALL_FIRST);
-//			break;
-//		default:
-//			assert(false);
-//			break;
-//		}
 }
 
 //====================================
