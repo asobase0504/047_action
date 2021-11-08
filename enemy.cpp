@@ -450,20 +450,22 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			continue;
 		}
 
-		pEnemy->pos = pos;						// 位置設定
-		pEnemy->move = D3DXVECTOR3(0.0f,0.0f,0.0f);
-		pEnemy->type = type;					// 種類設定
-		pEnemy->nAtkInterval = 0;				// 攻撃間隔の設定
-		pEnemy->bUse = true;					// 使用している状態にする
-		pEnemy->state = ENEMYSTATE_SUMMON;		// エネミーを召喚状態に移行
+		pEnemy->state = ENEMYSTATE_SUMMON;				// エネミーを召喚状態に移行
+		pEnemy->type = type;							// 種類設定
+		pEnemy->pos = pos;								// 位置設定
+		pEnemy->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き設定
+		pEnemy->move = D3DXVECTOR3(0.0f,0.0f,0.0f);		// 移動量設定
+		pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);// 色設定
+		pEnemy->nLife = 1;								// 寿命の設定
+		pEnemy->nNeutralInterval = 0;					// 待機間隔
+		pEnemy->nAtkInterval = 0;						// 攻撃間隔の設定
+		pEnemy->bUse = true;							// 使用している状態にする
 
 		s_nEnemyCnt++;	// 敵の数をプラス
 
 		switch (pEnemy->type)
 		{
 		case SPLITBALL_FIRST:	// 別れる球の最初
-			// 寿命設定
-			pEnemy->nLife = 1;
 			// 画像の大きさ設定
 			pEnemy->fHeight	= 40.0f;	// 高さ
 			pEnemy->fWidth	= 40.0f;	// 幅
@@ -473,8 +475,6 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			// 位置を少し散らす
 			pEnemy->pos.x = pos.x + (float)(rand() % 50) - 25.0f;
 			pEnemy->pos.y = pos.y + (float)(rand() % 50) - 25.0f;
-			// 寿命設定
-			pEnemy->nLife = 1;
 			// 画像の大きさ設定
 			pEnemy->fHeight	= 30.0f;	// 高さ
 			pEnemy->fWidth	= 30.0f;	// 幅
@@ -484,8 +484,6 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			// 位置を少し散らす
 			pEnemy->pos.x = pos.x + (float)(rand() % 20) - 10.0f;
 			pEnemy->pos.y = pos.y + (float)(rand() % 20) - 10.0f;
-			// 寿命設定
-			pEnemy->nLife = 1;
 			// 画像の大きさ設定
 			pEnemy->fHeight	= 10.0f;	// 高さ
 			pEnemy->fWidth	= 10.0f;	// 幅
@@ -493,23 +491,17 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			break;
 		case GOSTRAIGHT_UP:		// 直進する長方形、上から下
 		case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
-			// 寿命設定
-			pEnemy->nLife = 1;
 			// 画像の大きさ設定
 			pEnemy->fHeight = 10.0f;	// 高さ
 			pEnemy->fWidth	= 5.0f;		// 幅
 			break;
 		case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
 		case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
-			// 寿命設定
-			pEnemy->nLife = 1;
 			// 画像の大きさ設定
 			pEnemy->fHeight	= 5.0f;		// 高さ
 			pEnemy->fWidth	= 10.0f;	// 幅
 			break;
 		case REFLECT_TRIANGLE:
-			// 寿命設定
-			pEnemy->nLife = 1;
 			// 画像の大きさ設定
 			pEnemy->fHeight = 10.0f;	// 高さ
 			pEnemy->fWidth  = 10.0f;	// 幅

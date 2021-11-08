@@ -51,7 +51,7 @@ void InitBG(void)
 		&g_pTextureBG[0]);
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/bg003.png",
+		"data/TEXTURE/bg004.png",
 		&g_pTextureBG[1]);
 
 	// 背景の情報の初期化
@@ -104,10 +104,10 @@ void InitBG(void)
 		{
 		case 0:	// グラデーション上
 			// 頂点カラーの設定
-			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.8f, 0.8f, 1.0f)));
+			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)));
 			break;
 		case 1:	// グラデーション下
-			SetRectColor(pVtx, &(D3DXCOLOR(1.0f, 0.9f, 0.8f, 1.0f)));
+			SetRectColor(pVtx, &(D3DXCOLOR(0.95f, 1.0f, 0.9f, 1.0f)));
 			break;
 		default:
 			break;

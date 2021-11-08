@@ -66,12 +66,12 @@ void InitGame(void)
 	InitScore();
 
 	// ブロックの設定
-	SetBlock(D3DXVECTOR3(500.0f,800.0f,0.0f), 800.0f, 25.0f);
-	SetBlock(D3DXVECTOR3(1150.0f,25.0f,0.0f), 25.0f, 650.0f);
-	SetBlock(D3DXVECTOR3(1800.0f,800.0f,0.0f), 800.0f, 25.0f);
-	SetBlock(D3DXVECTOR3(1150.0f, SCREEN_HEIGHT - 25.0f, 0.0f), 25.0f, 650.0f);
-	SetBlock(D3DXVECTOR3(1100.0f, 550.0f, 0.0f), 350.0f, 25.0f);
-	SetBlock(D3DXVECTOR3(1100.0f, 500.0f, 0.0f), 25.0f, 350.0f);
+	SetBlock(D3DXVECTOR3(300.0f,800.0f,0.0f), 800.0f, 25.0f);
+	SetBlock(D3DXVECTOR3(950.0f,25.0f,0.0f), 25.0f, 650.0f);
+	SetBlock(D3DXVECTOR3(1600.0f,800.0f,0.0f), 800.0f, 25.0f);
+	SetBlock(D3DXVECTOR3(950.0f, SCREEN_HEIGHT - 25.0f, 0.0f), 25.0f, 650.0f);
+	SetBlock(D3DXVECTOR3(900.0f, 550.0f, 0.0f), 350.0f, 25.0f);
+	SetBlock(D3DXVECTOR3(900.0f, 500.0f, 0.0f), 25.0f, 350.0f);
 
 	// スコアの設定
 	SetScore(0);

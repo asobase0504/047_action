@@ -33,7 +33,7 @@ void InitScore()
 		&s_pTexture);
 
 	// スコアの情報の初期化
-	s_posScore = D3DXVECTOR3(450, 200, 0);
+	s_posScore = D3DXVECTOR3(1900, 200, 0);
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * MAX_SCORE,
@@ -49,13 +49,13 @@ void InitScore()
 
 	for (int i = 0; i < MAX_SCORE; i++)
 	{
-		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_posScore.x - 55.0f * i, s_posScore.y, s_posScore.z), 60.0f, 60.0f);
+		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_posScore.x - 35.0f * i, s_posScore.y, s_posScore.z), 40.0f, 40.0f);
 
 		// rhwの設定
 		InitRectRhw(pVtx);
 
 		// 頂点カラーの設定
-		SetRectColor(pVtx,&(D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f)));
+		SetRectColor(pVtx,&(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f)));
 
 		// テクスチャ座標の設定
 		SetRectTex(pVtx, 0.0f, 1.0f, 0.0f, 0.1f);

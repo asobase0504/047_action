@@ -51,7 +51,7 @@ void InitTime(void)
 		&s_pTexturePin);
 
 	//タイムの初期化処理
-	s_pos = D3DXVECTOR3(450.0f, 150.0f, 0.0f);
+	s_pos = D3DXVECTOR3(1870.0f, 150.0f, 0.0f);
 	s_col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	s_nTime = 0;
 
@@ -85,7 +85,7 @@ void InitTime(void)
 			nPinCnt++;
 		}
 		// 頂点座標の設定
-		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_pos.x - 45.0f * i - 20.0f * nPinCnt, s_pos.y, s_pos.z), 50.0f, 50.0f);
+		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_pos.x - 25.0f * i - 20.0f * nPinCnt, s_pos.y, s_pos.z), 30.0f, 30.0f);
 
 		// カラーの設定
 		SetRectColor(pVtx, &(s_col));
@@ -109,7 +109,7 @@ void InitTime(void)
 	for (int i = 0; i < PIN_MAX; i++)
 	{
 		// 頂点座標の設定
-		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_pos.x - 95.0f * (i + 1) - 20.0f * i, s_pos.y, s_pos.z), 50.0f, 50.0f);
+		SetRectUpRightPos(pVtx, D3DXVECTOR3(s_pos.x - 60.0f * (i + 1) - 20.0f * i, s_pos.y, s_pos.z), 30.0f, 30.0f);
 
 		// カラーの設定
 		SetRectColor(pVtx, &(s_col));
