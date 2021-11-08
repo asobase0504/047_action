@@ -268,7 +268,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 {
 	bool bisLanding = false;
-	// 当たり判定処理
+	D3DXVECTOR3 Outpos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	//当たり判定の交点
 	Block *pBlock = s_aBlock;
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
@@ -282,29 +282,43 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 		{// ブロックが生きてたら
 
 			// 上
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock], NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock], &(Outpos)))
 			{
-				pEnemy->pos.y = pBlock->pos.y - pBlock->fHeight - pEnemy->fHeight + 5.0f;
+				if (pos1.y <= pos2.y)
+				{
+					pEnemy->pos.y -= pos2.y - Outpos.y;
+				}
+				else
+				{
+					pEnemy->pos.y -= pos1.y - Outpos.y;
+				}
 
 				pEnemy->nLife--;
 			}
 
 			// 下
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], &(Outpos)))
 			{// ブロックの座標と座標が重なり合ったら
-				pEnemy->pos.y = pBlock->pos.y + pBlock->fHeight + pEnemy->fHeight + 5.0f;
+				if (pos1.y >= pos2.y)
+				{
+					pEnemy->pos.y += pos1.y - Outpos.y;
+				}
+				else
+				{
+					pEnemy->pos.y += pos2.y - Outpos.y;
+				}
 				pEnemy->nLife--;
 			}
 
 			// 左
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], &(Outpos)))
 			{// ブロックの座標と座標が重なり合ったら
  				pEnemy->pos.x = pBlock->pos.x - pBlock->fWidth - pEnemy->fWidth - 1.0f;
 				pEnemy->nLife--;
 			}
 
 			// 右
-			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], NULL))
+			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], &(Outpos)))
 			{// ブロックの座標と座標が重なり合ったら
 				pEnemy->pos.x = pBlock->pos.x + pBlock->fWidth + pEnemy->fWidth + 1.0f;
 				pEnemy->nLife--;

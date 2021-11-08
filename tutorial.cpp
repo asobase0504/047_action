@@ -88,9 +88,17 @@ void UpdateTutorial(void)
 	// ブロックの更新処理
 	UpdateBlock();
 
+	// エネミーの更新処理
+	UpdateEnemy();
+
 	if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_RETURN))
 	{
 		SetFade(MODE_TITLE);
+	}
+
+	if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_I))
+	{
+		SetEnemy(D3DXVECTOR3(1000.0f,500.0f,0.0f), SPLITBALL_FIRST);
 	}
 }
 
@@ -113,6 +121,9 @@ void DrawTutorial(void)
 
 	// ブロックの描画処理
 	DrawBlock();
+
+	// エネミーの描画処理
+	DrawEnemy();
 }
 
 //=========================================

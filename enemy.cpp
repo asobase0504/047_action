@@ -195,11 +195,14 @@ void UpdateEnemy(void)
 
 		pVtx += i * 4;	// ポインタの移動
 
-		// それぞれの頂点座標の当たり判定
-		CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[1].pos);
-		CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[2].pos);
-		CollisionBlockEnemy(pEnemy, pVtx[2].pos, pVtx[3].pos);
-		CollisionBlockEnemy(pEnemy, pVtx[3].pos, pVtx[0].pos);
+		if (pEnemy->state == ENEMYSTATE_ATTACK)
+		{
+			// それぞれの頂点座標の当たり判定
+			CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[1].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[2].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[2].pos, pVtx[3].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[3].pos, pVtx[0].pos);
+		}
 
 		// 頂点座標の設定
 		SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
@@ -222,17 +225,20 @@ static void NeutralEnemy(Enemy *pEnemy)
 	case SPLITBALL_SECOND:	// 別れる球の２回目
 	case SPLITBALL_LAST:	// 別れる球の最後
 	{
-		// 突進攻撃
-		Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
-		float fRotDest;
-		fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-		pEnemy->move.x = pEnemy->move.x + sinf(fRotDest) * 1.0f;
-		pEnemy->move.y = pEnemy->move.y + cosf(fRotDest) * 1.0f;
 		pEnemy->col = D3DXCOLOR(0.9f, 0.35f, 0.4f, 1.0f);
-		if ((pPlayer->pos.x - pEnemy->pos.x <= 100.0f) || (pPlayer->pos.y - pEnemy->pos.y <= 100.0f))
+		if (pEnemy->nNeutralInterval == 0)
+		{
+			Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
+			float fRotDest;
+			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
+			pEnemy->move.x = -(pEnemy->move.x + sinf(fRotDest) * 5.0f);
+			pEnemy->move.y = -(pEnemy->move.y + cosf(fRotDest) * 5.0f);
+		}
+		else if(pEnemy->nNeutralInterval >= 30)
 		{
 			pEnemy->state = ENEMYSTATE_ATTACK;
 		}
+		pEnemy->nNeutralInterval++;
 	}
 		break;
 	case GOSTRAIGHT_UP:		// 直進する長方形、上から下
@@ -265,29 +271,20 @@ static void NeutralEnemy(Enemy *pEnemy)
 //====================================
 static void AttackEnemy(Enemy *pEnemy)
 {
-	pEnemy->nAtkInterval++;			// 攻撃間隔のカウント
-
 	switch (pEnemy->type)
 	{
 	case SPLITBALL_FIRST:	// 別れる球の最初
 	{
-		Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
-		float fRotDest;					// 敵とプレイヤーを結ぶ線の角度
+		if (pEnemy->nAtkInterval == 0)
+		{
+			pEnemy->move.x *= -3.0f;
+			pEnemy->move.y *= -3.0f;
+		}
 		if (pEnemy->nAtkInterval % 5 == 0)
 		{
 			// パーティクル
 			SetParticle(pEnemy->pos, PARTICLE_SPLITBALL_ATTACK);
 		}
-		if (pEnemy->nAtkInterval >= 200)
-		{
-			pEnemy->nAtkInterval = 0;
-			pEnemy->state = ENEMYSTATE_NEUTRAL;
-		}
-		// 突進攻撃
-		fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-		pEnemy->move.x = sinf(fRotDest) * 10.0f;
-		pEnemy->move.y = cosf(fRotDest) * 10.0f;
-
 		pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 		// 攻撃サイクルのリセット
 	}
@@ -357,7 +354,7 @@ static void AttackEnemy(Enemy *pEnemy)
 		assert(false);		// 本来通らない場所
 		break;
 	}
-
+	pEnemy->nAtkInterval++;			// 攻撃間隔のカウント
 }
 
 //====================================
