@@ -184,6 +184,15 @@ void UpdateSummon(void)
 			pos = D3DXVECTOR3(1550.0f, 900.0f, 0.0f);
 			SetEnemy(pos, BALL_HOMING);
 		}
+
+		if (nCnt == 1000)
+		{
+			for (int i = 0; i < 15; i++)
+			{
+				pos = D3DXVECTOR3(1550.0f - 100.0f * i, 100.0f, 0.0f);
+				SetEnemy(pos, BALL_HOMING);
+			}
+		}
 		break;
 	case WAVE_3:
 		break;
