@@ -102,7 +102,7 @@ void UpdateTutorial(void)
 
 	if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_I))
 	{
-		SetEnemy(D3DXVECTOR3(1000.0f,500.0f,0.0f), SPLITBALL_FIRST);
+		SetEnemy(D3DXVECTOR3(1000.0f,500.0f,0.0f), BALL_HOMING);
 	}
 }
 

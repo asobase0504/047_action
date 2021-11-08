@@ -38,7 +38,7 @@ typedef struct
 //-----------------------------------------
 // static変数
 //-----------------------------------------
-static LPDIRECT3DTEXTURE9 s_pTexture[MAX_TEX] = {};		// テクスチャへのポインタ
+static LPDIRECT3DTEXTURE9 s_pTexture[MAX_PARTICLE] = {};		// テクスチャへのポインタ
 static LPDIRECT3DVERTEXBUFFER9 s_pVtxBuff = NULL;	// 頂点バッファへのポインタ
 static Particle s_aParticle[MAX_PARTCLE];
 static float s_fAngle;
@@ -79,23 +79,12 @@ void InitParticle(void)
 
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
-		NULL,
-		&s_pTexture[0]);
-
-	// テクスチャの読込
-	D3DXCreateTextureFromFile(pDevice,
-		NULL,
-		&s_pTexture[1]);
-
-	// テクスチャの読込
-	D3DXCreateTextureFromFile(pDevice,
-		NULL,
-		&s_pTexture[2]);
-
-	// テクスチャの読込
-	D3DXCreateTextureFromFile(pDevice,
 		SPLITBALL_TEX,
 		&s_pTexture[PARTICLE_SPLITBALL_ATTACK]);
+
+	D3DXCreateTextureFromFile(pDevice,
+		SPLITBALL_TEX,
+		&s_pTexture[PARTICLE_BALL_HOMING_ATTACK]);
 
 	for (nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
 	{
@@ -250,30 +239,25 @@ void UpdateParticle(void)
 				pParticle->bUse = false;
 			}
 			break;
+		case PARTICLE_BALL_HOMING_ATTACK:	// 甘い追従をする円の攻撃 
+			// 体力の更新
+			pParticle->nLife--;
+			if (pParticle->nLife <= 0)
+			{
+				pParticle->bUse = false;
+			}
+			// 透明度の更新
+			pParticle->col.g -= (float)1 / pParticle->nMaxLife;
+			pParticle->col.a -= (float)0.5f / pParticle->nMaxLife;
 		default:
 			break;
 		}
 
-		pVtx[0].pos.x = pParticle->pos.x - pParticle->fRaduus;
-		pVtx[0].pos.y = pParticle->pos.y - pParticle->fRaduus;
-		pVtx[0].pos.z = pParticle->pos.z + 0.0f;
+		// 頂点座標の設定
+		SetRectCenterPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
 
-		pVtx[1].pos.x = pParticle->pos.x + pParticle->fRaduus;
-		pVtx[1].pos.y = pParticle->pos.y - pParticle->fRaduus;
-		pVtx[1].pos.z = pParticle->pos.z + 0.0f;
-
-		pVtx[2].pos.x =pParticle->pos.x - pParticle->fRaduus;
-		pVtx[2].pos.y =pParticle->pos.y + pParticle->fRaduus;
-		pVtx[2].pos.z =pParticle->pos.z + 0.0f;
-
-		pVtx[3].pos.x = pParticle->pos.x + pParticle->fRaduus;
-		pVtx[3].pos.y = pParticle->pos.y + pParticle->fRaduus;
-		pVtx[3].pos.z = pParticle->pos.z + 0.0f;
-
-		pVtx[0].col = pParticle->col;
-		pVtx[1].col = pParticle->col;
-		pVtx[2].col = pParticle->col;
-		pVtx[3].col = pParticle->col;
+		// 頂点カラーの設定
+		SetRectColor(pVtx, &(pParticle->col));
 
 		pVtx += 4;
 	}
@@ -304,6 +288,7 @@ void DrawParticle(void)
 				// テクスチャを加算合成で貼り付けて描画する
 				RectAddDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
+			case PARTICLE_BALL_HOMING_ATTACK:	// 甘い追従をする円の攻撃 
 			case PARTICLE_SPLITBALL_ATTACK:	// 別れる球の攻撃時
 			case PARTICLE_PLAYER_DEATH:		// プレイヤーの死亡時
 				// テクスチャを貼り付けて描画する
@@ -369,6 +354,15 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			pParticle->col = D3DXCOLOR(0.4f, 0.71f, 0.63f, 1.0f);
 			pParticle->fRaduus = 7.0f;
 			pParticle->nMaxLife = 40;
+			pParticle->nLife = pParticle->nMaxLife;
+			break;
+		case PARTICLE_BALL_HOMING_ATTACK:	// 甘い追従をする円の攻撃 
+			pParticle->pos = pos;
+			pParticle->col = D3DXCOLOR(1.0f, 0.7f, 0.0f, 0.8f);
+			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
+			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
+			pParticle->fRaduus = 7.5f;
+			pParticle->nMaxLife = 10;
 			pParticle->nLife = pParticle->nMaxLife;
 			break;
 		default:

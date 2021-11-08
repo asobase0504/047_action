@@ -81,6 +81,11 @@ void InitEnemy(void)
 		TRIANGLE_TEX,
 		&s_pTexture[REFLECT_TRIANGLE]);
 
+	// テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice,
+		SPLITBALL_TEX,
+		&s_pTexture[BALL_HOMING]);
+
 	// 構造体の初期化
 	for (nCntEnemy = 0; nCntEnemy < MAX_ENEMY; nCntEnemy++)
 	{
@@ -258,6 +263,11 @@ static void NeutralEnemy(Enemy *pEnemy)
 		}
 	}
 		break;
+	case BALL_HOMING:	// 甘い追従をする円
+	{	
+		pEnemy->state = ENEMYSTATE_ATTACK;
+	}
+	break;
 	case DAMEGE_WALL:		// ダメージ壁
 		break;
 	default:
@@ -332,6 +342,21 @@ static void AttackEnemy(Enemy *pEnemy)
 		break;
 	case REFLECT_TRIANGLE:
 		break;
+	case BALL_HOMING:
+		if (pEnemy->nAtkInterval % 1 == 0)
+		{
+			// パーティクル
+			SetParticle(pEnemy->pos, PARTICLE_BALL_HOMING_ATTACK);
+		}
+		if (pEnemy->nAtkInterval % 20 == 0)
+		{
+			Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
+			float fRotDest;
+			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
+			pEnemy->move.x = pEnemy->move.x + sinf(fRotDest) * 2.5f;
+			pEnemy->move.y = pEnemy->move.y + cosf(fRotDest) * 2.5f;
+		}
+		break;
 	case DAMEGE_WALL:		// ダメージ壁
 		break;
 	default:
@@ -368,20 +393,14 @@ static void DieEnemy(Enemy *pEnemy)
 		pEnemy->bUse = false;	// 消す処理
 		break;
 	case GOSTRAIGHT_UP:		// 直進する長方形、上から下
-		pEnemy->bUse = false;
-		break;
 	case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
-		pEnemy->bUse = false;
-		break;
 	case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
-		pEnemy->bUse = false;
-		break;
 	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+	case REFLECT_TRIANGLE:
+	case BALL_HOMING:
 		pEnemy->bUse = false;
 		break;
 	case DAMEGE_WALL:		// ダメージ壁
-		break;
-	case REFLECT_TRIANGLE:
 		break;
 	default:
 		assert(false);	// 本来通らない場所
@@ -487,6 +506,10 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			pEnemy->fHeight = 10.0f;	// 高さ
 			pEnemy->fWidth = 10.0f;	// 幅
 			break;
+		case BALL_HOMING:
+			pEnemy->fHeight = 10.0f;	// 高さ
+			pEnemy->fWidth = 10.0f;	// 幅
+			break;
 		case DAMEGE_WALL:		// ダメージ壁
 			break;
 		default:
@@ -549,6 +572,8 @@ void HitEnemy(int nCntEnemy)
 	case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
 		break;
 	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+		break;
+	case BALL_HOMING:
 		break;
 	case DAMEGE_WALL:		// ダメージ壁
 		break;
