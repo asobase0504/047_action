@@ -13,6 +13,7 @@
 #include "player.h"
 #include "bg.h"
 #include "block.h"
+#include "score.h"
 
 //=========================================
 // ‰Šú‰»ˆ—
@@ -42,6 +43,9 @@ void InitTutorial(void)
 	SetBlock(D3DXVECTOR3(1150.0f, 25.0f, 0.0f), 25.0f, 650.0f);
 	SetBlock(D3DXVECTOR3(1800.0f, 800.0f, 0.0f), 800.0f, 25.0f);
 	SetBlock(D3DXVECTOR3(1150.0f, SCREEN_HEIGHT - 25.0f, 0.0f), 25.0f, 650.0f);
+
+	// ƒXƒRƒA‚Ì‰Šú‰»ˆ—
+	InitScore();
 }
 
 //=========================================

@@ -292,8 +292,10 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 				{
 					pEnemy->pos.y -= pos1.y - Outpos.y;
 				}
-
-				pEnemy->nLife--;
+				if (pEnemy->state == ENEMYSTATE_ATTACK)
+				{
+					pEnemy->nLife--;
+				}
 			}
 
 			// 下
@@ -307,22 +309,30 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 				{
 					pEnemy->pos.y += pos2.y - Outpos.y;
 				}
-				pEnemy->nLife--;
+				if (pEnemy->state == ENEMYSTATE_ATTACK)
+				{
+					pEnemy->nLife--;
+				}
 			}
 
 			// 左
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], &(Outpos)))
 			{// ブロックの座標と座標が重なり合ったら
  				pEnemy->pos.x = pBlock->pos.x - pBlock->fWidth - pEnemy->fWidth - 1.0f;
-				pEnemy->nLife--;
+				if (pEnemy->state == ENEMYSTATE_ATTACK)
+				{
+					pEnemy->nLife--;
+				}
 			}
 
 			// 右
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], &(Outpos)))
 			{// ブロックの座標と座標が重なり合ったら
 				pEnemy->pos.x = pBlock->pos.x + pBlock->fWidth + pEnemy->fWidth + 1.0f;
-				pEnemy->nLife--;
-				pEnemy->nAtkInterval = 150;
+				if (pEnemy->state == ENEMYSTATE_ATTACK)
+				{
+					pEnemy->nLife--;
+				}
 			}
 		}
 	}

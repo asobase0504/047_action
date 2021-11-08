@@ -195,13 +195,13 @@ void UpdateEnemy(void)
 
 		pVtx += i * 4;	// ポインタの移動
 
-		if (pEnemy->state == ENEMYSTATE_ATTACK)
+		if (pEnemy->state != ENEMYSTATE_SUMMON)
 		{
 			// それぞれの頂点座標の当たり判定
 			CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[1].pos);
-			CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[2].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[2].pos);
+			CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[3].pos);
 			CollisionBlockEnemy(pEnemy, pVtx[2].pos, pVtx[3].pos);
-			CollisionBlockEnemy(pEnemy, pVtx[3].pos, pVtx[0].pos);
 		}
 
 		// 頂点座標の設定
@@ -286,52 +286,36 @@ static void AttackEnemy(Enemy *pEnemy)
 			SetParticle(pEnemy->pos, PARTICLE_SPLITBALL_ATTACK);
 		}
 		pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-		// 攻撃サイクルのリセット
 	}
 		break;
 	case SPLITBALL_SECOND:	// 別れる球の２回目
 	{
-		Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
-		float fRotDest;					// 敵とプレイヤーを結ぶ線の角度
-		if (pEnemy->nAtkInterval <= 150 && pEnemy->nAtkInterval % 5 == 0)
+		if (pEnemy->nAtkInterval == 0)
+		{
+			pEnemy->move.x *= -4.0f;
+			pEnemy->move.y *= -4.0f;
+		}
+		if (pEnemy->nAtkInterval % 5 == 0)
 		{
 			// パーティクル
 			SetParticle(pEnemy->pos, PARTICLE_SPLITBALL_ATTACK);
-
 		}
-		if (pEnemy->nAtkInterval >= 300)
-		{
-			// 突進攻撃
-			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-			pEnemy->move.x = sinf(fRotDest) * 15.0f;
-			pEnemy->move.y = cosf(fRotDest) * 15.0f;
-
-			pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-			// 攻撃サイクルのリセット
-			pEnemy->nAtkInterval = 0;
-		}
+		pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 		break;
 	case SPLITBALL_LAST:	// 別れる球の最後
 	{
-		Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
-		float fRotDest;					// 敵とプレイヤーを結ぶ線の角度
-		if (pEnemy->nAtkInterval <= 150 && pEnemy->nAtkInterval % 5 == 0)
+		if (pEnemy->nAtkInterval == 0)
+		{
+			pEnemy->move.x *= -5.0f;
+			pEnemy->move.y *= -5.0f;
+		}
+		if (pEnemy->nAtkInterval % 5 == 0)
 		{
 			// パーティクル
 			SetParticle(pEnemy->pos, PARTICLE_SPLITBALL_ATTACK);
 		}
-		if (pEnemy->nAtkInterval >= 300)
-		{
-			// 突進攻撃
-			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
-			pEnemy->move.x = sinf(fRotDest) * 20.0f;
-			pEnemy->move.y = cosf(fRotDest) * 20.0f;
-
-			pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-			// 攻撃サイクルのリセット
-			pEnemy->nAtkInterval = 0;
-		}
+		pEnemy->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 		break;
 	case GOSTRAIGHT_UP:		// 直進する長方形、上から下
@@ -465,7 +449,7 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 		case SPLITBALL_FIRST:	// 別れる球の最初
 			// 画像の大きさ設定
 			pEnemy->fHeight	= 40.0f;	// 高さ
-			pEnemy->fWidth	= 40.0f;	// 幅
+			pEnemy->fWidth = 40.0f;	// 幅
 			pEnemy->col = D3DXCOLOR(0.9f, 0.35f, 0.4f, 0.0f);
 			break;
 		case SPLITBALL_SECOND:	// 別れる球の2回目
@@ -474,7 +458,7 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			pEnemy->pos.y = pos.y + (float)(rand() % 50) - 25.0f;
 			// 画像の大きさ設定
 			pEnemy->fHeight	= 30.0f;	// 高さ
-			pEnemy->fWidth	= 30.0f;	// 幅
+			pEnemy->fWidth = 30.0f;	// 幅
 			pEnemy->col = D3DXCOLOR(0.9f, 0.35f, 0.4f, 0.0f);
 			break;
 		case SPLITBALL_LAST:	// 別れる球の最後
@@ -482,26 +466,26 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			pEnemy->pos.x = pos.x + (float)(rand() % 20) - 10.0f;
 			pEnemy->pos.y = pos.y + (float)(rand() % 20) - 10.0f;
 			// 画像の大きさ設定
-			pEnemy->fHeight	= 10.0f;	// 高さ
-			pEnemy->fWidth	= 10.0f;	// 幅
+			pEnemy->fHeight	= 20.0f;	// 高さ
+			pEnemy->fWidth = 20.0f;		// 幅
 			pEnemy->col = D3DXCOLOR(0.9f, 0.35f, 0.4f, 0.0f);
 			break;
 		case GOSTRAIGHT_UP:		// 直進する長方形、上から下
 		case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
 			// 画像の大きさ設定
 			pEnemy->fHeight = 10.0f;	// 高さ
-			pEnemy->fWidth	= 5.0f;		// 幅
+			pEnemy->fWidth = 5.0f;		// 幅
 			break;
 		case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
 		case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
 			// 画像の大きさ設定
 			pEnemy->fHeight	= 5.0f;		// 高さ
-			pEnemy->fWidth	= 10.0f;	// 幅
+			pEnemy->fWidth = 10.0f;		// 幅
 			break;
 		case REFLECT_TRIANGLE:
 			// 画像の大きさ設定
 			pEnemy->fHeight = 10.0f;	// 高さ
-			pEnemy->fWidth  = 10.0f;	// 幅
+			pEnemy->fWidth = 10.0f;	// 幅
 			break;
 		case DAMEGE_WALL:		// ダメージ壁
 			break;
