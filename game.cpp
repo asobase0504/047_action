@@ -70,11 +70,14 @@ void InitGame(void)
 	SetBlock(D3DXVECTOR3(1150.0f,25.0f,0.0f), 25.0f, 650.0f);
 	SetBlock(D3DXVECTOR3(1800.0f,800.0f,0.0f), 800.0f, 25.0f);
 	SetBlock(D3DXVECTOR3(1150.0f, SCREEN_HEIGHT - 25.0f, 0.0f), 25.0f, 650.0f);
-	SetBlock(D3DXVECTOR3(800.0f, 300.0f, 0.0f), 350.0f, 25.0f);
-	SetBlock(D3DXVECTOR3(1200.0f, 300.0f, 0.0f), 25.0f, 450.0f);
+	SetBlock(D3DXVECTOR3(1100.0f, 550.0f, 0.0f), 350.0f, 25.0f);
+	SetBlock(D3DXVECTOR3(1100.0f, 500.0f, 0.0f), 25.0f, 350.0f);
 
 	// スコアの設定
 	SetScore(0);
+
+	// WAVEの設定
+	SetWave(0);
 
 	// ランキングの読込
 	ResetRanking();
@@ -271,6 +274,9 @@ void RetryGame(void)
 
 	// ランキングの初期化処理
 	InitRanking();
+
+	// WAVEの設定
+	SetWave(0);
 }
 
 //====================================

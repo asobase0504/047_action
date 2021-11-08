@@ -16,6 +16,7 @@
 // マクロ定義
 //------------------------------------
 #define SPLITBALL_TEX	"data/TEXTURE/enemy000.png"
+#define TRIANGLE_TEX	"data/TEXTURE/enemy003.png"
 #define MAX_ENEMY	(128)
 
 //------------------------------------
@@ -37,14 +38,11 @@ typedef enum
 	SPLITBALL_FIRST,	// 別れる球最初
 	SPLITBALL_SECOND,	// 別れる球二回目
 	SPLITBALL_LAST,		// 別れる球
-	EXTENDBALL_UP,		// 伸びる円、上から下
-	EXTENDBALL_DWON,	// 伸びる円、下から上
-	EXTENDBALL_LEFT,	// 伸びる円、左から右
-	EXTENDBALL_RIGHT,	// 伸びる円、右から左
 	GOSTRAIGHT_UP,		// 直進する長方形、上から下
 	GOSTRAIGHT_DWON,	// 直進する長方形、下から上
 	GOSTRAIGHT_LEFT,	// 直進する長方形、左から右
 	GOSTRAIGHT_RIGHT,	// 直進する長方形、右から左
+	REFLECT_TRIANGLE,	// 反射する三角
 	DAMEGE_WALL,		// ダメージ壁
 	ENEMYTYPE_MAX
 }ENEMYTYPE;
@@ -54,17 +52,18 @@ typedef enum
 //------------------------------------
 typedef struct
 {
-	ENEMYTYPE type;
-	ENEMYSTATE state;
-	D3DXVECTOR3 pos;	// 位置
-	float fWidth;		// 画像の幅
-	float fHeight;		// 画像の高さ
-	D3DXVECTOR3 move;	// 移動量
-	D3DXVECTOR3 rot;	// 向き
-	D3DXCOLOR col;		// 頂点カラー
-	int nLife;			// 寿命
-	bool bUse;			// 使用されているかどうか
-	int nAtkInterval;	// 攻撃間隔
+	ENEMYTYPE type;			// エネミーの種類
+	ENEMYSTATE state;		// エネミーの今の状態
+	D3DXVECTOR3 pos;		// 位置
+	float fWidth;			// 画像の幅
+	float fHeight;			// 画像の高さ
+	D3DXVECTOR3 move;		// 移動量
+	D3DXVECTOR3 rot;		// 向き
+	D3DXCOLOR col;			// 頂点カラー
+	int nLife;				// 寿命
+	bool bUse;				// 使用されているかどうか
+	int nNeutralInterval;	// 待機間隔
+	int nAtkInterval;		// 攻撃間隔
 }Enemy;
 
 //------------------------------------

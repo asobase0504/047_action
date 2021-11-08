@@ -281,50 +281,31 @@ bool CollisionBlockEnemy(Enemy *pEnemy, D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 		if (pBlock->bUse)
 		{// ブロックが生きてたら
 
-		 // 上
+			// 上
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_UP, s_aBlock[nCntBlock], NULL))
 			{
 				pEnemy->pos.y = pBlock->pos.y - pBlock->fHeight - pEnemy->fHeight + 5.0f;
-				pEnemy->move.y *= -1.0f;
+
+				pEnemy->nLife--;
 			}
 
 			// 下
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_DWON, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
- 				pEnemy->move.y *= -1.0f;
 				pEnemy->pos.y = pBlock->pos.y + pBlock->fHeight + pEnemy->fHeight + 5.0f;
-				switch (pEnemy->type)
-				{
-				case SPLITBALL_FIRST:
-				case SPLITBALL_SECOND:
-				case SPLITBALL_LAST:
-					pEnemy->nLife--;
-					break;
-				case EXTENDBALL_UP:
-					break;
-				case EXTENDBALL_DWON:
-					pEnemy->nLife--;
-					break;
-				case EXTENDBALL_LEFT:
-				case EXTENDBALL_RIGHT:
-				default:
-					break;
-				}
+				pEnemy->nLife--;
 			}
 
 			// 左
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_LEFT, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
- 				pEnemy->move.x *= -1.0f;
  				pEnemy->pos.x = pBlock->pos.x - pBlock->fWidth - pEnemy->fWidth - 1.0f;
-				pEnemy->pos.x = pEnemy->pos.x - 5.0f;
-					pEnemy->nLife--;
+				pEnemy->nLife--;
 			}
 
 			// 右
 			if (CrossingBlock(&(pos1), &(pos2), POSITION_RIGHT, s_aBlock[nCntBlock], NULL))
 			{// ブロックの座標と座標が重なり合ったら
-				pEnemy->move.x *= -1.0f;
 				pEnemy->pos.x = pBlock->pos.x + pBlock->fWidth + pEnemy->fWidth + 1.0f;
 				pEnemy->nLife--;
 				pEnemy->nAtkInterval = 150;

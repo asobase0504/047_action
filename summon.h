@@ -13,7 +13,7 @@
 #include "enemy.h"
 
 //------------------------------------
-// 
+// ¢Š«ƒOƒ‹[ƒv‚Ì—ñ‹“Œ^
 //------------------------------------
 typedef enum
 {
@@ -32,8 +32,6 @@ typedef enum
 void UpdateSummon(void);
 void EnemySummon(SUMMON_TYPE type);
 void OnesideTopSummon(void);
-void OnesideBtomSummon(void);
-void OnesideLeftSummon(void);
-void OnesideRigthSummon(void);
+void SetWave(int wave);
 
 #endif // !_SUMMON_H_
