@@ -376,7 +376,7 @@ void DrawTitle(void)
 		{
 			// ポリゴン描画
 			// テクスチャの設定
-			SetDraw(pDevice, s_Object[i].Tex, 0);
+			RectDraw(pDevice, s_Object[i].Tex, 0);
 		}
 	}
 

@@ -119,7 +119,7 @@ void DrawScore()
 	for (nCntScore = 0; nCntScore < MAX_SCORE; nCntScore++)
 	{
 		// テクスチャの描画
-		SetDraw(pDevice, s_pTexture, nCntScore * 4);
+		RectDraw(pDevice, s_pTexture, nCntScore * 4);
 	}
 
 }

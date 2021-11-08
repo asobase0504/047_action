@@ -181,7 +181,7 @@ void DrawEffect(void)
 			switch (pEffeck->type)
 			{
 			case EFFECT_SPLITBALL_MOVE:
-				AddSetDraw(pDevice, s_pTexture[EFFECT_SPLITBALL_MOVE], nCntEffect * 4);
+				RectAddDraw(pDevice, s_pTexture[EFFECT_SPLITBALL_MOVE], nCntEffect * 4);
 				break;
 			default:
 				break;

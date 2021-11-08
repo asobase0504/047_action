@@ -302,12 +302,12 @@ void DrawParticle(void)
 			{
 			case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプ時
 				// テクスチャを加算合成で貼り付けて描画する
-				AddSetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
+				RectAddDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
 			case PARTICLE_SPLITBALL_ATTACK:	// 別れる球の攻撃時
 			case PARTICLE_PLAYER_DEATH:		// プレイヤーの死亡時
 				// テクスチャを貼り付けて描画する
-				SetDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
+				RectDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
 			default:
 				assert(false);

@@ -541,17 +541,17 @@ void DrawRanking(void)
 
 	// ”wŒi‚Ì•`‰æ
 	InitDraw(pDevice, s_pVtxBuffBg);	// Draw‚Ì‰Šú‰»
-	SetDraw(pDevice, s_pTextureBg, 0);	// •`‰æˆ—
+	RectDraw(pDevice, s_pTextureBg, 0);	// •`‰æˆ—
 
 	// ”wŒi‚Ì•`‰æ
 	InitDraw(pDevice, s_pVtxBuffMenu);	// Draw‚Ì‰Šú‰»
-	SetDraw(pDevice, s_pTextureMenu, 0);	// •`‰æˆ—
+	RectDraw(pDevice, s_pTextureMenu, 0);	// •`‰æˆ—
 
 	// ‡ˆÊ‚Ì•`‰æ
 	InitDraw(pDevice, s_pVtxBuffRank);		// Draw‚Ì‰Šú‰»
 	for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 	{
-		SetDraw(pDevice, s_pTextureRank, nCntRank * 4);	// •`‰æˆ—
+		RectDraw(pDevice, s_pTextureRank, nCntRank * 4);	// •`‰æˆ—
 	}
 
 	// ƒXƒRƒA‚Ì•`‰æ
@@ -560,14 +560,14 @@ void DrawRanking(void)
 	{// ‡ˆÊ
 		for (nCntScore = 0; nCntScore < MAX_SCORE; nCntScore++)
 		{// ƒXƒRƒA
-			SetDraw(pDevice, s_pTextureScore, (nCntRank * 4 * MAX_SCORE) + (nCntScore * 4));	// •`‰æˆ—
+			RectDraw(pDevice, s_pTextureScore, (nCntRank * 4 * MAX_SCORE) + (nCntScore * 4));	// •`‰æˆ—
 		}
 	}
 
 	InitDraw(pDevice, s_pVtxBuffSelect);
 	for (int i = 0; i < SELECT_NUMBER; i++)
 	{
-		SetDraw(pDevice, s_pTextureSelect[i], i * 4);	// •`‰æˆ—
+		RectDraw(pDevice, s_pTextureSelect[i], i * 4);	// •`‰æˆ—
 	}
 }
 

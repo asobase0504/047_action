@@ -105,7 +105,7 @@ void DrawNumber()
 	InitDraw(pDevice, s_pVtxBuff);
 
 	// テクスチャの描画
-	SetDraw(pDevice, s_pTexture, 0);
+	RectDraw(pDevice, s_pTexture, 0);
 }
 
 //====================================

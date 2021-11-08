@@ -179,9 +179,9 @@ void InitDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 VtxBuff)
 }
 
 //=========================================
-// ‰ÁŽZ‡¬‚È‚µ‚Ì•`ŽÊ
+// ‰ÁŽZ‡¬‚È‚µ‚Ì•`ŽÊ(’·•ûŒ`)
 //=========================================
-LPDIRECT3DDEVICE9 SetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt)
+LPDIRECT3DDEVICE9 RectDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt)
 {
 	// ƒeƒNƒXƒ`ƒƒ‚ÌÝ’è
 	pDevice->SetTexture(0, Texture);
@@ -193,16 +193,16 @@ LPDIRECT3DDEVICE9 SetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture,
 }
 
 //=========================================
-// ‰ÁŽZ‡¬—L‚è‚Ì•`ŽÊ
+// ‰ÁŽZ‡¬—L‚è‚Ì•`ŽÊ(’·•ûŒ`)
 //=========================================
-void AddSetDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt)
+void RectAddDraw(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt)
 {
 	// aƒuƒŒƒ“ƒfƒBƒ“ƒO‚ð‰ÁŽZ‡¬‚ÉÝ’è
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
-	SetDraw(pDevice, Texture, nCnt);
+	RectDraw(pDevice, Texture, nCnt);
 
 	// aƒuƒŒƒ“ƒfƒBƒ“ƒO‚ðŒ³‚É–ß‚·
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);

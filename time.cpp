@@ -210,7 +210,7 @@ void DrawTime(void)
 
 	for (int i = 0; i < TIME_MAX; i++)
 	{
-		pDevice = SetDraw(pDevice, s_pTexture, i * 4);
+		pDevice = RectDraw(pDevice, s_pTexture, i * 4);
 	}
 
 	// 頂点バッファをデータストリーム設定
@@ -218,7 +218,7 @@ void DrawTime(void)
 
 	for (int i = 0; i < PIN_MAX; i++)
 	{
-		pDevice = SetDraw(pDevice, s_pTexturePin, i * 4);
+		pDevice = RectDraw(pDevice, s_pTexturePin, i * 4);
 	}
 
 }

@@ -136,7 +136,7 @@ void DrawFade(void)
 	InitDraw(pDevice, s_pVtxBuff);
 
 	// テクスチャの描画
-	SetDraw(pDevice, NULL, 0);
+	RectDraw(pDevice, NULL, 0);
 }
 
 //====================================

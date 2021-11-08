@@ -428,7 +428,7 @@ void DrawEnemy(void)
 		if (pEnemy->bUse == true)
 		{
 			//テクスチャの描画
-			SetDraw(pDevice, s_pTexture[pEnemy->type], nCntEnemy * 4);
+			RectDraw(pDevice, s_pTexture[pEnemy->type], nCntEnemy * 4);
 		}
 	}
 }

@@ -149,7 +149,7 @@ void DrawBlock(void)
 		if (pBlock->bUse)
 		{// ブロックが使用されている
 			//描画処理
-			SetDraw(pDevice, s_pTexture, i * 4);
+			RectDraw(pDevice, s_pTexture, i * 4);
 		}
 	}
 }

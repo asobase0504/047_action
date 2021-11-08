@@ -35,8 +35,8 @@ void UnInitBuffer	(LPDIRECT3DVERTEXBUFFER9 buff);
 // •`ŽÊˆ—		// 
 // 				// 
 void InitDraw	(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DVERTEXBUFFER9 VtxBuff);		// •`ŽÊ‘O‚Ìˆ—
-LPDIRECT3DDEVICE9 SetDraw	(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// ’Êí‚Ì•`ŽÊ
-void AddSetDraw	(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// ‰ÁŽZˆ—‚Ì•`ŽÊ
+LPDIRECT3DDEVICE9 RectDraw	(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// ’Êí‚Ì•`ŽÊ
+void RectAddDraw	(LPDIRECT3DDEVICE9 pDevice, LPDIRECT3DTEXTURE9 Texture, int nCnt);	// ‰ÁŽZˆ—‚Ì•`ŽÊ
 
 // 				// 
 // ŒvŽZˆ—		// 
