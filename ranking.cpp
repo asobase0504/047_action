@@ -463,19 +463,15 @@ void UpdateRanking(void)
 		// 頂点バッファをアンロックする
 		s_pVtxBuffSelect->Unlock();
 
-		switch (s_SelectCheck)
+		if (GetKeyboardTrigger(DIK_RETURN))
 		{
-		case 0:
-			if (GetKeyboardTrigger(DIK_RETURN))
+			StopSound();
+			switch (s_SelectCheck)
 			{
+			case 0:
 				SetGameState(GAMESTATE_NONE);
-			}
-
-			break;
-		case 1:
-			// 時間制限もしくは、エンターキーでリザルト画面に移行
-			if (GetKeyboardTrigger(DIK_RETURN))
-			{
+				break;
+			case 1:
 				//初期化
 				s_RankState = RANKSTATE_NONE;
 				s_MenuCnt = 33;
@@ -487,11 +483,11 @@ void UpdateRanking(void)
 
 				// リザルト画面に移行
 				SetFade(MODE_RESULT);
+				break;
+			default:
+				assert(false);
+				break;
 			}
-			break;
-		default:
-			assert(false);
-			break;
 		}
 		break;
 	case RANKSTATE_END:

@@ -18,6 +18,7 @@
 #include "time.h"
 #include "score.h"
 #include "summon.h"
+#include "sound.h"
 #include <assert.h>
 
 //------------------------------------
@@ -36,6 +37,8 @@ static GAMESTATE s_GameState;
 //====================================
 void InitGame(void)
 {
+	PlaySound(SOUND_LABEL_BGM001);
+
 	s_GameState = GAMESTATE_NORMAL;
 
 	// 背景の初期化処理
@@ -82,6 +85,7 @@ void InitGame(void)
 	// ランキングの読込
 	ResetRanking();
 
+	// ランクの表示間隔の初期化
 	s_nRankInterval = 0;
 }
 
@@ -157,6 +161,7 @@ void UpdateGame(void)
 		Player *player = GetPlayer();
 		if (player->state == PLAYERSTATE_DEATH)
 		{
+			StopSound();
 			s_GameState = GAMESTATE_END;	//ゲーム終了時に移行
 		}
 	}
@@ -166,6 +171,7 @@ void UpdateGame(void)
 		s_nRankInterval++;
 		if (s_nRankInterval >= RANK_INTERVAL)
 		{
+			PlaySound(SOUND_LABEL_BGM002);
 			s_GameState = GAMESTATE_RANKING_INIT;	//ランキング表示時に移行
 		}
 		break;
@@ -238,6 +244,9 @@ void DrawGame(void)
 //====================================
 void RetryGame(void)
 {
+	// ゲーム画面BGMに変更
+	PlaySound(SOUND_LABEL_BGM001);
+
 	// 時間の終了処理
 	UninitTime();
 

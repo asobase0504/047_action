@@ -14,6 +14,7 @@
 #include "bg.h"
 #include "block.h"
 #include "score.h"
+#include "sound.h"
 
 //=========================================
 // 初期化処理
@@ -46,6 +47,9 @@ void InitTutorial(void)
 
 	// スコアの初期化処理
 	InitScore();
+
+	// 音楽の再生
+	PlaySound(SOUND_LABEL_BGM001);
 }
 
 //=========================================

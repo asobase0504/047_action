@@ -36,7 +36,7 @@ void InitResult(void)
 		"data/TEXTURE/bg016.jpg",
 		&s_pTexture[1]);
 
-	PlaySound(SOUND_LABEL_BGM002);
+	PlaySound(SOUND_LABEL_BGM003);
 
 	// 頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,

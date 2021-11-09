@@ -33,9 +33,10 @@ DWORD g_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
 // 各音素材のパラメータ
 SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 {
-	{"data/BGM/otiru.wav", -1},			// BGM0
-	{"data/BGM/bgm001.wav", -1},		// BGM1
-	{"data/BGM/bgm002.wav", -1},		// BGM2
+	{"data/BGM/bgm003.wav", -1},		// BGM0
+	{"data/BGM/bgm004.wav", -1},		// BGM1
+	{"data/BGM/bgm005.wav", -1 },		// BGM2
+	{"data/BGM/bgm006.wav", -1 },		// BGM3
 	{"data/SE/shot000.wav", 0},			// 弾発射音
 	{"data/SE/hit000.wav", 0},			// ヒット音
 	{ "data/SE/explosion000.wav", 0 },	// 爆発音
