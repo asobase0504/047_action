@@ -241,6 +241,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 					pPlayer->pos.y += pos2.y - Outpos.y;
 				}
 				pPlayer->move.y = 0.0f;
+				bisLanding = true;
 			}
 
 			// ブロック左
@@ -248,6 +249,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 			{
 				pPlayer->pos.x = pBlock->pos.x - pBlock->fWidth - pPlayer->fWidth;
 				pPlayer->rot.z = pPlayer->rotOld.z;
+				bisLanding = true;
 			}
 
 			// ブロック右
@@ -256,6 +258,7 @@ bool CollisionBlock(Player *pPlayer , D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 				pPlayer->move.x = 0.0f;
 				pPlayer->pos.x = pBlock->pos.x + pBlock->fWidth + pPlayer->fWidth;
 				pPlayer->rot.z = pPlayer->rotOld.z;
+				bisLanding = true;
 			}
 		}
 	}

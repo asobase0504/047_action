@@ -19,6 +19,7 @@
 //-----------------------------------------
 #define MAX_PARTCLE	(1024)	// パーティクルの最大数
 #define MAX_TEX		(MAX_PARTICLE)		// テクスチャの種類
+#define JUMP_TEX	"data/TEXTURE/jump.png"
 
 //-----------------------------------------
 // パーティクル構造体
@@ -81,10 +82,15 @@ void InitParticle(void)
 	pDevice = GetDevice();
 
 	// テクスチャの読込
+	// テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice,
+		JUMP_TEX,
+		&s_pTexture[PARTICLE_PLAYER_JUMP]);
+
 	D3DXCreateTextureFromFile(pDevice,
 		SPLITBALL_TEX,
 		&s_pTexture[PARTICLE_SPLITBALL_ATTACK]);
-
+	
 	D3DXCreateTextureFromFile(pDevice,
 		SPLITBALL_TEX,
 		&s_pTexture[PARTICLE_BALL_HOMING00_ATTACK]);
@@ -196,18 +202,17 @@ void UpdateParticle(void)
 		switch (pParticle->type)
 		{
 		case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプパーティクル	// 列挙型に変更する。
-			// 体力の更新
-			pParticle->nLife--;
+			pParticle->nLife--;			// 体力の更新
+			pParticle->col.a -= (float)1.0f / pParticle->nMaxLife;			// 透明度の更新
+			pParticle->fRaduus += 1.5f;	// 半径の拡大
 			if (pParticle->nLife <= 0)
 			{
 				pParticle->bUse = false;
 			}
-			// 透明度の更新
-			pParticle->col.a -= (float)1 / pParticle->nMaxLife;
 			break;
 		case  PARTICLE_PLAYER_WALK:		// プレイヤーの移動
-			pParticle->fRaduus -= 0.15f;
-			if (pParticle->fRaduus <= 0.0f)
+			pParticle->nLife -= 1;
+			if (pParticle->nLife <= 0)
 			{
 				pParticle->bUse = false;
 			}
@@ -307,6 +312,12 @@ void UpdateParticle(void)
 			break;
 		}
 
+		// 中心座標から上の長さを算出する。
+		pParticle->fLength = sqrtf(pParticle->fRaduus  * pParticle->fRaduus + pParticle->fRaduus * pParticle->fRaduus);
+
+		// 中心座標から上の頂点の角度を算出する
+		pParticle->fAngle = atan2f(pParticle->fRaduus, pParticle->fRaduus);
+
 		VERTEX_2D *pVtx;
 
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -316,7 +327,6 @@ void UpdateParticle(void)
 
 		// 頂点座標の設定
 		SetRectCenterRotPos(pVtx, pParticle->pos, pParticle->rot, pParticle->fAngle, pParticle->fLength);
-
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(pParticle->col));
 
@@ -398,12 +408,12 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 		case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプパーティクル
 			pParticle->pos = pos;
 			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
-			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
+			pParticle->move.x = 0.0f;
+			pParticle->move.y = 0.0f;
 			pParticle->move.z = 0.0f;
 			pParticle->col = D3DXCOLOR(0.4f, 0.71f, 0.63f, 1.0f);
 			pParticle->fRaduus = 10.0f;
-			pParticle->nMaxLife = 50;
+			pParticle->nMaxLife = 25;
 			pParticle->nLife = pParticle->nMaxLife;
 			break;
 		case  PARTICLE_PLAYER_WALK:		// プレイヤーの移動
@@ -413,7 +423,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->fRaduus = 3.0f;
-			pParticle->nMaxLife = 50;
+			pParticle->nMaxLife = 25;
 			pParticle->nLife = pParticle->nMaxLife;
 			break;
 		case PARTICLE_PLAYER_AIR:			// プレイヤーの空中軌道

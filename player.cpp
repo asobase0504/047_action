@@ -171,23 +171,25 @@ void UpdatePlayer(void)
 	// 頂点座標の設定
 	RectPlayer(pVtx,pPlayer->Centerpos);
 
-	D3DXVECTOR3 eps = D3DXVECTOR3(3.0f, 3.0f, 0.0f);
-	eps = D3DXVECTOR3(pVtx[2].pos.x + 3.0f, pVtx[2].pos.y - 3.0f, 0.0f);
-	SetParticle(eps, PARTICLE_PLAYER_AIR);
-	eps.x = pVtx[2].pos.x + sinf(pPlayer->rot.z + (D3DX_PI / 2)) * pPlayer->fWidth / 2;
-	eps.y = pVtx[2].pos.y + cosf(pPlayer->rot.z + (D3DX_PI / 2)) * pPlayer->fWidth / 2;
-	eps.z = 0.0f;
-	SetParticle(eps, PARTICLE_PLAYER_AIR);
-	eps = D3DXVECTOR3(pVtx[3].pos.x - 3.0f, pVtx[3].pos.y - 3.0f, 0.0f);
-	SetParticle(eps, PARTICLE_PLAYER_AIR);
-
-	bool bisLanding;
-
 	// それぞれの頂点座標の当たり判定
-	bisLanding = CollisionBlock(pPlayer, pVtx[0].pos, pVtx[1].pos);
-	bisLanding = CollisionBlock(pPlayer, pVtx[0].pos, pVtx[2].pos);
-	bisLanding = CollisionBlock(pPlayer, pVtx[1].pos, pVtx[3].pos);
-	bisLanding = CollisionBlock(pPlayer, pVtx[2].pos, pVtx[3].pos);
+	bool bisLanding = CollisionBlock(pPlayer, pVtx[0].pos, pVtx[1].pos);
+	CollisionBlock(pPlayer, pVtx[0].pos, pVtx[2].pos);
+	CollisionBlock(pPlayer, pVtx[1].pos, pVtx[3].pos);
+	CollisionBlock(pPlayer, pVtx[2].pos, pVtx[3].pos);
+
+	// 空中軌道のパーティクル生成
+	if ((pPlayer->state == PLAYERSTATE_NORMAL) && !(bisLanding))
+	{
+		D3DXVECTOR3 eps = D3DXVECTOR3(3.0f, 3.0f, 0.0f);
+		eps = D3DXVECTOR3(pVtx[2].pos.x + 3.0f, pVtx[2].pos.y - 3.0f, 0.0f);
+		SetParticle(eps, PARTICLE_PLAYER_AIR);
+		eps.x = pVtx[2].pos.x + sinf(pPlayer->rot.z + (D3DX_PI / 2)) * pPlayer->fWidth / 2;
+		eps.y = pVtx[2].pos.y + cosf(pPlayer->rot.z + (D3DX_PI / 2)) * pPlayer->fWidth / 2;
+		eps.z = 0.0f;
+		SetParticle(eps, PARTICLE_PLAYER_AIR);
+		eps = D3DXVECTOR3(pVtx[3].pos.x - 3.0f, pVtx[3].pos.y - 3.0f, 0.0f);
+		SetParticle(eps, PARTICLE_PLAYER_AIR);
+	}
 
 	// 敵との当たり判定
 	CollisionEnemy(pVtx[0].pos, pVtx[1].pos);
