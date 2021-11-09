@@ -421,8 +421,10 @@ static void DieEnemy(Enemy *pEnemy)
 		pEnemy->bUse = false;
 		break;
 	case REFLECT_TRIANGLE:
+		break;
 	case BALL_HOMING00:
 	case BALL_HOMING01:		// ’Ç]‚ğ‚·‚é‰~
+		PlaySound(SOUND_LABEL_SE_DIE001);
 		pEnemy->bUse = false;
 		break;
 	case DAMEGE_WALL:		// ƒ_ƒ[ƒW•Ç
