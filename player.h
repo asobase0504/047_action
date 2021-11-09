@@ -14,7 +14,7 @@
 #define PLAYER_WIDTH	(35.0f)							// プレイヤーの幅
 #define PLAYER_HEIGTH	(35.0f)							// プレイヤーの高さ
 #define PLAYER_JUMPMOVE	(25.0f)							// プレイヤーの跳躍量
-#define PLAYER_JUMPMAX	(5)							// プレイヤーの跳躍回数
+#define PLAYER_JUMPMAX	(4)							// プレイヤーの跳躍回数
 #define WOARD_GRAVITY	(1.0f)							// 世界の重力
 
 //------------------------------------
