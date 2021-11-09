@@ -85,7 +85,12 @@ void InitEnemy(void)
 	// テクスチャの読込
 	D3DXCreateTextureFromFile(pDevice,
 		SPLITBALL_TEX,
-		&s_pTexture[BALL_HOMING]);
+		&s_pTexture[BALL_HOMING00]);
+
+	// テクスチャの読込
+	D3DXCreateTextureFromFile(pDevice,
+		SPLITBALL_TEX,
+		&s_pTexture[BALL_HOMING01]);
 
 	// 構造体の初期化
 	for (nCntEnemy = 0; nCntEnemy < MAX_ENEMY; nCntEnemy++)
@@ -205,13 +210,10 @@ void UpdateEnemy(void)
 		SetRectCenterPos(pVtx, pEnemy->pos, pEnemy->fWidth, pEnemy->fHeight);
 
 		// それぞれの頂点座標の当たり判定
-		if (pEnemy->state != ENEMYSTATE_SUMMON)
-		{
-			CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[1].pos);
-			CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[2].pos);
-			CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[3].pos);
-			CollisionBlockEnemy(pEnemy, pVtx[2].pos, pVtx[3].pos);
-		}
+		CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[1].pos);
+		CollisionBlockEnemy(pEnemy, pVtx[0].pos, pVtx[2].pos);
+		CollisionBlockEnemy(pEnemy, pVtx[1].pos, pVtx[3].pos);
+		CollisionBlockEnemy(pEnemy, pVtx[2].pos, pVtx[3].pos);
 		// カラーの設定
 		SetRectColor(pVtx, &(pEnemy->col));
 
@@ -264,10 +266,9 @@ static void NeutralEnemy(Enemy *pEnemy)
 		}
 	}
 		break;
-	case BALL_HOMING:	// 甘い追従をする円
-	{	
+	case BALL_HOMING00:	// 甘い追従をする円
+	case BALL_HOMING01:		// 追従をする円
 		pEnemy->state = ENEMYSTATE_ATTACK;
-	}
 	break;
 	case DAMEGE_WALL:		// ダメージ壁
 		break;
@@ -343,11 +344,11 @@ static void AttackEnemy(Enemy *pEnemy)
 		break;
 	case REFLECT_TRIANGLE:
 		break;
-	case BALL_HOMING:
+	case BALL_HOMING00:
 		if (pEnemy->nAtkInterval % 1 == 0)
 		{
 			// パーティクル
-			SetParticle(pEnemy->pos, PARTICLE_BALL_HOMING_ATTACK);
+			SetParticle(pEnemy->pos, PARTICLE_BALL_HOMING00_ATTACK);
 		}
 		if (pEnemy->nAtkInterval % 20 == 0)
 		{
@@ -356,6 +357,21 @@ static void AttackEnemy(Enemy *pEnemy)
 			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
 			pEnemy->move.x = pEnemy->move.x + sinf(fRotDest) * 0.1f * (float)(pEnemy->nAtkInterval / 20);
 			pEnemy->move.y = pEnemy->move.y + cosf(fRotDest) * 0.1f * (float)(pEnemy->nAtkInterval / 20);
+		}
+		break;
+	case BALL_HOMING01:		// 追従をする円
+		if (pEnemy->nAtkInterval % 1 == 0)
+		{
+			// パーティクル
+			SetParticle(pEnemy->pos, PARTICLE_BALL_HOMING01_ATTACK);
+		}
+		if (pEnemy->nAtkInterval % 1 == 0)
+		{
+			Player *pPlayer = GetPlayer();	// プレイヤーのポインタ
+			float fRotDest;
+			fRotDest = (float)atan2(pPlayer->pos.x - pEnemy->pos.x, pPlayer->pos.y - pEnemy->pos.y);
+			pEnemy->move.x = pEnemy->move.x + sinf(fRotDest) * 0.05f * (float)(pEnemy->nAtkInterval / 20);
+			pEnemy->move.y = pEnemy->move.y + cosf(fRotDest) * 0.05f * (float)(pEnemy->nAtkInterval / 20);
 		}
 		break;
 	case DAMEGE_WALL:		// ダメージ壁
@@ -405,7 +421,8 @@ static void DieEnemy(Enemy *pEnemy)
 		pEnemy->bUse = false;
 		break;
 	case REFLECT_TRIANGLE:
-	case BALL_HOMING:
+	case BALL_HOMING00:
+	case BALL_HOMING01:		// 追従をする円
 		pEnemy->bUse = false;
 		break;
 	case DAMEGE_WALL:		// ダメージ壁
@@ -514,9 +531,13 @@ void SetEnemy(D3DXVECTOR3 pos, ENEMYTYPE type)
 			pEnemy->fHeight = 10.0f;	// 高さ
 			pEnemy->fWidth = 10.0f;	// 幅
 			break;
-		case BALL_HOMING:
+		case BALL_HOMING00:
 			pEnemy->fHeight = 10.0f;	// 高さ
 			pEnemy->fWidth = 10.0f;	// 幅
+			break;
+		case BALL_HOMING01:		// 追従をする円
+			pEnemy->fHeight = 12.0f;	// 高さ
+			pEnemy->fWidth = 12.0f;	// 幅
 			break;
 		case DAMEGE_WALL:		// ダメージ壁
 			break;
@@ -581,7 +602,9 @@ void HitEnemy(int nCntEnemy)
 		break;
 	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
 		break;
-	case BALL_HOMING:
+	case BALL_HOMING00:
+		break;
+	case BALL_HOMING01:		// 追従をする円
 		break;
 	case DAMEGE_WALL:		// ダメージ壁
 		break;
@@ -625,7 +648,7 @@ bool CollisionEnemy(D3DXVECTOR3 pos1, D3DXVECTOR3 pos2)
 	for (int nCntEnemy = 0; nCntEnemy < MAX_BLOCK; nCntEnemy++)
 	{
 		pEnemy = &(s_aEnemy[nCntEnemy]);
-		if (pEnemy->bUse == true)
+		if ((pEnemy->bUse) && (pEnemy->state != ENEMYSTATE_SUMMON))
 		{// ブロックが生きてたら
 			 // 上
 			if (CrossingEnemy(&(pos1), &(pos2), POSITION_UP, *pEnemy) ||

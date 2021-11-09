@@ -43,7 +43,8 @@ typedef enum
 	GOSTRAIGHT_LEFT,	// 直進する長方形、左から右
 	GOSTRAIGHT_RIGHT,	// 直進する長方形、右から左
 	REFLECT_TRIANGLE,	// 反射する三角
-	BALL_HOMING,		// 甘い追従をする円
+	BALL_HOMING00,		// 甘い追従をする円
+	BALL_HOMING01,		// 追従をする円
 	DAMEGE_WALL,		// ダメージ壁
 	ENEMYTYPE_MAX
 }ENEMYTYPE;

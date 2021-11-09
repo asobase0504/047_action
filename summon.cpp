@@ -143,34 +143,34 @@ void UpdateSummon(void)
 		if (nCnt == 50)
 		{
 			pos = D3DXVECTOR3(1550.0f - 50.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(1550.0f - 100.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(1550.0f - 150.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(1550.0f - 200.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(1550.0f - 250.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 
 			pos = D3DXVECTOR3(330.0f + 50.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(330.0f + 100.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(330.0f + 150.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(330.0f + 200.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(330.0f + 250.0f, 1000.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 		}
 
 		if (nCnt >= 300 && nCnt <= 600 && nCnt % 20 == 0)
 		{
 			pos = D3DXVECTOR3(330.0f, 100.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(1550.0f, 100.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 		}
 
 		if (nCnt == 800)
@@ -180,21 +180,147 @@ void UpdateSummon(void)
 			pos = D3DXVECTOR3(1550.0f, 1000.0f, 0.0f);
 			SetEnemy(pos, GOSTRAIGHT_RIGHT);
 			pos = D3DXVECTOR3(330.0f, 900.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(1550.0f, 900.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING);
+			SetEnemy(pos, BALL_HOMING00);
 		}
 
 		if (nCnt == 1000)
 		{
-			for (int i = 0; i < 15; i++)
+			for (int i = 0; i < 14; i++)
 			{
 				pos = D3DXVECTOR3(1550.0f - 100.0f * i, 100.0f, 0.0f);
-				SetEnemy(pos, BALL_HOMING);
+				SetEnemy(pos, BALL_HOMING00);
 			}
+		}
+
+		if (nCnt >= 1200 && nCnt <= 1400 && nCnt % 20 == 0)
+		{
+			pos = D3DXVECTOR3(1550.0f - 100.0f * (nCnt - 1200) * 0.05f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(350.0f + 100.0f * (nCnt - 1200) * 0.05f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+		}
+
+		if (nCnt == 1600)
+		{
+			pos = D3DXVECTOR3(330.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1550.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(330.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+		}
+
+		if (nCnt == 1700)
+		{
+			pos = D3DXVECTOR3(330.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1550.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(330.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+
+			pos = D3DXVECTOR3(330.0f, 100.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_LEFT);
+			pos = D3DXVECTOR3(1550.0f, 100.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+			pos = D3DXVECTOR3(330.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_LEFT);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+		}
+
+		if (nCnt >= 1750 && nCnt <= 2000 && nCnt % 20 == 0)
+		{
+			pos = D3DXVECTOR3(900.0f + 50.0f * (nCnt - 1750) * 0.05f, 1000.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_DWON);
+			pos = D3DXVECTOR3(900.0f - 50.0f * (nCnt - 1750) * 0.05f, 1000.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_DWON);
+		}
+		if (nCnt == 2000)
+		{
+			SetWave(3);
 		}
 		break;
 	case WAVE_3:
+		if (nCnt == 100)
+		{
+			for (int i = 0; i < 14; i++)
+			{
+				pos = D3DXVECTOR3(1550.0f - 100.0f * i, 100.0f, 0.0f);
+				SetEnemy(pos, BALL_HOMING01);
+			}
+		}
+
+		if (nCnt >= 200 && nCnt <= 700 && nCnt % 20 == 0)
+		{
+			pos = D3DXVECTOR3(330.0f + 50.0f * (nCnt - 200) * 0.05f, 100.0f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_UP);
+			pos = D3DXVECTOR3(330.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+		}
+
+		if (nCnt >= 750 && nCnt <= 1250 && nCnt % 20 == 0)
+		{
+			pos = D3DXVECTOR3(1550.0f, 1000.0f - 50.0f * (nCnt - 750) * 0.05f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+		}
+
+		if (nCnt == 1250)
+		{
+			pos = D3DXVECTOR3(900.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING01);
+			pos = D3DXVECTOR3(900.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING01);
+		}
+		if (nCnt == 1350)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				pos = D3DXVECTOR3(350.0f, 1000.0f - 100.0f * i, 0.0f);
+				SetEnemy(pos, GOSTRAIGHT_LEFT);
+				pos = D3DXVECTOR3(1550.0f - 100.0f * i, 100.0f, 0.0f);
+				SetEnemy(pos, GOSTRAIGHT_UP);
+
+			}
+		}
+
+		if (nCnt == 1400)
+		{
+			pos = D3DXVECTOR3(900.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(900.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1000.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1000.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+		}
+
+		if (nCnt == 1500)
+		{
+			pos = D3DXVECTOR3(800.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING01);
+			pos = D3DXVECTOR3(800.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING01);
+			pos = D3DXVECTOR3(1000.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING01);
+			pos = D3DXVECTOR3(1000.0f, 100.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING01);
+			pos = D3DXVECTOR3(800.0f, 500.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(800.0f, 600.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1000.0f, 500.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1000.0f, 600.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+		}
 		break;
 	case WAVE_4:
 		break;

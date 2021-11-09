@@ -80,7 +80,7 @@ void InitGame(void)
 	SetScore(0);
 
 	// WAVE‚Ìİ’è
-	SetWave(0);
+	SetWave(3);
 
 	// ƒ‰ƒ“ƒLƒ“ƒO‚Ì“Ç
 	ResetRanking();
