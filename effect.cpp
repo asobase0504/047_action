@@ -137,13 +137,6 @@ void UpdateEffect(void)
 			// 頂点カラーの設定
 			SetRectColor(pVtx, &(pEffeck->col));
 
-			// カラーの透明度の減少
-			pEffeck->col.a -= 0.05f;
-
-			// 大きさを縮小
-			pEffeck->fWidth += 5.0f;
-			pEffeck->fHeigth += 5.0f;
-
 			// 体力の更新
 			pEffeck->nLife--;
 			if (pEffeck->nLife <= 0)
@@ -183,6 +176,9 @@ void DrawEffect(void)
 			case EFFECT_SPLITBALL_MOVE:
 				RectAddDraw(pDevice, s_pTexture[EFFECT_SPLITBALL_MOVE], nCntEffect * 4);
 				break;
+			case EFFECT_PLAYER_AIR:	// 空中時のプレイヤーのエフェクト
+				RectDraw(pDevice, s_pTexture[EFFECT_PLAYER_AIR], nCntEffect * 4);
+				break;
 			default:
 				break;
 			}
@@ -204,16 +200,22 @@ void SetEffect(D3DXVECTOR3 pos, EFFCT_TYPE type)
 		pEffeck = &(s_aEffect[nCntEffect]);
 		if (pEffeck->bUse == false)
 		{	
-			pEffeck->pos	= pos;
-			pEffeck->type	= type;
+			pEffeck->pos = pos;
+			pEffeck->type = type;
 
 			switch (type)
 			{
 			case EFFECT_SPLITBALL_MOVE:
-				pEffeck->col = {1.0f,1.0f,1.0f,1.0f};
+				pEffeck->col = D3DXCOLOR(0.4f, 0.71f, 0.63f, 1.0f);
 				pEffeck->fWidth = 10;
 				pEffeck->fHeigth = 10;
 				pEffeck->nLife = 0;
+				break;
+			case EFFECT_PLAYER_AIR:	// 空中時のプレイヤーのエフェクト
+				pEffeck->col = D3DXCOLOR(0.4f, 0.71f, 0.63f, 1.0f);
+				pEffeck->fWidth = 10;
+				pEffeck->fHeigth = 10;
+				pEffeck->nLife = 2;
 				break;
 			default:
 				assert(false);

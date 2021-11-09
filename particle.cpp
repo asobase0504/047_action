@@ -27,8 +27,11 @@ typedef struct
 {
 	D3DXVECTOR3 pos;	// 位置
 	D3DXVECTOR3 move;	// 移動量
+	D3DXVECTOR3 rot;	// 角度
 	D3DXCOLOR col;		// 色
 	float fRaduus;		// 半径
+	float fLength;		// 中心座標からの半径
+	float fAngle;		// 角度の算出
 	int nMaxLife;		// 最大寿命
 	int nLife;			// 寿命
 	PARTICLE_TYPE type;	// パーティクルの種類
@@ -101,6 +104,7 @@ void InitParticle(void)
 	for (nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
 	{
 		s_aParticle[nCntParticle].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		s_aParticle[nCntParticle].rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		s_aParticle[nCntParticle].move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		s_aParticle[nCntParticle].col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);
 		s_aParticle[nCntParticle].fRaduus = 0.0f;
@@ -208,6 +212,14 @@ void UpdateParticle(void)
 				pParticle->bUse = false;
 			}
 			break;
+		case PARTICLE_PLAYER_AIR:			// プレイヤーの空中軌道
+			pParticle->nLife--;
+			pParticle->col.a -= (float)0.5f / pParticle->nMaxLife;
+			if (pParticle->nLife <= 0)
+			{
+				pParticle->bUse = false;
+			}
+			break;
 		case PARTICLE_PLAYER_DEATH:
 		{
 			Player *pPlayer = GetPlayer();
@@ -303,7 +315,7 @@ void UpdateParticle(void)
 		pVtx += i * 4;
 
 		// 頂点座標の設定
-		SetRectCenterPos(pVtx, pParticle->pos, pParticle->fRaduus, pParticle->fRaduus);
+		SetRectCenterRotPos(pVtx, pParticle->pos, pParticle->rot, pParticle->fAngle, pParticle->fLength);
 
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(pParticle->col));
@@ -336,6 +348,7 @@ void DrawParticle(void)
 			case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプ時
 			case PARTICLE_BALL_HOMING00_ATTACK:	// 甘い追従をする円の攻撃 
 			case PARTICLE_SPLITBALL_ATTACK:	// 別れる球の攻撃時
+			case PARTICLE_PLAYER_AIR:			// プレイヤーの空中軌道
 			case PARTICLE_PLAYER_DEATH:		// プレイヤーの死亡時
 			case PARTICLE_GOSTRAIGHT_DIE:// 直進する長方形死亡時
 			case PARTICLE_PLAYER_WALK:		// プレイヤーの移動
@@ -384,6 +397,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 		{
 		case PARTICLE_PLAYER_JUMP:	// プレイヤーのジャンプパーティクル
 			pParticle->pos = pos;
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->move.z = 0.0f;
@@ -395,14 +409,29 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 		case  PARTICLE_PLAYER_WALK:		// プレイヤーの移動
 			pParticle->pos = pos;
 			pParticle->col = D3DXCOLOR(0.5f, 0.35f, 0.25f, 1.0f);
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->fRaduus = 3.0f;
 			pParticle->nMaxLife = 50;
 			pParticle->nLife = pParticle->nMaxLife;
 			break;
+		case PARTICLE_PLAYER_AIR:			// プレイヤーの空中軌道
+		{
+			Player *pPlayer = GetPlayer();
+			pParticle->pos = pos;
+			pParticle->rot = pPlayer->rot;
+			pParticle->move.x = 0.0f;
+			pParticle->move.y = 0.0f;
+			pParticle->col = D3DXCOLOR(0.4f, 0.71f, 0.63f, 1.0f);
+			pParticle->fRaduus = 3.5f;
+			pParticle->nMaxLife = 10;
+			pParticle->nLife = pParticle->nMaxLife;
+		}
+			break;
 		case PARTICLE_PLAYER_DEATH:
 			pParticle->pos = pos;
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 10.0f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 10.0f);
 			pParticle->col = D3DXCOLOR(0.4f, 0.71f, 0.63f, 1.0f);
@@ -412,6 +441,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			break;
 		case PARTICLE_SPLITBALL_ATTACK:	// 別れる球の攻撃パーティクル
 			pParticle->pos = pos;
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 			pParticle->move.x = 0.0f;
 			pParticle->move.y = 0.0f;
@@ -421,6 +451,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			break;
 		case PARTICLE_BALL_HOMING00_ATTACK:	// 甘い追従をする円の攻撃 
 			pParticle->pos = pos;
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->col = D3DXCOLOR(1.0f, 0.7f, 0.0f, 0.8f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
@@ -430,6 +461,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			break;
 		case PARTICLE_BALL_HOMING01_ATTACK:	// 追従をする円の攻撃 
 			pParticle->pos = pos;
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.8f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.3f);
@@ -439,6 +471,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			break;
 		case PARTICLE_GOSTRAIGHT_DIE:// 直進する長方形死亡時
 			pParticle->pos = pos;
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
@@ -448,6 +481,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			break;
 		case PARTICLE_BALL_HOMING00_DIE:		// 甘い追従をする円の死亡時
 			pParticle->pos = pos;
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
@@ -457,6 +491,7 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			break;
 		case PARTICLE_BALL_HOMING01_DIE:		// 追従をする円の死亡時
 			pParticle->pos = pos;
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
@@ -468,6 +503,12 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			assert(false);
 			break;
 		}
+
+		// 中心座標から上の長さを算出する。
+		pParticle->fLength = sqrtf(pParticle->fRaduus  * pParticle->fRaduus + pParticle->fRaduus * pParticle->fRaduus);
+
+		// 中心座標から上の頂点の角度を算出する
+		pParticle->fAngle = atan2f(pParticle->fRaduus, pParticle->fRaduus);
 
 		pParticle->bUse = true;
 

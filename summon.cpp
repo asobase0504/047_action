@@ -322,12 +322,18 @@ void UpdateSummon(void)
 			SetEnemy(pos, BALL_HOMING00);
 		}
 
-		if (nCnt >= 1550 && nCnt <= 1850 && nCnt % 20 == 0)
+		if (nCnt >= 1550 && nCnt <= 2050 && nCnt % 20 == 0)
 		{
-			pos = D3DXVECTOR3(330.0f, 100.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING01);
-			pos = D3DXVECTOR3(1550.0f, 100.0f, 0.0f);
-			SetEnemy(pos, BALL_HOMING01);
+			pos = D3DXVECTOR3(1550.0f, 100.0f + 50.0f * (nCnt - 1550) * 0.05f, 0.0f);
+			SetEnemy(pos, GOSTRAIGHT_RIGHT);
+		}
+
+		if (nCnt == 1700)
+		{
+			pos = D3DXVECTOR3(330.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
+			pos = D3DXVECTOR3(1550.0f, 1000.0f, 0.0f);
+			SetEnemy(pos, BALL_HOMING00);
 		}
 
 		break;

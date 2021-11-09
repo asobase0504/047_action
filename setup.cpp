@@ -63,6 +63,30 @@ void SetRectCenterPos(VERTEX_2D *vtx, D3DXVECTOR3 pos, float fWidth, float fHeig
 }
 
 //=========================================
+// 頂点座標を設定(中心)(角度対応)
+//=========================================
+void SetRectCenterRotPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, D3DXVECTOR3 rot, float fAngle, float fLength)
+{
+	//頂点座標の設定
+	vtx[0].pos.x = pos.x + sinf(rot.z + (-D3DX_PI + fAngle)) * fLength;
+	vtx[0].pos.y = pos.y + cosf(rot.z + (-D3DX_PI + fAngle)) * fLength;
+	vtx[0].pos.z = 0.0f;
+
+	vtx[1].pos.x = pos.x + sinf(rot.z + (D3DX_PI - fAngle)) * fLength;
+	vtx[1].pos.y = pos.y + cosf(rot.z + (D3DX_PI - fAngle)) * fLength;
+	vtx[1].pos.z = 0.0f;
+
+	vtx[2].pos.x = pos.x + sinf(rot.z + (fAngle * -1.0f)) * fLength;
+	vtx[2].pos.y = pos.y + cosf(rot.z + (fAngle * -1.0f)) * fLength;
+	vtx[2].pos.z = 0.0f;
+
+	vtx[3].pos.x = pos.x + sinf(rot.z + fAngle) * fLength;
+	vtx[3].pos.y = pos.y + cosf(rot.z + fAngle) * fLength;
+	vtx[3].pos.z = 0.0f;
+
+}
+
+//=========================================
 // 頂点座標を設定(左上から)
 //=========================================
 void SetRectUpLeftPos(VERTEX_2D * vtx, D3DXVECTOR3 pos, float fWidth, float fHeigth)
