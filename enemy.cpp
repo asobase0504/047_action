@@ -13,6 +13,7 @@
 #include "block.h"
 #include "score.h"
 #include <assert.h>
+#include "sound.h"
 
 //------------------------------------
 // マクロ定義
@@ -396,6 +397,7 @@ static void DieEnemy(Enemy *pEnemy)
 	case GOSTRAIGHT_DWON:	// 直進する長方形、下から上
 	case GOSTRAIGHT_LEFT:	// 直進する長方形、左から右
 	case GOSTRAIGHT_RIGHT:	// 直進する長方形、右から左
+		PlaySound(SOUND_LABEL_SE_DIE000);
 		for (int i = 0; i < 10; i++)
 		{
 			SetParticle(pEnemy->pos, PARTICLE_GOSTRAIGHT_DIE);

@@ -65,7 +65,6 @@ void InitBlock(void)
 
 		// 頂点座標の設定
 		SetRectCenterPos(pVtx, pBlock->pos, pBlock->fWidth, pBlock->fHeight);
-
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(pBlock->col));
 		// テクスチャ座標の設定
