@@ -90,6 +90,14 @@ void InitParticle(void)
 		SPLITBALL_TEX,
 		&s_pTexture[PARTICLE_BALL_HOMING01_ATTACK]);
 
+	D3DXCreateTextureFromFile(pDevice,
+		SPLITBALL_TEX,
+		&s_pTexture[PARTICLE_BALL_HOMING00_DIE]);
+
+	D3DXCreateTextureFromFile(pDevice,
+		SPLITBALL_TEX,
+		&s_pTexture[PARTICLE_BALL_HOMING01_DIE]);
+
 	for (nCntParticle = 0; nCntParticle < MAX_PARTCLE; nCntParticle++)
 	{
 		s_aParticle[nCntParticle].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -267,6 +275,22 @@ void UpdateParticle(void)
 				pParticle->bUse = false;
 			}
 			break;
+		case PARTICLE_BALL_HOMING00_DIE:		// ŠÃ‚¢’Ç]‚ð‚·‚é‰~‚ÌŽ€–SŽž
+			pParticle->col.a -= (float)0.5f / pParticle->nMaxLife;
+			pParticle->fRaduus -= 0.05f;
+			if (pParticle->fRaduus <= 0.0f)
+			{
+				pParticle->bUse = false;
+			}
+			break;
+		case PARTICLE_BALL_HOMING01_DIE:		// ’Ç]‚ð‚·‚é‰~‚ÌŽ€–SŽž
+			pParticle->col.a -= (float)0.5f / pParticle->nMaxLife;
+			pParticle->fRaduus -= 0.05f;
+			if (pParticle->fRaduus <= 0.0f)
+			{
+				pParticle->bUse = false;
+			}
+			break;
 		default:
 			break;
 		}
@@ -314,8 +338,10 @@ void DrawParticle(void)
 			case PARTICLE_SPLITBALL_ATTACK:	// •Ê‚ê‚é‹…‚ÌUŒ‚Žž
 			case PARTICLE_PLAYER_DEATH:		// ƒvƒŒƒCƒ„[‚ÌŽ€–SŽž
 			case PARTICLE_GOSTRAIGHT_DIE:// ’¼i‚·‚é’·•ûŒ`Ž€–SŽž
-			case  PARTICLE_PLAYER_WALK:		// ƒvƒŒƒCƒ„[‚ÌˆÚ“®
+			case PARTICLE_PLAYER_WALK:		// ƒvƒŒƒCƒ„[‚ÌˆÚ“®
 			case PARTICLE_BALL_HOMING01_ATTACK:	// ’Ç]‚ð‚·‚é‰~‚ÌUŒ‚ 
+			case PARTICLE_BALL_HOMING00_DIE:		// ŠÃ‚¢’Ç]‚ð‚·‚é‰~‚ÌŽ€–SŽž
+			case PARTICLE_BALL_HOMING01_DIE:		// ’Ç]‚ð‚·‚é‰~‚ÌŽ€–SŽž
 				// ƒeƒNƒXƒ`ƒƒ‚ð“\‚è•t‚¯‚Ä•`‰æ‚·‚é
 				RectDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
@@ -414,6 +440,24 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 		case PARTICLE_GOSTRAIGHT_DIE:// ’¼i‚·‚é’·•ûŒ`Ž€–SŽž
 			pParticle->pos = pos;
 			pParticle->col = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
+			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
+			pParticle->fRaduus = 5.0f;
+			pParticle->nMaxLife = 10;
+			pParticle->nLife = pParticle->nMaxLife;
+			break;
+		case PARTICLE_BALL_HOMING00_DIE:		// ŠÃ‚¢’Ç]‚ð‚·‚é‰~‚ÌŽ€–SŽž
+			pParticle->pos = pos;
+			pParticle->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
+			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
+			pParticle->fRaduus = 5.0f;
+			pParticle->nMaxLife = 10;
+			pParticle->nLife = pParticle->nMaxLife;
+			break;
+		case PARTICLE_BALL_HOMING01_DIE:		// ’Ç]‚ð‚·‚é‰~‚ÌŽ€–SŽž
+			pParticle->pos = pos;
+			pParticle->col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
 			pParticle->fRaduus = 5.0f;

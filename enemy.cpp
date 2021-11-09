@@ -423,8 +423,19 @@ static void DieEnemy(Enemy *pEnemy)
 	case REFLECT_TRIANGLE:
 		break;
 	case BALL_HOMING00:
+		PlaySound(SOUND_LABEL_SE_DIE001);
+		for (int i = 0; i < 10; i++)
+		{
+			SetParticle(pEnemy->pos, PARTICLE_BALL_HOMING00_DIE);
+		}
+		pEnemy->bUse = false;
+		break;
 	case BALL_HOMING01:		// í«è]ÇÇ∑ÇÈâ~
 		PlaySound(SOUND_LABEL_SE_DIE001);
+		for (int i = 0; i < 10; i++)
+		{
+			SetParticle(pEnemy->pos, PARTICLE_BALL_HOMING01_DIE);
+		}
 		pEnemy->bUse = false;
 		break;
 	case DAMEGE_WALL:		// É_ÉÅÅ[ÉWï«

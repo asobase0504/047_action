@@ -16,14 +16,16 @@
 //------------------------------------
 typedef enum
 {
-	PARTICLE_PLAYER_JUMP = 0,	// プレイヤーの跳躍
-	PARTICLE_PLAYER_WALK,		// プレイヤーの移動
-	PARTICLE_PLAYER_DEATH,		// プレイヤーの死亡
-	PARTICLE_PLAYER_REVIVAL,	// プレイヤーの復活
-	PARTICLE_SPLITBALL_ATTACK,	// 別れる球の攻撃
-	PARTICLE_BALL_HOMING00_ATTACK,// 甘い追従をする円の攻撃 
+	PARTICLE_PLAYER_JUMP = 0,		// プレイヤーの跳躍
+	PARTICLE_PLAYER_WALK,			// プレイヤーの移動
+	PARTICLE_PLAYER_DEATH,			// プレイヤーの死亡
+	PARTICLE_PLAYER_REVIVAL,		// プレイヤーの復活
+	PARTICLE_SPLITBALL_ATTACK,		// 別れる球の攻撃
+	PARTICLE_BALL_HOMING00_ATTACK,	// 甘い追従をする円の攻撃 
 	PARTICLE_BALL_HOMING01_ATTACK,	// 追従をする円の攻撃 
-	PARTICLE_GOSTRAIGHT_DIE,	// 直進する長方形死亡時
+	PARTICLE_BALL_HOMING00_DIE,		// 甘い追従をする円の死亡時 
+	PARTICLE_BALL_HOMING01_DIE,		// 追従をする円の死亡時
+	PARTICLE_GOSTRAIGHT_DIE,		// 直進する長方形死亡時
 	MAX_PARTICLE
 }PARTICLE_TYPE;
 
