@@ -273,11 +273,25 @@ void UpdateTitle(void)
 		// ゲームモードに移行
 		if (!(s_bFadeCheek))
 		{
-			if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_RETURN))
-			{// EnterキーかパッドのAを押された時
-			 // 決定音の再生
-				PlaySound(SOUND_LABEL_SE_ENTER);
-				s_bFadeCheek = true;	// フェード処理に入る
+			// ジョイパッドの使用情報の取得
+			bool bUseJoyPad = GetUseJoyPad();
+			if (bUseJoyPad)
+			{
+				if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
+				{// EnterキーかパッドのAを押された時
+				 // 決定音の再生
+					PlaySound(SOUND_LABEL_SE_ENTER);
+					s_bFadeCheek = true;	// フェード処理に入る
+				}
+			}
+			else
+			{
+				if (GetKeyboardTrigger(DIK_RETURN))
+				{// EnterキーかパッドのAを押された時
+				 // 決定音の再生
+					PlaySound(SOUND_LABEL_SE_ENTER);
+					s_bFadeCheek = true;	// フェード処理に入る
+				}
 			}
 		}
 		else if (s_bFadeCheek)
@@ -286,14 +300,28 @@ void UpdateTitle(void)
 		}
 		break;
 	case SELECT_TUTORIAL:
-		// ゲームモードに移行
+		// チュートリアルモードに移行
 		if (!(s_bFadeCheek))
 		{
-			if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_RETURN))
-			{// EnterキーかパッドのAを押された時
-			 // 決定音の再生
-				PlaySound(SOUND_LABEL_SE_ENTER);
-				s_bFadeCheek = true;	// フェード処理に入る
+			// ジョイパッドの使用情報の取得
+			bool bUseJoyPad = GetUseJoyPad();
+			if (bUseJoyPad)
+			{
+				if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
+				{// EnterキーかパッドのAを押された時
+				 // 決定音の再生
+					PlaySound(SOUND_LABEL_SE_ENTER);
+					s_bFadeCheek = true;	// フェード処理に入る
+				}
+			}
+			else
+			{
+				if (GetKeyboardTrigger(DIK_RETURN))
+				{// EnterキーかパッドのAを押された時
+				 // 決定音の再生
+					PlaySound(SOUND_LABEL_SE_ENTER);
+					s_bFadeCheek = true;	// フェード処理に入る
+				}
 			}
 		}
 		else if (s_bFadeCheek)
@@ -313,45 +341,97 @@ void UpdateTitle(void)
 //=========================================
 void SelectTitle(void)
 {
+	// ジョイパッドの使用情報の取得
+	bool bUseJoyPad = GetUseJoyPad();
+	// ジョイパッドのLスティックの角度の取得
+	float fLStick = GetJoyStickAngle();
+
+	s_Object[s_Select].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+
 	switch (s_Select)
 	{
 	case SELECT_GAMESTART:
-		s_Object[SELECT_GAMESTART].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-		if (GetKeyboardTrigger(DIK_W))
+		if (bUseJoyPad)
 		{
-			s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			s_Select = SELECT_EXIT;
+			if (GetJoypadTrigger(JOYKEY_UP) || D3DX_PI * -0.75f <= fLStick && D3DX_PI * -0.25f >= fLStick)
+			{
+				s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_EXIT;
+			}
+			if (GetJoypadTrigger(JOYKEY_DOWN) || GetJoypadTrigger(JOYKEY_L_STICK))
+			{
+				s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_TUTORIAL;
+			}
 		}
-		if (GetKeyboardTrigger(DIK_S))
+		else
 		{
-			s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			s_Select = SELECT_TUTORIAL;
+			if (GetKeyboardTrigger(DIK_W))
+			{
+				s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_EXIT;
+			}
+			if (GetKeyboardTrigger(DIK_S))
+			{
+				s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_TUTORIAL;
+			}
 		}
 		break;
 	case SELECT_TUTORIAL:
-		s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-		if (GetKeyboardTrigger(DIK_W))
+		if (bUseJoyPad)
 		{
-			s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			s_Select = SELECT_GAMESTART;
+			if (GetJoypadTrigger(JOYKEY_UP))
+			{
+				s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_GAMESTART;
+			}
+			if (GetJoypadTrigger(JOYKEY_DOWN))
+			{
+				s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_EXIT;
+			}
 		}
-		if (GetKeyboardTrigger(DIK_S))
+		else
 		{
-			s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			s_Select = SELECT_EXIT;
+			if (GetKeyboardTrigger(DIK_W))
+			{
+				s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_GAMESTART;
+			}
+			if (GetKeyboardTrigger(DIK_S))
+			{
+				s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_EXIT;
+			}
 		}
 		break;
 	case SELECT_EXIT:
-		s_Object[SELECT_EXIT].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-		if (GetKeyboardTrigger(DIK_W))
+		if (bUseJoyPad)
 		{
-			s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			s_Select = SELECT_TUTORIAL;
+			if (GetJoypadTrigger(JOYKEY_UP))
+			{
+				s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_TUTORIAL;
+			}
+			if (GetJoypadTrigger(JOYKEY_DOWN))
+			{
+				s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_GAMESTART;
+			}
 		}
-		if (GetKeyboardTrigger(DIK_S))
+		else
 		{
-			s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			s_Select = SELECT_GAMESTART;
+			if (GetKeyboardTrigger(DIK_W))
+			{
+				s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_TUTORIAL;
+			}
+			if (GetKeyboardTrigger(DIK_S))
+			{
+				s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+				s_Select = SELECT_GAMESTART;
+			}
 		}
 		break;
 	default:

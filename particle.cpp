@@ -431,11 +431,11 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			Player *pPlayer = GetPlayer();
 			pParticle->pos = pos;
 			pParticle->rot = pPlayer->rot;
-			pParticle->move.x = 0.0f;
-			pParticle->move.y = 0.0f;
+			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 2) + 0.05f);
+			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 2) + 0.05f) ;
 			pParticle->col = D3DXCOLOR(0.4f, 0.71f, 0.63f, 1.0f);
 			pParticle->fRaduus = 3.5f;
-			pParticle->nMaxLife = 10;
+			pParticle->nMaxLife = rand() % 10 + 5;
 			pParticle->nLife = pParticle->nMaxLife;
 		}
 			break;

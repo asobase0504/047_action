@@ -286,7 +286,6 @@ void UpdateSummon(void)
 				SetEnemy(pos, GOSTRAIGHT_LEFT);
 				pos = D3DXVECTOR3(1550.0f - 100.0f * i, 100.0f, 0.0f);
 				SetEnemy(pos, GOSTRAIGHT_UP);
-
 			}
 		}
 
@@ -449,6 +448,9 @@ void OnesideTopSummon(void)
 	}
 }
 
+//====================================
+// WAVEÇÃê›íË
+//====================================
 void SetWave(int wave)
 {
 	s_wave = wave;

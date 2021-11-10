@@ -7,7 +7,9 @@
 #ifndef  _INPUT_H_
 #define	_INPUT_H_
 
-// キーの処理
+//------------------------------------
+// キーの種類の列挙型
+//------------------------------------
 typedef enum
 {
 	JOYKEY_UP = 0,		// 十字キー（上）
@@ -18,18 +20,34 @@ typedef enum
 	JOYKEY_BACK,		// BACKボタン
 	JOYKEY_PUSHLSTICK,	// 左スティック押し込み
 	JOYKEY_PUSHRSTICK,	// 右スティック押し込み
-	JOYKEY_LBUTTON5,	// 左ボタン上
-	JOYKEY_RBUTTON5,	// 右ボタン上
-	JOYKEY_10,			// 不明
-	JOYKEY_11,			// 不明
+	JOYKEY_L_B,			// LBキー
+	JOYKEY_R_B,			// RBキー
+	JOYKEY_NONE0,		// 割り当てキーなし
+	JOYKEY_NONE1,		// 割り当てキーなし
 	JOYKEY_A,			// Aボタン
 	JOYKEY_B,			// Bボタン
 	JOYKEY_X,			// Xボタン
 	JOYKEY_Y,			// Yボタン
+	JOYKEY_L_STICK,		// Lスティック
+	JOYKEY_R_STICK,		// Rスティック
 	MAX_JOYKEY,			// 最大数
 }JOYKEY;
 
+//------------------------------------
+// ジョイスティックの構造体
+//------------------------------------
+typedef struct
+{
+	int nTypeJoyStick;	// スティックのタイプ
+	int nStickDeadLine;	// スティックの判定領域
+	float fStickAngle;	// スティックの倒された角度
+	bool bUse;			// スティックが使われているかの判定
+}JOYSTICK;
+
+//------------------------------------
 // プロトタイプ宣言
+//------------------------------------
+// キーボード関数
 HRESULT InitKeyboard(HINSTANCE hInstance, HWND hWnd);
 void UninitKeyboard(void);
 void UpdateKeyboard(void);
@@ -37,11 +55,15 @@ bool GetKeyboardPress(int nKey);
 bool GetKeyboardTrigger(int nKey);
 bool GetKeyboardRelese(int nKey);
 
+// パッド関数
 HRESULT InitJoypad(void);
 void UninitJoypad(void);
 void UpdateJoypad(void);
 bool GetJoypadPress(JOYKEY key);
 bool GetJoypadTrigger(JOYKEY key);
 bool GetJoypadRelese(JOYKEY key);
+D3DXVECTOR3 GetJoypadStick(JOYKEY nKey);
+float GetJoyStickAngle(void);
+bool GetUseJoyPad(void);
 
 #endif //  _INPUT_H_

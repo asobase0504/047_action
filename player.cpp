@@ -233,6 +233,15 @@ void DrawPlayer(void)
 //=========================================
 void MovePlayer(void)
 {
+	// ジョイパッドの使用情報の取得
+	bool bUseJoyPad = GetUseJoyPad();
+
+	// ジョイパッドのLスティックの入力情報を呼び出す
+	GetJoypadStick(JOYKEY_L_STICK);
+
+	// ジョイパッドのLスティックの角度情報の取得
+	float fLStick = GetJoyStickAngle();
+
 	Player *pPlayer = &(s_player);
 
 	// 位置を更新
@@ -241,30 +250,60 @@ void MovePlayer(void)
 	// 移動量を更新(減衰)
 	pPlayer->rot.z += (0 - pPlayer->rot.z) * 0.08f;
 
-	// 回転処理
-	if (GetKeyboardPress(DIK_A))
+	if (bUseJoyPad)
 	{
-		pPlayer->rot.z += 0.25f;
-
-		// 中心座標の移行
-		if (pPlayer->rot.z >= 0.0f && pPlayer->Centerpos == PLAYER_POS_RIGHT)
+		if (GetJoypadPress(JOYKEY_LEFT) || D3DX_PI * -0.75f <= fLStick && D3DX_PI * -0.25f >= fLStick)
 		{
-			pPlayer->pos.x = pPlayer->pos.x - sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-			pPlayer->pos.y = pPlayer->pos.y - cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-			pPlayer->Centerpos = PLAYER_POS_LEFT;
+			pPlayer->rot.z += 0.25f;
+
+			// 中心座標の移行
+			if (pPlayer->rot.z >= 0.0f && pPlayer->Centerpos == PLAYER_POS_RIGHT)
+			{
+				pPlayer->pos.x = pPlayer->pos.x - sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+				pPlayer->pos.y = pPlayer->pos.y - cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+				pPlayer->Centerpos = PLAYER_POS_LEFT;
+			}
+		}
+		else if (GetJoypadPress(JOYKEY_RIGHT) || D3DX_PI * 0.75f >= fLStick && D3DX_PI * 0.25f <= fLStick)
+		{
+			pPlayer->rot.z -= 0.25f;
+
+			// 中心座標の移行
+			if (pPlayer->rot.z <= 0.0f && pPlayer->Centerpos == PLAYER_POS_LEFT)
+			{
+				pPlayer->pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+				pPlayer->pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+				pPlayer->Centerpos = PLAYER_POS_RIGHT;
+			}
 		}
 	}
-	if (GetKeyboardPress(DIK_D))
+	else
 	{
-		pPlayer->rot.z -= 0.25f;
+		 // 回転処理
+			if (GetKeyboardPress(DIK_A))
+			{
+				pPlayer->rot.z += 0.25f;
 
-		// 中心座標の移行
-		if (pPlayer->rot.z <= 0.0f && pPlayer->Centerpos == PLAYER_POS_LEFT)
-		{
-			pPlayer->pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-			pPlayer->pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
-			pPlayer->Centerpos = PLAYER_POS_RIGHT;
-		}
+				// 中心座標の移行
+				if (pPlayer->rot.z >= 0.0f && pPlayer->Centerpos == PLAYER_POS_RIGHT)
+				{
+					pPlayer->pos.x = pPlayer->pos.x - sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+					pPlayer->pos.y = pPlayer->pos.y - cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+					pPlayer->Centerpos = PLAYER_POS_LEFT;
+				}
+			}
+			else if (GetKeyboardPress(DIK_D))
+			{
+				pPlayer->rot.z -= 0.25f;
+
+				// 中心座標の移行
+				if (pPlayer->rot.z <= 0.0f && pPlayer->Centerpos == PLAYER_POS_LEFT)
+				{
+					pPlayer->pos.x = pPlayer->pos.x + sinf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+					pPlayer->pos.y = pPlayer->pos.y + cosf(pPlayer->rot.z + D3DX_PI / 2.0f) * pPlayer->fWidth;
+					pPlayer->Centerpos = PLAYER_POS_RIGHT;
+				}
+			}
 	}
 
 	// 回転して床に辺が面したとき
@@ -298,19 +337,34 @@ void JumpPlayer(void)
 	// ジャンプ処理
 	if (pPlayer->nJumpCnt < PLAYER_JUMPMAX)
 	{// ジャンプ回数
-		if (GetKeyboardTrigger(DIK_SPACE))
-		{
-			pPlayer->jumpstate = JUMP_NOW;
-			pPlayer->nJumpCnt++;
-			// 			pPlayer->pos.y -= 12.0f;
-			pPlayer->move.y = 0.0f;
-			pPlayer->move.y += -PLAYER_JUMPMOVE;
 
-			for (int i = 0; i < 40; i++)
+		// ジョイパッドの使用情報の取得
+		bool bUseJoyPad = GetUseJoyPad();
+		if (bUseJoyPad)
+		{
+			if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_L_B) || GetJoypadTrigger(JOYKEY_R_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
 			{
+				pPlayer->jumpstate = JUMP_NOW;
+				pPlayer->nJumpCnt++;
+				// 			pPlayer->pos.y -= 12.0f;
+				pPlayer->move.y = 0.0f;
+				pPlayer->move.y += -PLAYER_JUMPMOVE;
+
 				SetParticle(pPlayer->pos, PARTICLE_PLAYER_JUMP);
 			}
+		}
+		else
+		{
+			if (GetKeyboardTrigger(DIK_SPACE))
+			{
+				pPlayer->jumpstate = JUMP_NOW;
+				pPlayer->nJumpCnt++;
+				// 			pPlayer->pos.y -= 12.0f;
+				pPlayer->move.y = 0.0f;
+				pPlayer->move.y += -PLAYER_JUMPMOVE;
 
+				SetParticle(pPlayer->pos, PARTICLE_PLAYER_JUMP);
+			}
 		}
 	}
 	// 床に着いたらジャンプ制限のリセット

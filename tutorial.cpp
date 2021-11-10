@@ -99,12 +99,12 @@ void UpdateTutorial(void)
 	// エネミーの更新処理
 	UpdateEnemy();
 
-	if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_RETURN))
+	if (GetJoypadTrigger(JOYKEY_Y) || GetJoypadTrigger(JOYKEY_X) || GetKeyboardTrigger(DIK_RETURN))
 	{
 		SetFade(MODE_TITLE);
 	}
 
-	if (GetJoypadTrigger(JOYKEY_A) || GetKeyboardTrigger(DIK_I))
+	if (GetKeyboardTrigger(DIK_I))
 	{
 		SetEnemy(D3DXVECTOR3(1000.0f,500.0f,0.0f), BALL_HOMING01);
 	}

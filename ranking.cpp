@@ -374,6 +374,7 @@ void UpdateRanking(void)
 	case RANKSTATE_NONE:
 		break;
 	case RANKSTATE_NORMAL:
+	{
 		s_nTimerRanking++;
 		s_nTimerBlink--;
 
@@ -440,10 +441,24 @@ void UpdateRanking(void)
 			s_pVtxBuffScore->Unlock();
 		}
 
-		//選択の切り替え
-		if (GetKeyboardTrigger(DIK_A) || GetKeyboardTrigger(DIK_D))
+		// ジョイパッドの使用情報の取得
+		bool bUseJoyPad = GetUseJoyPad();
+
+		if (bUseJoyPad)
 		{
-			s_SelectCheck = s_SelectCheck ? 0 : 1;
+			//選択の切り替え
+			if (GetJoypadTrigger(JOYKEY_LEFT) || GetJoypadTrigger(JOYKEY_RIGHT))
+			{
+				s_SelectCheck = s_SelectCheck ? 0 : 1;
+			}
+		}
+		else
+		{
+			//選択の切り替え
+			if (GetKeyboardTrigger(DIK_A) || GetKeyboardTrigger(DIK_D))
+			{
+				s_SelectCheck = s_SelectCheck ? 0 : 1;
+			}
 		}
 
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
@@ -463,32 +478,65 @@ void UpdateRanking(void)
 		// 頂点バッファをアンロックする
 		s_pVtxBuffSelect->Unlock();
 
-		if (GetKeyboardTrigger(DIK_RETURN))
+		if (bUseJoyPad)
 		{
-			StopSound();
-			switch (s_SelectCheck)
+			if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
 			{
-			case 0:
-				SetGameState(GAMESTATE_NONE);
-				break;
-			case 1:
-				//初期化
-				s_RankState = RANKSTATE_NONE;
-				s_MenuCnt = 33;
-				s_fHeigthMenu = 0.0f;
-				s_fWidthMenu = 0.0f;
+				StopSound();
+				switch (s_SelectCheck)
+				{
+				case 0:
+					SetGameState(GAMESTATE_NONE);
+					break;
+				case 1:
+					//初期化
+					s_RankState = RANKSTATE_NONE;
+					s_MenuCnt = 33;
+					s_fHeigthMenu = 0.0f;
+					s_fWidthMenu = 0.0f;
 
-				// 決定音の再生
-				PlaySound(SOUND_LABEL_SE_ENTER);
+					// 決定音の再生
+					PlaySound(SOUND_LABEL_SE_ENTER);
 
-				// リザルト画面に移行
-				SetFade(MODE_RESULT);
-				break;
-			default:
-				assert(false);
-				break;
+					// リザルト画面に移行
+					SetFade(MODE_RESULT);
+					break;
+				default:
+					assert(false);
+					break;
+				}
 			}
 		}
+		else
+		{
+			if (GetKeyboardTrigger(DIK_RETURN))
+			{
+				StopSound();
+				switch (s_SelectCheck)
+				{
+				case 0:
+					SetGameState(GAMESTATE_NONE);
+					break;
+				case 1:
+					//初期化
+					s_RankState = RANKSTATE_NONE;
+					s_MenuCnt = 33;
+					s_fHeigthMenu = 0.0f;
+					s_fWidthMenu = 0.0f;
+
+					// 決定音の再生
+					PlaySound(SOUND_LABEL_SE_ENTER);
+
+					// リザルト画面に移行
+					SetFade(MODE_RESULT);
+					break;
+				default:
+					assert(false);
+					break;
+				}
+			}
+		}
+	}
 		break;
 	case RANKSTATE_END:
 		break;
