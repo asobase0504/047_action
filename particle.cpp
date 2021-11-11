@@ -308,6 +308,13 @@ void UpdateParticle(void)
 				pParticle->bUse = false;
 			}
 			break;
+		case PARTICLE_SERECT_DECISION:		// Œˆ’èŽž”­¶‚·‚éƒp[ƒeƒBƒNƒ‹
+			pParticle->col.a -= (float)1.0f / pParticle->nMaxLife;			// “§–¾“x‚ÌXV
+			if (pParticle->col.a <= 0.0f)
+			{
+				pParticle->bUse = false;
+			}
+			break;
 		default:
 			break;
 		}
@@ -365,6 +372,7 @@ void DrawParticle(void)
 			case PARTICLE_BALL_HOMING01_ATTACK:	// ’Ç]‚ð‚·‚é‰~‚ÌUŒ‚ 
 			case PARTICLE_BALL_HOMING00_DIE:		// ŠÃ‚¢’Ç]‚ð‚·‚é‰~‚ÌŽ€–SŽž
 			case PARTICLE_BALL_HOMING01_DIE:		// ’Ç]‚ð‚·‚é‰~‚ÌŽ€–SŽž
+			case PARTICLE_SERECT_DECISION:		// Œˆ’èŽž”­¶‚·‚éƒp[ƒeƒBƒNƒ‹
 				// ƒeƒNƒXƒ`ƒƒ‚ð“\‚è•t‚¯‚Ä•`‰æ‚·‚é
 				RectDraw(pDevice, s_pTexture[pParticle->type], nCntParticle * 4);
 				break;
@@ -505,6 +513,18 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			pParticle->col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
 			pParticle->move.x = cosf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
 			pParticle->move.y = sinf((float)(rand() % 629 - 314) / 100) * ((float)(rand() % 10) / 10 + 0.5f);
+			pParticle->fRaduus = 5.0f;
+			pParticle->nMaxLife = 10;
+			pParticle->nLife = pParticle->nMaxLife;
+			break;
+		case PARTICLE_SERECT_DECISION:		// Œˆ’èŽž”­¶‚·‚éƒp[ƒeƒBƒNƒ‹
+			pParticle->pos = pos;
+			pParticle->pos.y += (float)((rand() % 20) - 10);
+			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			pParticle->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+			//pParticle->col = D3DXCOLOR(0.4f, 0.81f, 0.63f, 1.0f);
+			pParticle->move.x = 0.0f;
+			pParticle->move.y = 0.0f;
 			pParticle->fRaduus = 5.0f;
 			pParticle->nMaxLife = 10;
 			pParticle->nLife = pParticle->nMaxLife;

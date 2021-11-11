@@ -41,10 +41,10 @@ typedef enum
 	OBJ_BG,				// スクリーン背景
 	OBJ_SELECTBG,		// 選択画面背景
 	OBJ_TITLE,			// タイトル文字
-	OBJ_SERECTCURSOR,	// セレクトカーソル
 	OBJ_GAMESTART,		// GAMESTART文字
 	OBJ_TUTORIAL,		// TUTORIAL文字
 	OBJ_EXIT,			// EXIT文字
+	OBJ_SERECTCURSOR,	// セレクトカーソル
 	OBJ_MAX				// 
 }OBJ_TYPE;
 
@@ -58,8 +58,8 @@ typedef enum
 
 typedef struct
 {
-	LPDIRECT3DVERTEXBUFFER9 pVtxBuff;	// 頂点バッファへのポインタ
-	LPDIRECT3DTEXTURE9 Tex;				// テクスチャへのポインタ
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = NULL;	// 頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9 Tex = NULL;				// テクスチャへのポインタ
 	D3DXVECTOR3 pos;					// 位置
 	D3DXVECTOR3 rot;					// 位置
 	D3DXCOLOR col;						// 色
@@ -73,6 +73,7 @@ static SELECT_MODE s_Select;
 static OBJECT s_Object[OBJ_MAX] = {};
 static bool	s_bFadeCheek;	// フェード処置に移行するかの処理
 static int	s_nFadeCnt;		// フェード処理に行くまでの間隔
+static bool s_bExit;		// Exitのフラグ
 
 //=========================================
 // 初期化処理
@@ -80,7 +81,6 @@ static int	s_nFadeCnt;		// フェード処理に行くまでの間隔
 void InitTitle(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = GetDevice();	// デバイスへのポイント
-	int nTexCnt;
 
 	// 音楽の再生
 	PlaySound(SOUND_LABEL_BGM000);
@@ -153,7 +153,7 @@ void InitTitle(void)
 			break;
 		case OBJ_TITLE:
 			object->pos = D3DXVECTOR3(40.0f, 30.0f, 0.0f);		// 中心座標の設定
-			object->col = D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f);	// カラーの設定
+			object->col = D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f);	// カラーの設定
 			object->Width = 1380.0f;							// 幅の設定
 			object->Height = 415.0f;							// 高さの設定
 
@@ -162,20 +162,20 @@ void InitTitle(void)
 			break;
 		case OBJ_SERECTCURSOR:
 		{
-			object->pos = D3DXVECTOR3(1000.0f, 560.0f, 0.0f);	// 中心座標の設定
+			object->pos = D3DXVECTOR3(1000.0f - 70.0f, 500.0f, 0.0f);	// 中心座標の設定
 			object->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 中心座標の設定
-			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-			object->Width = 100.0f;								// 幅の設定
-			object->Height = 100.0f;							// 高さの設定
+			object->col = D3DXCOLOR(0.4f, 0.81f, 0.53f, 1.0f);	// カラーの設定
+			object->Width = 50.0f;								// 幅の設定
+			object->Height = 50.0f;								// 高さの設定
 
 			// 中心座標から上の長さを算出する。
-			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height);
 
 			// 中心座標から上の頂点の角度を算出する
 			float fAngle = atan2f(object->Width, object->Height);
 
 			// 頂点座標の設定
-			SetRectCenterRotPos(pVtx, object->pos, object->rot, fLength, fAngle);
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);
 		}
 			break;
 		case OBJ_GAMESTART:
@@ -226,6 +226,9 @@ void InitTitle(void)
 		// 使用に切り替え
 		object->bUse = true;
 	}
+
+	// パーティクルの初期化処理
+	InitParticle();
 }
 
 //=========================================
@@ -256,6 +259,9 @@ void UninitTitle(void)
 			s_Object[i].pVtxBuff = NULL;
 		}
 	}
+
+	// パーティクルの終了処理
+	UninitParticle();
 }
 
 //=========================================
@@ -269,6 +275,27 @@ void UpdateTitle(void)
 	{
 		// 選択処理
 		SelectTitle();
+
+		// ジョイパッドの使用情報の取得
+		bool bUseJoyPad = GetUseJoyPad();
+		if (bUseJoyPad)
+		{
+			if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
+			{// EnterキーかパッドのAを押された時
+			 // 決定音の再生
+				PlaySound(SOUND_LABEL_SE_ENTER);
+				s_bFadeCheek = true;	// フェード処理に入る
+			}
+		}
+		else
+		{
+			if (GetKeyboardTrigger(DIK_RETURN))
+			{// EnterキーかパッドのAを押された時
+			 // 決定音の再生
+				PlaySound(SOUND_LABEL_SE_ENTER);
+				s_bFadeCheek = true;	// フェード処理に入る
+			}
+		}
 	}
 
 	for (int i = 0; i < OBJ_MAX; i++)
@@ -277,11 +304,11 @@ void UpdateTitle(void)
 
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
 		object->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
 		if (i == OBJ_SERECTCURSOR)
 		{
-			object->pos.x = s_Object[s_Select].pos.x - 150.0f;
-			object->pos.y = s_Object[s_Select].pos.y;
+			object->rot.z += 0.025f;
+			object->pos.x = s_Object[s_Select].pos.x - 50.0f;
+			object->pos.y = s_Object[s_Select].pos.y + 140.0f / 2.0f;
 			object->pos.z = s_Object[s_Select].pos.z;
 
 			// 中心座標から上の長さを算出する。
@@ -291,9 +318,9 @@ void UpdateTitle(void)
 			float fAngle = atan2f(object->Width, object->Height);
 
 			// 頂点座標の設定
-			SetRectCenterRotPos(pVtx, object->pos, object->rot, fLength, fAngle);
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fAngle, fLength);
 		}
-		
+
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(object->col));
 
@@ -301,73 +328,38 @@ void UpdateTitle(void)
 		object->pVtxBuff->Unlock();
 	}
 
-	switch (s_Select)
+	if (s_bFadeCheek)
 	{
-	case SELECT_GAMESTART:
-		// ゲームモードに移行
-		if (!(s_bFadeCheek))
+		if (s_nFadeCnt >= 70)
 		{
-			// ジョイパッドの使用情報の取得
-			bool bUseJoyPad = GetUseJoyPad();
-			if (bUseJoyPad)
+			switch (s_Select)
 			{
-				if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
-				{// EnterキーかパッドのAを押された時
-				 // 決定音の再生
-					PlaySound(SOUND_LABEL_SE_ENTER);
-					s_bFadeCheek = true;	// フェード処理に入る
-				}
-			}
-			else
-			{
-				if (GetKeyboardTrigger(DIK_RETURN))
-				{// EnterキーかパッドのAを押された時
-				 // 決定音の再生
-					PlaySound(SOUND_LABEL_SE_ENTER);
-					s_bFadeCheek = true;	// フェード処理に入る
-				}
+			case SELECT_GAMESTART:
+				SetFade(MODE_GAME);	// ゲームモードに移行
+				break;
+			case SELECT_TUTORIAL:
+				SetFade(MODE_TUTORIAL);	// チュートリアル画面に移行
+				break;
+			case SELECT_EXIT:
+				break;
+			default:
+				break;
 			}
 		}
-		else if (s_bFadeCheek)
+		else
 		{
-			SetFade(MODE_GAME);	// ゲームモードに移行
+			s_nFadeCnt++;
+			D3DXVECTOR3 ObjPos;
+			ObjPos.x = s_Object[s_Select].pos.x + (float)s_nFadeCnt / 70.0f * (s_Object[s_Select].Width);
+			ObjPos.y = s_Object[s_Select].pos.y + s_Object[s_Select].Height;
+			ObjPos.z = 0.0f;
+
+			SetParticle(ObjPos, PARTICLE_SERECT_DECISION);
 		}
-		break;
-	case SELECT_TUTORIAL:
-		// チュートリアルモードに移行
-		if (!(s_bFadeCheek))
-		{
-			// ジョイパッドの使用情報の取得
-			bool bUseJoyPad = GetUseJoyPad();
-			if (bUseJoyPad)
-			{
-				if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
-				{// EnterキーかパッドのAを押された時
-				 // 決定音の再生
-					PlaySound(SOUND_LABEL_SE_ENTER);
-					s_bFadeCheek = true;	// フェード処理に入る
-				}
-			}
-			else
-			{
-				if (GetKeyboardTrigger(DIK_RETURN))
-				{// EnterキーかパッドのAを押された時
-				 // 決定音の再生
-					PlaySound(SOUND_LABEL_SE_ENTER);
-					s_bFadeCheek = true;	// フェード処理に入る
-				}
-			}
-		}
-		else if (s_bFadeCheek)
-		{
-			SetFade(MODE_TUTORIAL);	// チュートリアル画面に移行
-		}
-		break;
-	case SELECT_EXIT:
-		break;
-	default:
-		break;
 	}
+
+	// パーティクルの更新処理
+	UpdateParticle();
 }
 
 //=========================================
@@ -380,8 +372,6 @@ void SelectTitle(void)
 	// ジョイパッドのLスティックの角度の取得
 	float fLStick = GetJoyStickAngle();
 
-	s_Object[s_Select].col = D3DXCOLOR(1.0f, 0.3f, 0.3f, 1.0f);	// カラーの設定
-
 	switch (s_Select)
 	{
 	case SELECT_GAMESTART:
@@ -389,12 +379,10 @@ void SelectTitle(void)
 		{
 			if (GetJoypadTrigger(JOYKEY_UP) || D3DX_PI * -0.75f <= fLStick && D3DX_PI * -0.25f >= fLStick)
 			{
-				s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_EXIT;
 			}
 			if (GetJoypadTrigger(JOYKEY_DOWN) || GetJoypadTrigger(JOYKEY_L_STICK))
 			{
-				s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_TUTORIAL;
 			}
 		}
@@ -402,12 +390,10 @@ void SelectTitle(void)
 		{
 			if (GetKeyboardTrigger(DIK_W))
 			{
-				s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_EXIT;
 			}
 			if (GetKeyboardTrigger(DIK_S))
 			{
-				s_Object[SELECT_GAMESTART].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_TUTORIAL;
 			}
 		}
@@ -417,12 +403,10 @@ void SelectTitle(void)
 		{
 			if (GetJoypadTrigger(JOYKEY_UP))
 			{
-				s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_GAMESTART;
 			}
 			if (GetJoypadTrigger(JOYKEY_DOWN))
 			{
-				s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_EXIT;
 			}
 		}
@@ -430,12 +414,10 @@ void SelectTitle(void)
 		{
 			if (GetKeyboardTrigger(DIK_W))
 			{
-				s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_GAMESTART;
 			}
 			if (GetKeyboardTrigger(DIK_S))
 			{
-				s_Object[SELECT_TUTORIAL].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_EXIT;
 			}
 		}
@@ -445,12 +427,10 @@ void SelectTitle(void)
 		{
 			if (GetJoypadTrigger(JOYKEY_UP))
 			{
-				s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_TUTORIAL;
 			}
 			if (GetJoypadTrigger(JOYKEY_DOWN))
 			{
-				s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_GAMESTART;
 			}
 		}
@@ -458,12 +438,10 @@ void SelectTitle(void)
 		{
 			if (GetKeyboardTrigger(DIK_W))
 			{
-				s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_TUTORIAL;
 			}
 			if (GetKeyboardTrigger(DIK_S))
 			{
-				s_Object[SELECT_EXIT].col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
 				s_Select = SELECT_GAMESTART;
 			}
 		}
@@ -493,5 +471,8 @@ void DrawTitle(void)
 			RectDraw(pDevice, s_Object[i].Tex, 0);
 		}
 	}
+
+	// パーティクルの描画処理
+	DrawParticle();
 
 }

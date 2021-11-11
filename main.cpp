@@ -482,19 +482,19 @@ void DrawFPS(void)
 
 
 	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	g_pFont->DrawText(NULL, &aStr[0][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 0, 255));
 	
 	rect = { 0,30,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[1][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	g_pFont->DrawText(NULL, &aStr[1][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 0, 255));
 
 	rect = { 0,60,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[2][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	g_pFont->DrawText(NULL, &aStr[2][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 0, 255));
 
 	rect = { 0,90,SCREEN_WIDTH,SCREEN_HEIGHT };
 	// テキストの描画
-	g_pFont->DrawText(NULL, &aStr[3][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	g_pFont->DrawText(NULL, &aStr[3][0], -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 0, 255));
 }
 
 //=========================================

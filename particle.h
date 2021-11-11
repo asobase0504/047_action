@@ -27,6 +27,7 @@ typedef enum
 	PARTICLE_BALL_HOMING00_DIE,		// 甘い追従をする円の死亡時 
 	PARTICLE_BALL_HOMING01_DIE,		// 追従をする円の死亡時
 	PARTICLE_GOSTRAIGHT_DIE,		// 直進する長方形死亡時
+	PARTICLE_SERECT_DECISION,		// 決定時発生するパーティクル
 	MAX_PARTICLE
 }PARTICLE_TYPE;
 
