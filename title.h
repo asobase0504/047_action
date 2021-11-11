@@ -9,6 +9,7 @@ void UninitTitle(void);
 void UpdateTitle(void);
 void SelectTitle(void);
 void DrawTitle(void);
+bool GetExit(void);
 
 #endif // !_POLYGON_H_
 

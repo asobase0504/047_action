@@ -189,6 +189,10 @@ void UpdateEnemy(void)
 			assert(false);
 			break;
 		}
+		if (pEnemy->pos.x <= 300.0f)
+		{
+			pEnemy->bUse = false;
+		}
 		// “G‚ªŽ€‚ñ‚¾ê‡
 		if (pEnemy->nLife <= 0)
 		{

@@ -26,7 +26,7 @@
 // マクロ定義
 //-----------------------------------------
 #define CLASS_NAME	"windowclass"			// ウインドウクラスの名前
-#define WINDOW_NAME	"2Dアクションゲーム（タイトル未定）"		// ウインドウクラスの名前（キャプションに表示）
+#define WINDOW_NAME	"Flat Blocks"		// ウインドウクラスの名前（キャプションに表示）
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
 //-----------------------------------------
@@ -154,6 +154,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 				Draw();
 
 				dwFrameCount++;	// フレームカウントを加算
+
+				if (GetExit())
+				{
+					// ウィンドウを破棄する
+					break;
+				}
 			}
 		}
 	}
@@ -175,10 +181,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 //=========================================
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	if (GetExit())
+	{
+		// ウィンドウを破棄する
+		DestroyWindow(hWnd);
+	}
+
 	switch (uMsg)
 	{
 	case WM_DESTROY:	// ウィンドウ破棄のメッセージ
-						// WM_QUITメッセージを送る
+		// WM_QUITメッセージを送る
 		PostQuitMessage(0);
 		break;
 
@@ -197,7 +209,6 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DestroyWindow(hWnd);
 		break;
 	}
-
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);	// 規定の処理を返す
 }
 

@@ -113,6 +113,7 @@ void InitTitle(void)
 	s_bFadeCheek = false;	// フェード処理に移行するかの変数
 	s_nFadeCnt = 0;			// フェード処理に移行するまでの間隔
 	s_Select = SELECT_GAMESTART;
+	s_bExit = false;
 
 	VERTEX_2D *pVtx;		// 頂点情報へのポインタ
 
@@ -341,6 +342,7 @@ void UpdateTitle(void)
 				SetFade(MODE_TUTORIAL);	// チュートリアル画面に移行
 				break;
 			case SELECT_EXIT:
+				s_bExit = true;
 				break;
 			default:
 				break;
@@ -475,4 +477,10 @@ void DrawTitle(void)
 	// パーティクルの描画処理
 	DrawParticle();
 
+}
+
+//
+bool GetExit(void)
+{
+	return s_bExit;
 }
