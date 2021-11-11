@@ -401,6 +401,7 @@ void UpdateSummon(void)
 			SetEnemy(pos, BALL_HOMING00);
 			pos = D3DXVECTOR3(1530.0f, 1000.0f, 0.0f);
 			SetEnemy(pos, BALL_HOMING01);
+			SetWave(3);
 		}
 		break;
 	case WAVE_5:
