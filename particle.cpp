@@ -11,6 +11,7 @@
 #include "main.h"
 #include "setup.h"
 #include "particle.h"
+#include "sound.h"
 #include <assert.h>
 #include "enemy.h"
 
@@ -239,6 +240,7 @@ void UpdateParticle(void)
 					D3DXVECTOR3 v = D3DXVECTOR3(600.0f, SCREEN_HEIGHT - 50.0f, 0.0f) - pParticle->pos;	// プレイヤーの死亡位置と、各破片の位置の差を求める
 					pParticle->move.x = v.x / pParticle->nMaxLife;	// nLifeが尽きた時に中央に集めるようにする
 					pParticle->move.y = v.y / pParticle->nMaxLife;	// nLifeが尽きた時に中央に集めるようにする
+					PlaySound(SOUND_LABEL_SE_DIEPLAYER);
 				}
 				pParticle->nLife--;
 				if (pParticle->nLife < 0)
@@ -522,7 +524,6 @@ void SetParticle(D3DXVECTOR3 pos, PARTICLE_TYPE type)
 			pParticle->pos.y += (float)((rand() % 20) - 10);
 			pParticle->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 			pParticle->col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-			//pParticle->col = D3DXCOLOR(0.4f, 0.81f, 0.63f, 1.0f);
 			pParticle->move.x = 0.0f;
 			pParticle->move.y = 0.0f;
 			pParticle->fRaduus = 5.0f;

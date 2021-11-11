@@ -40,6 +40,7 @@ SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 	{ "data/SE/shot000.wav", 0},		// ’e”­ŽË‰¹
 	{ "data/SE/hit000.wav", 0 },		// ƒqƒbƒg‰¹
 	{ "data/SE/explosion000.wav", 0 },	// ”š”­‰¹
+	{ "data/SE/Die003.wav", 0 },		// Ž€–S‰¹
 	{ "data/SE/Die000.wav", 0 },		// Ž€–S‰¹
 	{ "data/SE/Die001.wav", 0 },		// Ž€–S‰¹
 	{ "data/SE/PressEnter.wav", 0 },	// Œˆ’è‰¹
