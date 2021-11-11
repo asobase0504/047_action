@@ -393,7 +393,6 @@ void UpdateRanking(void)
 			s_bBlink = false;
 		}
 
-
 		// メニュー画面の更新処理
 		UpdateMenu();
 
@@ -478,61 +477,64 @@ void UpdateRanking(void)
 		// 頂点バッファをアンロックする
 		s_pVtxBuffSelect->Unlock();
 
-		if (bUseJoyPad)
+		if (s_nTimerRanking >= 60)
 		{
-			if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
+			if (bUseJoyPad)
 			{
-				StopSound();
-				switch (s_SelectCheck)
+				if (GetJoypadTrigger(JOYKEY_A) || GetJoypadTrigger(JOYKEY_B) || GetJoypadTrigger(JOYKEY_PUSHLSTICK))
 				{
-				case 0:
-					SetGameState(GAMESTATE_NONE);
-					break;
-				case 1:
-					//初期化
-					s_RankState = RANKSTATE_NONE;
-					s_MenuCnt = 33;
-					s_fHeigthMenu = 0.0f;
-					s_fWidthMenu = 0.0f;
+					StopSound();
+					switch (s_SelectCheck)
+					{
+					case 0:
+						SetGameState(GAMESTATE_NONE);
+						break;
+					case 1:
+						//初期化
+						s_RankState = RANKSTATE_NONE;
+						s_MenuCnt = 33;
+						s_fHeigthMenu = 0.0f;
+						s_fWidthMenu = 0.0f;
 
-					// 決定音の再生
-					PlaySound(SOUND_LABEL_SE_ENTER);
+						// 決定音の再生
+						PlaySound(SOUND_LABEL_SE_ENTER);
 
-					// リザルト画面に移行
-					SetFade(MODE_TITLE);
-					break;
-				default:
-					assert(false);
-					break;
+						// リザルト画面に移行
+						SetFade(MODE_TITLE);
+						break;
+					default:
+						assert(false);
+						break;
+					}
 				}
 			}
-		}
-		else
-		{
-			if (GetKeyboardTrigger(DIK_RETURN))
+			else
 			{
-				StopSound();
-				switch (s_SelectCheck)
+				if (GetKeyboardTrigger(DIK_RETURN))
 				{
-				case 0:
-					SetGameState(GAMESTATE_NONE);
-					break;
-				case 1:
-					//初期化
-					s_RankState = RANKSTATE_NONE;
-					s_MenuCnt = 33;
-					s_fHeigthMenu = 0.0f;
-					s_fWidthMenu = 0.0f;
+					StopSound();
+					switch (s_SelectCheck)
+					{
+					case 0:
+						SetGameState(GAMESTATE_NONE);
+						break;
+					case 1:
+						//初期化
+						s_RankState = RANKSTATE_NONE;
+						s_MenuCnt = 33;
+						s_fHeigthMenu = 0.0f;
+						s_fWidthMenu = 0.0f;
 
-					// 決定音の再生
-					PlaySound(SOUND_LABEL_SE_ENTER);
+						// 決定音の再生
+						PlaySound(SOUND_LABEL_SE_ENTER);
 
-					// リザルト画面に移行
-					SetFade(MODE_TITLE);
-					break;
-				default:
-					assert(false);
-					break;
+						// リザルト画面に移行
+						SetFade(MODE_TITLE);
+						break;
+					default:
+						assert(false);
+						break;
+					}
 				}
 			}
 		}

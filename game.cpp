@@ -171,12 +171,12 @@ void UpdateGame(void)
 		s_nRankInterval++;
 		if (s_nRankInterval >= RANK_INTERVAL)
 		{
+			SetRanking(GetScore());
 			PlaySound(SOUND_LABEL_BGM002);
 			s_GameState = GAMESTATE_RANKING_INIT;	//ランキング表示時に移行
 		}
 		break;
 	case GAMESTATE_RANKING_INIT:
-		SetRanking(GetScore());
 		s_GameState = GAMESTATE_RANKING_NORMAL;	//ランキング表示時に移行
 
 		break;
