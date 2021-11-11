@@ -22,7 +22,7 @@
 // マクロ定義
 //------------------------------------
 #define SELECT_NUMBER	(2)
-#define SERECT_WIDTH	(256.0f)
+#define SERECT_WIDTH	(512.0f)
 #define SERECT_HEIGTH	(128.0f)
 
 //------------------------------------
@@ -107,7 +107,7 @@ void InitRanking(void)
 
 	// テクスチャの読込 (順位)
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/ranking_rank2.png",
+		"data/TEXTURE/ranking_rank3.png",
 		&s_pTextureRank);
 
 	// テクスチャの読込 (スコア)
@@ -117,12 +117,12 @@ void InitRanking(void)
 
 	// テクスチャの読込 (選択：もう一度)
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/retry.png",
+		"data/TEXTURE/word/retry.png",
 		&s_pTextureSelect[0]);
 
 	// テクスチャの読込 (選択：終了)
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/result.png",
+		"data/TEXTURE/word/quit.png",
 		&s_pTextureSelect[1]);
 
 	// 頂点バッファの生成 (背景)
@@ -207,10 +207,10 @@ void InitRanking(void)
 		for (nCntRank = 0; nCntRank < MAX_RANK; nCntRank++)
 		{
 			// 順位の場所初期化
-			s_aRankScore[nCntRank].pos = D3DXVECTOR3(650.0f, 200.0f + nCntRank * 150.0f, 0.0f);
+			s_aRankScore[nCntRank].pos = D3DXVECTOR3(650.0f, 190.0f + nCntRank * 150.0f, 0.0f);
 
 			// 頂点座標の設定
-			SetRectCenterPos(pVtx, s_aRankScore[nCntRank].pos, 70.0f, 70.0f);
+			SetRectCenterPos(pVtx, s_aRankScore[nCntRank].pos, 90.0f, 60.0f);
 
 			// 頂点カラーの設定
 			SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
@@ -238,7 +238,7 @@ void InitRanking(void)
 			for (nCntScore = 0; nCntScore < MAX_SCORE; nCntScore++)
 			{
 				//頂点座標の設定
-				SetRectUpRightPos(pVtx, D3DXVECTOR3(pScore->pos.x - nCntScore * 70, pScore->pos.y - 15.0f, pScore->pos.z), 75.0f, 100.0f);
+				SetRectUpRightPos(pVtx, D3DXVECTOR3(pScore->pos.x - nCntScore * 70, pScore->pos.y - 14.5f, pScore->pos.z), 75.0f, 100.0f);
 
 				// 頂点カラーの設定
 				SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
@@ -263,7 +263,7 @@ void InitRanking(void)
 		for (int i = 0; i < 2; i++)
 		{
 			// 頂点座標の設定
-			SetRectUpRightPos(pVtx, D3DXVECTOR3(850.0f + 400.0f * i, 875.0f, 0.0f), SERECT_WIDTH, SERECT_HEIGTH);
+			SetRectUpRightPos(pVtx, D3DXVECTOR3(1000.0f + 400.0f * i, 875.0f, 0.0f), SERECT_WIDTH, SERECT_HEIGTH);
 
 			// 頂点カラーの設定
 			SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
@@ -467,11 +467,11 @@ void UpdateRanking(void)
 		{
 			if (i == s_SelectCheck)
 			{
-				SetRectColor(pVtx, &(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f)));
+				SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
 			}
 			else
 			{
-				SetRectColor(pVtx, &(D3DXCOLOR(0.1f, 0.1f, 0.1f, 1.0f)));
+				SetRectColor(pVtx, &(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f)));
 			}
 			pVtx += 4;
 		}
@@ -499,7 +499,7 @@ void UpdateRanking(void)
 					PlaySound(SOUND_LABEL_SE_ENTER);
 
 					// リザルト画面に移行
-					SetFade(MODE_RESULT);
+					SetFade(MODE_TITLE);
 					break;
 				default:
 					assert(false);
@@ -528,7 +528,7 @@ void UpdateRanking(void)
 					PlaySound(SOUND_LABEL_SE_ENTER);
 
 					// リザルト画面に移行
-					SetFade(MODE_RESULT);
+					SetFade(MODE_TITLE);
 					break;
 				default:
 					assert(false);

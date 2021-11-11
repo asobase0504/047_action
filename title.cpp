@@ -38,13 +38,14 @@ typedef enum
 // 配置するオブジェクトの種類
 typedef enum
 {
-	OBJ_BG,			// スクリーン背景
-	OBJ_SELECTBG,	// 選択画面背景
-	OBJ_TITLE,		// タイトル文字
-	OBJ_GAMESTART,	// GAMESTART文字
-	OBJ_TUTORIAL,	// TUTORIAL文字
-	OBJ_EXIT,		// EXIT文字
-	OBJ_MAX			// 
+	OBJ_BG,				// スクリーン背景
+	OBJ_SELECTBG,		// 選択画面背景
+	OBJ_TITLE,			// タイトル文字
+	OBJ_SERECTCURSOR,	// セレクトカーソル
+	OBJ_GAMESTART,		// GAMESTART文字
+	OBJ_TUTORIAL,		// TUTORIAL文字
+	OBJ_EXIT,			// EXIT文字
+	OBJ_MAX				// 
 }OBJ_TYPE;
 
 // 選択されたオブジェクト
@@ -60,6 +61,7 @@ typedef struct
 	LPDIRECT3DVERTEXBUFFER9 pVtxBuff;	// 頂点バッファへのポインタ
 	LPDIRECT3DTEXTURE9 Tex;				// テクスチャへのポインタ
 	D3DXVECTOR3 pos;					// 位置
+	D3DXVECTOR3 rot;					// 位置
 	D3DXCOLOR col;						// 色
 	bool bUse;							// 使用してるかどうか
 	float Height;						// 高さ
@@ -82,11 +84,6 @@ void InitTitle(void)
 
 	// 音楽の再生
 	PlaySound(SOUND_LABEL_BGM000);
-
-	// テクスチャの読込	   
-	D3DXCreateTextureFromFile(pDevice,
-		NULL,
-		&s_Object[OBJ_BG].Tex);
 
 	// テクスチャの読込	   
 	D3DXCreateTextureFromFile(pDevice,
@@ -162,6 +159,24 @@ void InitTitle(void)
 
 			// 頂点座標の設定
 			SetRectUpLeftPos(pVtx, object->pos, object->Width, object->Height);
+			break;
+		case OBJ_SERECTCURSOR:
+		{
+			object->pos = D3DXVECTOR3(1000.0f, 560.0f, 0.0f);	// 中心座標の設定
+			object->rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 中心座標の設定
+			object->col = D3DXCOLOR(0.3f, 0.3f, 0.3f, 1.0f);	// カラーの設定
+			object->Width = 100.0f;								// 幅の設定
+			object->Height = 100.0f;							// 高さの設定
+
+			// 中心座標から上の長さを算出する。
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;
+
+			// 中心座標から上の頂点の角度を算出する
+			float fAngle = atan2f(object->Width, object->Height);
+
+			// 頂点座標の設定
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fLength, fAngle);
+		}
 			break;
 		case OBJ_GAMESTART:
 			object->pos = D3DXVECTOR3(1000.0f, 560.0f, 0.0f);	// 中心座標の設定
@@ -250,8 +265,11 @@ void UpdateTitle(void)
 {
 	VERTEX_2D *pVtx;	// 頂点情報へのポインタ
 
-	// 選択処理
-	SelectTitle();
+	if (!(s_bFadeCheek))
+	{
+		// 選択処理
+		SelectTitle();
+	}
 
 	for (int i = 0; i < OBJ_MAX; i++)
 	{
@@ -260,6 +278,22 @@ void UpdateTitle(void)
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
 		object->pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
+		if (i == OBJ_SERECTCURSOR)
+		{
+			object->pos.x = s_Object[s_Select].pos.x - 150.0f;
+			object->pos.y = s_Object[s_Select].pos.y;
+			object->pos.z = s_Object[s_Select].pos.z;
+
+			// 中心座標から上の長さを算出する。
+			float fLength = sqrtf(object->Width  * object->Width + object->Height * object->Height) / 2.0f;
+
+			// 中心座標から上の頂点の角度を算出する
+			float fAngle = atan2f(object->Width, object->Height);
+
+			// 頂点座標の設定
+			SetRectCenterRotPos(pVtx, object->pos, object->rot, fLength, fAngle);
+		}
+		
 		// 頂点カラーの設定
 		SetRectColor(pVtx, &(object->col));
 
