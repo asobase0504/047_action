@@ -303,7 +303,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
-	// キーボードの初期化処理
+	// ジョイパッドの初期化処理
 	if (FAILED(InitJoypad()))
 	{
 		return E_FAIL;
