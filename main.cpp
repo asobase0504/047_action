@@ -338,9 +338,6 @@ void Uninit(void)
 	// チュートリアル画面の終了処理
 	UninitTutorial();
 
-	// リザルト画面の終了処理
-	UninitResult();
-
 	// ランキング画面の終了処理
 	UninitRanking();
 
@@ -397,10 +394,6 @@ void Update(void)
 		UpdateTutorial();
 		break;
 
-	case MODE_RESULT:	// リザルト画面
-		UpdateResult();
-		break;
-
 	case MODE_RANKING:	// ランキング画面
 		UpdateRanking();
 		break;
@@ -436,10 +429,6 @@ void Draw(void)
 
 		case MODE_TUTORIAL:	// チュートリアル画面
 			DrawTutorial();
-			break;
-
-		case MODE_RESULT:	// リザルト画面
-			DrawResult();
 			break;
 
 		case MODE_RANKING:	// ランキング画面
@@ -528,10 +517,6 @@ void SetMode(MODE mode)
 		UninitTutorial();
 		break;
 
-	case MODE_RESULT:	// リザルト画面
-		UninitResult();
-		break;
-
 	case MODE_RANKING:	// ランキング画面
 		UninitRanking();
 		break;
@@ -550,10 +535,6 @@ void SetMode(MODE mode)
 
 	case MODE_TUTORIAL:	// チュートリアル画面
 		InitTutorial();
-		break;
-
-	case MODE_RESULT:	// リザルト画面
-		InitResult();
 		break;
 
 	case MODE_RANKING:	// ランキング画面
