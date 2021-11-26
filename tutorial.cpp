@@ -341,6 +341,8 @@ void InitTutorial(void)
 //=========================================
 void UninitTutorial(void)
 {
+	StopSound(SOUND_LABEL_BGM001);
+
 	// テクスチャの破棄
 	if (s_pTextureMoveWord != NULL)
 	{
