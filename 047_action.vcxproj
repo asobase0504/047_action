@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ag.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="block.cpp" />
     <ClCompile Include="effect.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ag.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="effect.h" />

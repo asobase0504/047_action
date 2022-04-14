@@ -11,6 +11,7 @@
 #include "particle.h"
 #include "player.h"
 #include "enemy.h"
+#include "ag.h"
 #include "bg.h"
 #include "map.h"
 #include "block.h"
@@ -87,6 +88,9 @@ void InitGame(void)
 
 	// ƒ‰ƒ“ƒN‚Ì•\¦ŠÔŠu‚Ì‰Šú‰»
 	s_nRankInterval = 0;
+
+	// ”wŒi‚Ì‰Šú‰»ˆ—
+	InitAG();
 }
 
 //====================================
@@ -202,6 +206,9 @@ void UpdateGame(void)
 
 	// ƒuƒƒbƒN‚ÌXVˆ—
 	UpdateBlock();
+
+	// ”wŒi‚Ì‰Šú‰»ˆ—
+	UpdateAG();
 }
 
 //====================================
@@ -236,6 +243,9 @@ void DrawGame(void)
 	{
 		DrawRanking();
 	}
+
+	// ”wŒi‚Ì‰Šú‰»ˆ—
+	DrawAG();
 }
 
 

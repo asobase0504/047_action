@@ -25,7 +25,7 @@
 //-----------------------------------------
 // マクロ定義
 //-----------------------------------------
-#define CLASS_NAME	"windowclass"			// ウインドウクラスの名前
+#define CLASS_NAME	"windowclass"		// ウインドウクラスの名前
 #define WINDOW_NAME	"Flat Blocks"		// ウインドウクラスの名前（キャプションに表示）
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 
@@ -99,7 +99,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		hInstance,					// インスタンスハンドル
 		NULL);						// ウィンドウ作成データ
 
-	if (FAILED(Init(hInstance, hWnd, false)))	// true = window,false = fullscreen
+	if (FAILED(Init(hInstance, hWnd, true)))	// true = window,false = fullscreen
 	{// 初期化処理が失敗した場合
 		return -1;
 	}
@@ -236,18 +236,18 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// デバイスのプレゼンテーションパラメータの設定
 	ZeroMemory(&d3dpp, sizeof(d3dpp));		// パラメータのゼロクリア
 
-	d3dpp.BackBufferWidth = SCREEN_WIDTH;						// ゲーム画面サイズ(幅)
-	d3dpp.BackBufferHeight = SCREEN_HEIGHT;						// ゲーム画面サイズ(高さ)
-	d3dpp.BackBufferFormat = d3ddm.Format;						// バックバッファの形式
-	d3dpp.BackBufferCount = 1;									// バックバッファの数
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;					// ダブルバッファの切り替え（映像信号に同期）
-	d3dpp.EnableAutoDepthStencil = TRUE;						// デプスバッファとステンシルバッファを作成
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;					// デプスバッファとして16bitを使う
-	d3dpp.Windowed = bWindow;									// ウィンドウモード
-	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;	// リフレッシュレート
-	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;	// インターバル
+	d3dpp.BackBufferWidth = SCREEN_WIDTH;							// ゲーム画面サイズ(幅)
+	d3dpp.BackBufferHeight = SCREEN_HEIGHT;							// ゲーム画面サイズ(高さ)
+	d3dpp.BackBufferFormat = d3ddm.Format;							// バックバッファの形式
+	d3dpp.BackBufferCount = 1;										// バックバッファの数
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;						// ダブルバッファの切り替え（映像信号に同期）
+	d3dpp.EnableAutoDepthStencil = TRUE;							// デプスバッファとステンシルバッファを作成
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;						// デプスバッファとして16bitを使う
+	d3dpp.Windowed = bWindow;										// ウィンドウモード
+	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;		// リフレッシュレート
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;		// インターバル
 
-																// Direct3Dデバイスの生成(描画処理と頂点処理をハードウェアで行う)
+	// Direct3Dデバイスの生成(描画処理と頂点処理をハードウェアで行う)
 	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL,
 		hWnd,
